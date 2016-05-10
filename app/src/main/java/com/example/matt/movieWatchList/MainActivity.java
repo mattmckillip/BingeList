@@ -34,8 +34,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.matt.movieWatchList.Models.Movie;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.Realm;
 
 
 /**
@@ -49,6 +53,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Instantiate realms
+        Realm uiRealm =  Realm.getInstance(getApplicationContext());
+        uiRealm.beginTransaction();
+        Movie movie1 = uiRealm.createObject(Movie.class); // Create a new object
+        Movie movie2 = uiRealm.createObject(Movie.class); // Create a new object
+        Movie movie3 = uiRealm.createObject(Movie.class); // Create a new object
+
+        movie1.setName("The Godfather");
+        movie1.setCountry("United States");
+        movie1.setGenre("Drama, Crime");
+        movie1.setPlot("The story spans the years from 1945 to 1955 and chronicles the fictional Italian-American Corleone crime family. When organized crime family patriarch Vito Corleone barely survives an attempt on his life, his youngest son, Michael, steps in to take care of the would-be killers, launching a campaign of bloody revenge.");
+        movie1.setReleaseDate("1972-03-15");
+
+        movie2.setName("Good Will Hunting");
+        movie2.setCountry("United States");
+        movie2.setGenre("Drama");
+        movie2.setPlot("Will Hunting, a janitor at MIT, has a gift for mathematics but needs help from a psychologist to find direction in his life.");
+        movie2.setReleaseDate("1998-01-09");
+
+        movie3.setName("The Revenant");
+        movie3.setCountry("United States");
+        movie3.setGenre("Drama");
+        movie3.setPlot("In the 1820s, a frontiersman, Hugh Glass, sets out on a path of vengeance against those who left him for dead after a bear mauling.");
+        movie3.setReleaseDate("2016-01-06");
+        uiRealm.commitTransaction();
+
+        ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new CardContentFragment(), "Current List");
         adapter.addFragment(new CardContentFragment(), "Suggestions");
-        adapter.addFragment(new CardContentFragment(), "Random");
         viewPager.setAdapter(adapter);
     }
 

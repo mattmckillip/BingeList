@@ -20,12 +20,24 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.matt.movieWatchList.Models.Movie;
 
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
 public class DetailActivity extends AppCompatActivity {
+    //Movie movie;
 
+    DetailActivity() {
+
+    }
+
+    //DetailActivity(Movie movie){
+     //   this.movie = movie;
+    //}
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +48,18 @@ public class DetailActivity extends AppCompatActivity {
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // Set title of Detail page
-        collapsingToolbar.setTitle(getString(R.string.item_title));
+       // collapsingToolbar.setTitle(movie.getName());
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
+        TextView plot = (TextView) layout.findViewById(R.id.plot);
+        TextView cast = (TextView) layout.findViewById(R.id.cast);
+        TextView crew = (TextView) layout.findViewById(R.id.crew);
+
+
+        //plot.setText(movie.getPlot());
+        //cast.setText(movie.getCountry());
+        //crew.setText(movie.getGenre());
+
+
     }
 }
