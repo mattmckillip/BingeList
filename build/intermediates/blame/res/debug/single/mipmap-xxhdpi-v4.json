@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "E:\\workspace\\Android\\android-design-library\\quickScores\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\ic_launcher.png",
+        "source": "E:\\workspace\\Android\\android-design-library\\quickScores\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "E:\\workspace\\Android\\android-design-library\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxhdpi-v4\\ic_launcher.png",
+        "source": "E:\\workspace\\Android\\android-design-library\\app\\src\\main\\res\\mipmap-xxhdpi\\ic_launcher.png"
+    }
+]
