@@ -33,10 +33,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.ViewControllers.Activities.DetailActivity;
+import com.example.matt.movieWatchList.ViewControllers.Activities.TmdbActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 
@@ -49,6 +54,8 @@ import info.movito.themoviedbapi.model.MovieDb;
 public class PopularMoviesFragment extends Fragment {
     private ArrayList<MovieDb> popularMovies;
     private RecyclerView recyclerView;
+    private ContentAdapter adapter;
+    private ImageLoaderConfiguration imageLoaderConfig;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,14 +65,20 @@ public class PopularMoviesFragment extends Fragment {
         //TmdbApi tmdb = new TmdbApi(apiKey);
         Log.d("POPULAR MOVIES", "THIS");
         popularMovies = new ArrayList<MovieDb>();
+        // Create global configuration and initialize ImageLoader with this config
+        imageLoaderConfig = new ImageLoaderConfiguration.Builder(getContext()).build();
+        ImageLoader.getInstance().init(imageLoaderConfig);
 
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
 
+        Log.d("After Async", popularMovies.toString());
+
+
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        ContentAdapter adapter = new ContentAdapter(popularMovies);
+        adapter = new ContentAdapter(popularMovies);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,9 +95,9 @@ public class PopularMoviesFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    //Movie movie = movieList.get(getAdapterPosition());
-                    Intent intent = new Intent(context, DetailActivity.class);
-                    //intent.putExtra("movieId", movie.getId());
+                    MovieDb movie = movieList.get(getAdapterPosition());
+                    Intent intent = new Intent(context, TmdbActivity.class);
+                    intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }
             });
@@ -138,13 +151,30 @@ public class PopularMoviesFragment extends Fragment {
         public void onBindViewHolder(ViewHolder holder, int position) {
             TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
             TextView genre = (TextView) holder.itemView.findViewById(R.id.card_text);
-            /*ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
+            ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
 
-            Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
-            coverArt.setImageBitmap(bmp);*/
+            //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
+            ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+            // Load image, decode it to Bitmap and display Bitmap in ImageView (or any other view
+            //  which implements ImageAware interface)
+            String imageUri = "https://image.tmdb.org/t/p/w300//" + popularMovies.get(position).getBackdropPath();
+            imageLoader.displayImage(imageUri, coverArt);
+            // Load image, decode it to Bitmap and return Bitmap to callback
+            imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    // Do whatever you want with Bitmap
+                }
+            });
+            // Load image, decode it to Bitmap and return Bitmap synchronously
+            Bitmap bmp = imageLoader.loadImageSync(imageUri);
+
+
+            //coverArt.setImageBitmap(bmp);
+            Log.d("Image",popularMovies.get(position).getBackdropPath());
 
             title.setText(popularMovies.get(position).getTitle());
-            genre.setText(popularMovies.get(position).getGenres().toString());
+            genre.setText(popularMovies.get(position).getTagline());
         }
 
         @Override
@@ -181,6 +211,7 @@ public class PopularMoviesFragment extends Fragment {
             progressDialog.dismiss();
             Log.d("Popular movies On Post", result.toString());
             popularMovies = result;
+            recyclerView.setAdapter( new ContentAdapter(popularMovies));
         }
 
 

@@ -240,8 +240,8 @@ public class MainActivity extends AppCompatActivity {
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         adapterViewPager = new Adapter(getSupportFragmentManager());
-        adapterViewPager.addFragment(new CardContentFragment(), "Watch List");
-        adapterViewPager.addFragment(new CardContentFragment(), "w");
+        adapterViewPager.addFragment(new PopularMoviesFragment(), "Watch List");
+        adapterViewPager.addFragment(new PopularMoviesFragment(), "w");
         viewPager.setAdapter(adapterViewPager);
     }
 
