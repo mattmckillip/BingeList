@@ -21,14 +21,9 @@
             android:tint="@color/button_grey"
             android:title="Your Watch List" />
         <item
-            android:id="@+id/popular_menu_item"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:tint="@color/button_grey"
-            android:title="Popular" />
-        <item
-            android:id="@+id/new_releases_menu_item"
+            android:id="@+id/browse_menu_item"
             android:icon="@drawable/ic_favorite_black_24dp"
             android:tint="@color/button_grey"
-            android:title="New Releases" />
+            android:title="Browse" />
     </group>
 </menu>

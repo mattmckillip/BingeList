@@ -80,7 +80,7 @@ public class TmdbActivity extends AppCompatActivity {
             }
         });
         // Load image, decode it to Bitmap and return Bitmap synchronously
-        Bitmap bmp = imageLoader.loadImageSync(imageUri);
+        //Bitmap bmp = imageLoader.loadImageSync(imageUri);
 
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);

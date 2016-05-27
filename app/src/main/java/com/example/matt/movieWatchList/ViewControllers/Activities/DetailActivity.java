@@ -30,9 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.Movie;
-import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Fragments.CardContentFragment;
 
 import io.realm.Realm;
 

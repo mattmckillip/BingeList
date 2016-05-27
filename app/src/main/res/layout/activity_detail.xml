@@ -44,7 +44,6 @@
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/paris"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax" />
@@ -84,8 +83,7 @@
             <TextView
                 android:id="@+id/plot"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_desc" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -99,14 +97,12 @@
             <TextView
                 android:id="@+id/cast"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_location" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/crew"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_location" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

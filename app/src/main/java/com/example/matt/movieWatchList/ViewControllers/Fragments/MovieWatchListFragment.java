@@ -47,7 +47,7 @@ import io.realm.RealmResults;
 /**
  * Provides UI for the view with Cards.
  */
-public class CardContentFragment extends Fragment {
+public class MovieWatchListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
