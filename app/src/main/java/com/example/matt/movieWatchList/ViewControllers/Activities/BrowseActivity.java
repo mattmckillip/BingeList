@@ -136,14 +136,26 @@ public class BrowseActivity extends AppCompatActivity {
         BrowseMoviesFragment popularMovies = new BrowseMoviesFragment();
         popularMovies.setArguments(popularBundle);
 
+        Bundle newReleasesBundle = new Bundle();
+        newReleasesBundle.putInt("movieType", BrowseMovieType.NEW_RELEASE);
+        BrowseMoviesFragment newReleaseMovies = new BrowseMoviesFragment();
+        newReleaseMovies.setArguments(newReleasesBundle);
+
         Bundle nowShowingBundle = new Bundle();
         nowShowingBundle.putInt("movieType", BrowseMovieType.NOW_SHOWING);
         BrowseMoviesFragment nowShowingMovies = new BrowseMoviesFragment();
         nowShowingMovies.setArguments(nowShowingBundle);
 
+        Bundle topRatedBundle = new Bundle();
+        topRatedBundle.putInt("movieType", BrowseMovieType.TOP_RATED);
+        BrowseMoviesFragment topRatedMovies = new BrowseMoviesFragment();
+        topRatedMovies.setArguments(topRatedBundle);
+
 
         adapterViewPager.addFragment(popularMovies, "Popular");
         adapterViewPager.addFragment(nowShowingMovies, "Now Showing");
+        adapterViewPager.addFragment(newReleaseMovies, "New Releases");
+        adapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
     }

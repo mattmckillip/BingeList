@@ -46,6 +46,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import info.movito.themoviedbapi.TmdbApi;
@@ -177,14 +178,6 @@ public class BrowseMoviesFragment extends Fragment {
                     }
                 });
             }
-            if (popularMovies.get(position).getVideos() != null) {
-                Log.d(popularMovies.get(position).getTitle(), popularMovies.get(position).getVideos().get(0).getName());
-                Log.d(popularMovies.get(position).getTitle(), popularMovies.get(position).getVideos().get(0).getKey());
-                Log.d(popularMovies.get(position).getTitle(), popularMovies.get(position).getVideos().get(0).getSite());
-                Log.d(popularMovies.get(position).getTitle(), popularMovies.get(position).getVideos().get(0).getType());
-                Log.d(popularMovies.get(position).getTitle(), popularMovies.get(position).getVideos().get(0).getIso639());
-            }
-
 
             title.setText(popularMovies.get(position).getTitle());
             tagline.setText(popularMovies.get(position).getTagline());
@@ -213,14 +206,17 @@ public class BrowseMoviesFragment extends Fragment {
                     resp = result;
                 }
                 else if (movieType == BrowseMovieType.NOW_SHOWING) {
+                    ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getNowPlayingMovies("en", 0).getResults();
+                    resp = result;
+                }
+
+                else if (movieType == BrowseMovieType.TOP_RATED) {
+                    ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getTopRatedMovies("en", 0).getResults();
+                    resp = result;
+                }
+
+                else if (movieType == BrowseMovieType.NEW_RELEASE) {
                     ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getUpcoming("en", 0).getResults();
-                    /*ApiUrl apiUrl = new ApiUrl("movie", "now_playing");
-                    apiUrl.addLanguage("en");
-                    apiUrl.addPage(0);
-                    return mapJsonResult(apiUrl, MovieResultsPage.class);
-
-                    Log.d("Now showing", tmdb.getMovies().getNowPlayingMovies("en", 0).toString());*/
-
                     resp = result;
                 }
                 else {
@@ -229,7 +225,7 @@ public class BrowseMoviesFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                resp = null;
+                resp = new ArrayList<MovieDb>();
             }
             return resp;
         }

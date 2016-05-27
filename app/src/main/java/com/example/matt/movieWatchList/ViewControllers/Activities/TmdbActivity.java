@@ -87,10 +87,9 @@ public class TmdbActivity extends AppCompatActivity {
         TextView plot = (TextView) layout.findViewById(R.id.plot);
         TextView cast = (TextView) layout.findViewById(R.id.cast);
         TextView crew = (TextView) layout.findViewById(R.id.crew);
-        Log.d("Cast", movie.getGenres().get(0).getName());
 
         plot.setText(movie.getOverview());
-        cast.setText(movie.getGenres().get(0).getName());
+        cast.setText(movie.getStatus());
         crew.setText(movie.getTagline());
     }
     private class AsyncTaskRunner extends AsyncTask<String, String, MovieDb> {
