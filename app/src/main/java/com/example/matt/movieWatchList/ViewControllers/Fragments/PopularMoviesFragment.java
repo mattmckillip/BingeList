@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList;
+package com.example.matt.movieWatchList.ViewControllers.Fragments;
 
-import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,37 +35,47 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.Movie;
-import com.example.matt.movieWatchList.Models.MovieWatchList;
+import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.ViewControllers.Activities.DetailActivity;
 
-import org.w3c.dom.Text;
+import java.util.ArrayList;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
+import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.model.MovieDb;
 
 /**
  * Provides UI for the view with Cards.
  */
-public class CardContentFragment extends Fragment {
+public class PopularMoviesFragment extends Fragment {
+    private ArrayList<MovieDb> popularMovies;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        //String apiKey = "788bf2d4d9f5db03979efed58cbf6713";
+        //TmdbApi tmdb = new TmdbApi(apiKey);
+        Log.d("POPULAR MOVIES", "THIS");
+        popularMovies = new ArrayList<MovieDb>();
+
+        AsyncTaskRunner runner = new AsyncTaskRunner();
+        runner.execute();
+
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        ContentAdapter adapter = new ContentAdapter((MyApplication) getActivity().getApplication());
+        ContentAdapter adapter = new ContentAdapter(popularMovies);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        this.recyclerView = recyclerView;
         return recyclerView;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<Movie> movieList) {
+        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final ArrayList<MovieDb> movieList) {
             super(inflater.inflate(R.layout.item_card, parent, false));
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -69,10 +83,8 @@ public class CardContentFragment extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     //Movie movie = movieList.get(getAdapterPosition());
-                    //DetailActivity detail = new DetailActivity(movie);
-
-                    //Intent intent = new Intent(context,(new DetailActivity(movie)).getClass());
                     Intent intent = new Intent(context, DetailActivity.class);
+                    //intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }
             });
@@ -112,41 +124,71 @@ public class CardContentFragment extends Fragment {
      * Adapter to display recycler view.
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        // Set numbers of Card in RecyclerView.
-        private Realm uiRealm;
-        private RealmResults<Movie> movieList;
-
-
-        public ContentAdapter(MyApplication app) {
-            uiRealm = app.getUiRealm();
-
-            // Build the query looking at all users:
-            RealmQuery<Movie> query = uiRealm.where(Movie.class);
-
-            // Execute the query:
-            RealmResults<Movie> movies = query.findAll();
-            movieList = movies;
+        ArrayList<MovieDb> popularMovies;
+        public ContentAdapter(ArrayList<MovieDb> movieList) {
+            popularMovies = movieList;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, movieList);
-
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, popularMovies);
         }
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
-            TextView plot = (TextView) holder.itemView.findViewById(R.id.card_text);
+            TextView genre = (TextView) holder.itemView.findViewById(R.id.card_text);
+            /*ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
 
+            Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
+            coverArt.setImageBitmap(bmp);*/
 
-            title.setText(movieList.get(position).getName());
-            plot.setText(movieList.get(position).getPlot());
+            title.setText(popularMovies.get(position).getTitle());
+            genre.setText(popularMovies.get(position).getGenres().toString());
         }
 
         @Override
         public int getItemCount() {
-            return movieList.size();
+            return popularMovies.size();
+        }
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<String, String, ArrayList<MovieDb>> {
+
+        private ArrayList<MovieDb> resp;
+        ProgressDialog progressDialog;
+
+        @Override
+        protected ArrayList<MovieDb> doInBackground(String... params) {
+            publishProgress("Sleeping..."); // Calls onProgressUpdate()
+            try {
+                String apiKey = "788bf2d4d9f5db03979efed58cbf6713";
+                TmdbApi tmdb = new TmdbApi(apiKey);
+                ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getPopularMovies("", 0).getResults();
+                resp = result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp = null;
+            }
+            Log.d("doInBackground", resp.toString());
+            return resp;
+        }
+
+
+        @Override
+        protected void onPostExecute(ArrayList<MovieDb> result) {
+            // execution of result of Long time consuming operation
+            progressDialog.dismiss();
+            Log.d("Popular movies On Post", result.toString());
+            popularMovies = result;
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(getContext(),
+                    "ProgressDialog",
+                    "Wait for ");
         }
     }
 }

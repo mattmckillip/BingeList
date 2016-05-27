@@ -1,8 +1,11 @@
 package com.example.matt.movieWatchList.Models;
 
+import android.content.Intent;
+
 import java.util.ArrayList;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Matt on 5/10/2016.
@@ -14,7 +17,8 @@ public class Movie extends RealmObject {
     private String genre;
     private String country;
     private String releaseDate;
-
+    private Integer id;
+    private byte[] image;
 
     public Movie() { }
 
@@ -56,5 +60,21 @@ public class Movie extends RealmObject {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public void setId(Integer id){
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    public byte[] getImage() {
+        return image;
     }
 }

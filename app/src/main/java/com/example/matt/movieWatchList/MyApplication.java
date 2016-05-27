@@ -8,7 +8,7 @@ import io.realm.Realm;
  */
 
 public class MyApplication extends Application {
-    private Realm uiRealm;
+    private static Realm uiRealm;
 
     public Realm getUiRealm() {
         return uiRealm;

@@ -67,7 +67,7 @@
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
             android:textColor="?attr/colorPrimary"
-            android:text="Action" />
+            android:text="Watched" />
 
         <ImageButton
             android:id="@+id/share_button"

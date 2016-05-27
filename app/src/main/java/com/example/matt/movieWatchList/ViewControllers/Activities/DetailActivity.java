@@ -14,33 +14,47 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList;
+package com.example.matt.movieWatchList.ViewControllers.Activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.Movie;
+import com.example.matt.movieWatchList.MyApplication;
+import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.ViewControllers.Fragments.CardContentFragment;
+
+import io.realm.Realm;
 
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
 public class DetailActivity extends AppCompatActivity {
-    //Movie movie;
+    Movie movie;
 
-    DetailActivity() {
-
-    }
-
-    //DetailActivity(Movie movie){
-     //   this.movie = movie;
-    //}
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Integer movieId = getIntent().getIntExtra("movieId",0);
+
+        //MyApplication myApp = (MyApplication) getParent().getApplication();
+        Realm uiRealm = Realm.getDefaultInstance();
+        //Realm uiRealm = myApp.getUiRealm();
+        this.movie =  uiRealm.where(Movie.class).equalTo("id",movieId).findFirst();
+
+        System.out.print(movieId);
+
         setContentView(R.layout.activity_detail);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -48,7 +62,12 @@ public class DetailActivity extends AppCompatActivity {
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // Set title of Detail page
-       // collapsingToolbar.setTitle(movie.getName());
+        collapsingToolbar.setTitle(movie.getName());
+
+        ImageView image = (ImageView) findViewById(R.id.image);
+
+        Bitmap bmp = BitmapFactory.decodeByteArray(movie.getImage(), 0, movie.getImage().length);
+        image.setImageBitmap(bmp);
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
         TextView plot = (TextView) layout.findViewById(R.id.plot);
@@ -56,10 +75,18 @@ public class DetailActivity extends AppCompatActivity {
         TextView crew = (TextView) layout.findViewById(R.id.crew);
 
 
-        //plot.setText(movie.getPlot());
-        //cast.setText(movie.getCountry());
-        //crew.setText(movie.getGenre());
+        plot.setText(movie.getPlot());
+        cast.setText(movie.getCountry());
+        crew.setText(movie.getGenre());
 
-
+        // Adding Floating Action Button to bottom right of main view
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Added to watch list!",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 }

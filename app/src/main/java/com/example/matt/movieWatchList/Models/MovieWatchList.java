@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Matt on 5/10/2016.
  */
 public class MovieWatchList extends RealmObject {
-
+    private Integer id;
     private RealmList<Movie> movieList;
-
 
     public MovieWatchList() { }
 
@@ -23,5 +23,11 @@ public class MovieWatchList extends RealmObject {
         this.movieList = movieList;
     }
 
+    public void setId(Integer id){
+        this.id = id;
+    }
 
+    public Integer getId() {
+        return id;
+    }
 }
