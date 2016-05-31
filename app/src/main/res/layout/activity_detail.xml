@@ -125,11 +125,126 @@
                 android:layout_marginBottom="@dimen/md_keylines"
                 android:layout_marginTop="@dimen/md_keylines" />
 
-            <TextView
-                android:id="@+id/cast"
-                android:paddingLeft="@dimen/md_keylines"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp">
+                    <ImageView
+                        android:id="@+id/cast1"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:contentDescription="@string/app_name"
+                        android:layout_weight="1"
+                        android:layout_gravity="left"
+                        android:paddingTop="15dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/character1" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/actor1" />
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp">
+                    <ImageView
+                        android:id="@+id/cast2"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/app_name"
+                        android:layout_weight="1"
+                        android:layout_gravity="left"
+                        android:paddingTop="15dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/character2" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/actor2" />
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp">
+
+                    <ImageView
+                        android:id="@+id/cast3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/app_name"
+                        android:layout_weight="1"
+                        android:layout_gravity="left"
+                        android:paddingTop="15dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/character3" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/actor3" />
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="15dp">
+
+                    <ImageView
+                        android:id="@+id/cast4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/app_name"
+                        android:layout_weight="1"
+                        android:layout_gravity="left"
+                        android:paddingTop="15dp"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/character4" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="4pt"
+                        android:id="@+id/actor4" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

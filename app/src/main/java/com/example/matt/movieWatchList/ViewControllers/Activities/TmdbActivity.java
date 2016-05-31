@@ -97,16 +97,75 @@ public class TmdbActivity extends AppCompatActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
         TextView plot = (TextView) layout.findViewById(R.id.plot);
-        TextView cast = (TextView) layout.findViewById(R.id.cast);
         TextView popularity = (TextView) layout.findViewById(R.id.poularity);
         RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
 
 
+        //TODO Do better
+        ImageView actorImage = (ImageView) layout.findViewById(R.id.cast1);
+        TextView actor = (TextView) layout.findViewById(R.id.actor1);
+        TextView character = (TextView) layout.findViewById(R.id.character1);
+        actor.setText(movie.getCast().get(0).getActorName());
+        character.setText(movie.getCast().get(0).getCharacterName());
+
+        imageLoader.displayImage(movie.getCast().get(0).getImagePath(), actorImage);
+        // Load image, decode it to Bitmap and return Bitmap to callback
+        imageLoader.loadImage(movie.getCast().get(0).getImagePath(), new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                // Do whatever you want with Bitmap
+            }
+        });
+
+        actorImage = (ImageView) layout.findViewById(R.id.cast2);
+        actor = (TextView) layout.findViewById(R.id.actor2);
+        character = (TextView) layout.findViewById(R.id.character2);
+        actor.setText(movie.getCast().get(1).getActorName());
+        character.setText(movie.getCast().get(1).getCharacterName());
+
+        imageLoader.displayImage(movie.getCast().get(1).getImagePath(), actorImage);
+        // Load image, decode it to Bitmap and return Bitmap to callback
+        imageLoader.loadImage(movie.getCast().get(1).getImagePath(), new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                // Do whatever you want with Bitmap
+            }
+        });
+
+        actorImage = (ImageView) layout.findViewById(R.id.cast3);
+        actor = (TextView) layout.findViewById(R.id.actor3);
+        character = (TextView) layout.findViewById(R.id.character3);
+        actor.setText(movie.getCast().get(2).getActorName());
+        character.setText(movie.getCast().get(2).getCharacterName());
+
+        imageLoader.displayImage(movie.getCast().get(2).getImagePath(), actorImage);
+        // Load image, decode it to Bitmap and return Bitmap to callback
+        imageLoader.loadImage(movie.getCast().get(2).getImagePath(), new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                // Do whatever you want with Bitmap
+            }
+        });
+
+        actorImage = (ImageView) layout.findViewById(R.id.cast4);
+        actor = (TextView) layout.findViewById(R.id.actor4);
+        character = (TextView) layout.findViewById(R.id.character4);
+        actor.setText(movie.getCast().get(3).getActorName());
+        character.setText(movie.getCast().get(3).getCharacterName());
+
+        imageLoader.displayImage(movie.getCast().get(3).getImagePath(), actorImage);
+        // Load image, decode it to Bitmap and return Bitmap to callback
+        imageLoader.loadImage(movie.getCast().get(3).getImagePath(), new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                // Do whatever you want with Bitmap
+            }
+        });
+
+
+
         plot.setText(movie.getOverview());
-        cast.setText(movie.getTitle());
         popularity.setText(Double.toString(Math.ceil(movie.getPopularity()))+"/100");
-
-
         stars.setRating(movie.getVote_average().floatValue());
     }
 
@@ -154,7 +213,7 @@ public class TmdbActivity extends AppCompatActivity {
 
                     castMember.setCharacterName(movieJSON.get("character").toString());
                     castMember.setActorName(movieJSON.get("name").toString());
-                    castMember.setImagePath("https://image.tmdb.org/t/p/w45/" + movieJSON.get("profile_path").toString());
+                    castMember.setImagePath("https://image.tmdb.org/t/p/w185/" + movieJSON.get("profile_path").toString());
 
                     cast.add(castMember);
                 };

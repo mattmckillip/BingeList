@@ -69,11 +69,9 @@ public class DetailActivity extends AppCompatActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
         TextView plot = (TextView) layout.findViewById(R.id.plot);
-        TextView cast = (TextView) layout.findViewById(R.id.cast);
 
 
         plot.setText(movie.getPlot());
-        cast.setText(movie.getCountry());
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
