@@ -2,9 +2,9 @@ package com.example.matt.movieWatchList.ViewControllers.Activities;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,16 +14,27 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.Movie;
+import com.example.matt.movieWatchList.Models.JSONCast;
+import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.TmdbMovies;
-import info.movito.themoviedbapi.model.MovieDb;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -46,6 +57,7 @@ public class TmdbActivity extends AppCompatActivity {
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
 
+
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +68,9 @@ public class TmdbActivity extends AppCompatActivity {
             }
         });
     }
-    private void updateUI(MovieDb movie){
+
+
+    private void updateUI(JSONMovie movie){
         // Set Collapsing Toolbar layout to the screen
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -70,7 +84,8 @@ public class TmdbActivity extends AppCompatActivity {
         ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
         // Load image, decode it to Bitmap and display Bitmap in ImageView (or any other view
         //  which implements ImageAware interface)
-        String imageUri = "https://image.tmdb.org/t/p/w300//" + movie.getBackdropPath();
+        String imageUri = "https://image.tmdb.org/t/p/w300//" + movie.getBackdropURL();
+
         imageLoader.displayImage(imageUri, image);
         // Load image, decode it to Bitmap and return Bitmap to callback
         imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
@@ -79,49 +94,87 @@ public class TmdbActivity extends AppCompatActivity {
                 // Do whatever you want with Bitmap
             }
         });
-        // Load image, decode it to Bitmap and return Bitmap synchronously
-        //Bitmap bmp = imageLoader.loadImageSync(imageUri);
-
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
         TextView plot = (TextView) layout.findViewById(R.id.plot);
         TextView cast = (TextView) layout.findViewById(R.id.cast);
-        TextView crew = (TextView) layout.findViewById(R.id.crew);
+        TextView popularity = (TextView) layout.findViewById(R.id.poularity);
+        RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
+
 
         plot.setText(movie.getOverview());
-        cast.setText(movie.getStatus());
-        crew.setText(movie.getTagline());
-    }
-    private class AsyncTaskRunner extends AsyncTask<String, String, MovieDb> {
+        cast.setText(movie.getTitle());
+        popularity.setText(Double.toString(Math.ceil(movie.getPopularity()))+"/100");
 
-        private MovieDb resp;
+
+        stars.setRating(movie.getVote_average().floatValue());
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<String, String, JSONMovie> {
+        private JSONMovie resp;
         ProgressDialog progressDialog;
 
         @Override
-        protected MovieDb doInBackground(String... params) {
+        protected JSONMovie doInBackground(String... params) {
             publishProgress("Sleeping..."); // Calls onProgressUpdate()
             try {
-                String apiKey = "788bf2d4d9f5db03979efed58cbf6713";
-                TmdbApi tmdb = new TmdbApi(apiKey);
-                TmdbMovies movies = new TmdbApi(apiKey).getMovies();
-                resp = movies.getMovie(movieID, "en");
-            } catch (Exception e) {
-                e.printStackTrace();
+                Response movieResponse = null;
+                Response castResponse = null;
+
+                OkHttpClient client = new OkHttpClient();
+
+                Request movieRequest = new Request.Builder()
+                        .url("https://api.themoviedb.org/3/movie/" + movieID + "?api_key=788bf2d4d9f5db03979efed58cbf6713")
+                        .build();
+
+                movieResponse = client.newCall(movieRequest).execute();
+                JSONMovie movie = new JSONMovie();
+                JSONObject reader = new JSONObject(movieResponse.body().string());
+                Log.d("reader", reader.toString());
+                movie.setTitle(reader.get("title").toString());
+                movie.setTagline(reader.get("tagline").toString());
+                movie.setOverview(reader.get("overview").toString());
+                movie.setBackdropURL(reader.get("backdrop_path").toString());
+                movie.setPopularity((Double)reader.get("popularity"));
+                movie.setVote_average((Double) reader.get("vote_average"));
+
+                Request castRequest = new Request.Builder()
+                        .url("https://api.themoviedb.org/3/movie/" + movieID + "/credits?api_key=788bf2d4d9f5db03979efed58cbf6713")
+                        .build();
+
+                castResponse = client.newCall(castRequest).execute();
+                JSONObject castJSON = new JSONObject(castResponse.body().string());
+
+                JSONArray array = castJSON.getJSONArray("cast");
+
+                ArrayList<JSONCast> cast = new ArrayList<JSONCast>();
+                for(int i=0; i < array.length(); i++){
+                    JSONObject movieJSON = array.getJSONObject(i);
+                    JSONCast castMember = new JSONCast();
+
+                    castMember.setCharacterName(movieJSON.get("character").toString());
+                    castMember.setActorName(movieJSON.get("name").toString());
+                    castMember.setImagePath("https://image.tmdb.org/t/p/w45/" + movieJSON.get("profile_path").toString());
+
+                    cast.add(castMember);
+                };
+                movie.setCast(cast);
+
+                resp = movie;
+            } catch (Exception t) {
+                t.printStackTrace();
                 resp = null;
             }
-            Log.d("doInBackground", resp.getTitle());
             return resp;
         }
 
-
         @Override
-        protected void onPostExecute(MovieDb result) {
+        protected void onPostExecute(JSONMovie result) {
             // execution of result of Long time consuming operation
             //progressDialog.dismiss();
-            Log.d("Popular movies On Post", result.toString());
+            Log.d("Popular movies On Post", result.getTitle());
             updateUI(result);
         }
-
 
         @Override
         protected void onPreExecute() {

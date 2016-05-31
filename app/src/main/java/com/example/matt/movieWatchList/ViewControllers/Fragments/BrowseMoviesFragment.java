@@ -36,6 +36,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.ViewControllers.Activities.DetailActivity;
 import com.example.matt.movieWatchList.ViewControllers.Activities.TmdbActivity;
@@ -46,19 +47,24 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.model.MovieDb;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
-import info.movito.themoviedbapi.tools.ApiUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Provides UI for the view with Cards.
  */
 public class BrowseMoviesFragment extends Fragment {
-    private ArrayList<MovieDb> popularMovies;
+    private ArrayList<JSONMovie> popularMovies;
     private RecyclerView recyclerView;
     private ContentAdapter adapter;
     private ImageLoaderConfiguration imageLoaderConfig;
@@ -70,7 +76,7 @@ public class BrowseMoviesFragment extends Fragment {
                              Bundle savedInstanceState) {
         movieType = getArguments().getInt("movieType");
 
-        popularMovies = new ArrayList<MovieDb>();
+        popularMovies = new ArrayList<JSONMovie>();
         // Create global configuration and initialize ImageLoader with this config
         imageLoaderConfig = new ImageLoaderConfiguration.Builder(getContext()).build();
         ImageLoader.getInstance().init(imageLoaderConfig);
@@ -83,7 +89,6 @@ public class BrowseMoviesFragment extends Fragment {
 
         adapter = new ContentAdapter(popularMovies);
         recyclerView.setAdapter(adapter);
-        //recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new PreCachingLayoutManager(getActivity()));
         this.recyclerView = recyclerView;
         return recyclerView;
@@ -91,14 +96,14 @@ public class BrowseMoviesFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final ArrayList<MovieDb> movieList) {
+        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final ArrayList<JSONMovie> movieList) {
             super(inflater.inflate(R.layout.item_card, parent, false));
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    MovieDb movie = movieList.get(getAdapterPosition());
+                    JSONMovie movie = movieList.get(getAdapterPosition());
                     Intent intent = new Intent(context, TmdbActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
@@ -140,8 +145,8 @@ public class BrowseMoviesFragment extends Fragment {
      * Adapter to display recycler view.
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        ArrayList<MovieDb> popularMovies;
-        public ContentAdapter(ArrayList<MovieDb> movieList) {
+        ArrayList<JSONMovie> popularMovies;
+        public ContentAdapter(ArrayList<JSONMovie> movieList) {
             popularMovies = movieList;
         }
 
@@ -153,14 +158,14 @@ public class BrowseMoviesFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
-            TextView tagline = (TextView) holder.itemView.findViewById(R.id.card_text);
+            TextView overview = (TextView) holder.itemView.findViewById(R.id.card_text);
             ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
 
             //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
             ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
             // Load image, decode it to Bitmap and display Bitmap in ImageView (or any other view
             //  which implements ImageAware interface)
-            String path = popularMovies.get(position).getBackdropPath();
+            String path = popularMovies.get(position).getBackdropURL();
 
             if (path != null) {
                 String imageUri = "https://image.tmdb.org/t/p/w300//" + path;
@@ -180,7 +185,7 @@ public class BrowseMoviesFragment extends Fragment {
             }
 
             title.setText(popularMovies.get(position).getTitle());
-            tagline.setText(popularMovies.get(position).getTagline());
+            overview.setText(popularMovies.get(position).getOverview());
         }
 
         @Override
@@ -189,35 +194,128 @@ public class BrowseMoviesFragment extends Fragment {
         }
     }
 
-    private class AsyncTaskRunner extends AsyncTask<String, String, ArrayList<MovieDb>> {
+    private class AsyncTaskRunner extends AsyncTask<String, String, ArrayList<JSONMovie>> {
 
-        private ArrayList<MovieDb> resp;
+        private ArrayList<JSONMovie> resp;
         ProgressDialog progressDialog;
 
         @Override
-        protected ArrayList<MovieDb> doInBackground(String... params) {
+        protected ArrayList<JSONMovie> doInBackground(String... params) {
             publishProgress("Sleeping..."); // Calls onProgressUpdate()
             try {
-                Log.d("Movie type", movieType.toString());
-                String apiKey = "788bf2d4d9f5db03979efed58cbf6713";
-                TmdbApi tmdb = new TmdbApi(apiKey);
+                Log.d("TESTING", "1");
+                Response response = null;
+                OkHttpClient client = new OkHttpClient();
+
                 if (movieType == BrowseMovieType.POPULAR) {
-                    ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getPopularMovies("en", 0).getResults();
-                    resp = result;
+                    Request request = new Request.Builder()
+                            .url("http://api.themoviedb.org/3/movie/popular?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+                            .build();
+                    response = client.newCall(request).execute();
+                    String jsonString = response.body().string();
+
+                    JSONObject reader = new JSONObject(jsonString);
+                    JSONArray array = reader.getJSONArray("results");
+
+
+                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    for(int i=0; i < array.length(); i++){
+                        JSONObject movieJSON = array.getJSONObject(i);
+                        JSONMovie movie = new JSONMovie();
+
+                        movie.setTitle(movieJSON.get("title").toString());
+                        movie.setOverview(movieJSON.get("overview").toString());
+                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setId((Integer) movieJSON.get("id"));
+
+                        movieList.add(movie);
+                    }
+
+
+                    resp = movieList;
                 }
                 else if (movieType == BrowseMovieType.NOW_SHOWING) {
-                    ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getNowPlayingMovies("en", 0).getResults();
-                    resp = result;
+                    Request request = new Request.Builder()
+                            .url("http://api.themoviedb.org/3/movie/now_playing?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+                            .build();
+                    response = client.newCall(request).execute();
+                    String jsonString = response.body().string();
+
+                    JSONObject reader = new JSONObject(jsonString);
+                    JSONArray array = reader.getJSONArray("results");
+
+
+                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    for(int i=0; i < array.length(); i++){
+                        JSONObject movieJSON = array.getJSONObject(i);
+                        JSONMovie movie = new JSONMovie();
+
+                        movie.setTitle(movieJSON.get("title").toString());
+                        movie.setOverview(movieJSON.get("overview").toString());
+                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setId((Integer) movieJSON.get("id"));
+
+                        movieList.add(movie);
+                    }
+
+
+                    resp = movieList;
                 }
 
                 else if (movieType == BrowseMovieType.TOP_RATED) {
-                    ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getTopRatedMovies("en", 0).getResults();
-                    resp = result;
+                    Request request = new Request.Builder()
+                            .url("http://api.themoviedb.org/3/movie/top_rated?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+                            .build();
+                    response = client.newCall(request).execute();
+                    String jsonString = response.body().string();
+
+                    JSONObject reader = new JSONObject(jsonString);
+                    JSONArray array = reader.getJSONArray("results");
+
+
+                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    for(int i=0; i < array.length(); i++){
+                        JSONObject movieJSON = array.getJSONObject(i);
+                        JSONMovie movie = new JSONMovie();
+
+                        movie.setTitle(movieJSON.get("title").toString());
+                        movie.setOverview(movieJSON.get("overview").toString());
+                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setId((Integer) movieJSON.get("id"));
+
+                        movieList.add(movie);
+                    }
+
+
+                    resp = movieList;
                 }
 
                 else if (movieType == BrowseMovieType.NEW_RELEASE) {
-                    ArrayList<MovieDb> result = (ArrayList<MovieDb>) tmdb.getMovies().getUpcoming("en", 0).getResults();
-                    resp = result;
+                    Request request = new Request.Builder()
+                            .url("http://api.themoviedb.org/3/movie/upcoming?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+                            .build();
+                    response = client.newCall(request).execute();
+                    String jsonString = response.body().string();
+
+                    JSONObject reader = new JSONObject(jsonString);
+                    JSONArray array = reader.getJSONArray("results");
+
+
+                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    for(int i=0; i < array.length(); i++){
+                        JSONObject movieJSON = array.getJSONObject(i);
+                        JSONMovie movie = new JSONMovie();
+
+                        movie.setTitle(movieJSON.get("title").toString());
+                        movie.setOverview(movieJSON.get("overview").toString());
+                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setId((Integer) movieJSON.get("id"));
+
+                        movieList.add(movie);
+                    }
+
+
+                    resp = movieList;
                 }
                 else {
                     Log.d("OOPS", "No movie type");
@@ -225,14 +323,15 @@ public class BrowseMoviesFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                resp = new ArrayList<MovieDb>();
+                resp = new ArrayList<JSONMovie>();
             }
+            Log.d("ArrayList", resp.toString());
             return resp;
         }
 
 
         @Override
-        protected void onPostExecute(ArrayList<MovieDb> result) {
+        protected void onPostExecute(ArrayList<JSONMovie> result) {
             // execution of result of Long time consuming operation
             progressDialog.dismiss();
             popularMovies = result;

@@ -68,9 +68,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/article_keylines"
+            android:paddingLeft="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"
             android:paddingTop="@dimen/md_keylines">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorAccent"
+                android:text="User Rating"
+                android:textSize="@dimen/article_titles"
+                android:layout_marginBottom="@dimen/md_keylines" />
+            <RatingBar
+                android:isIndicator="true"
+                android:id="@+id/rating"
+                android:rating="0"
+                android:stepSize="0.1"
+                android:numStars="10"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -82,6 +98,7 @@
 
             <TextView
                 android:id="@+id/plot"
+                android:paddingLeft="@dimen/md_keylines"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -89,20 +106,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorAccent"
-                android:text="Cast and Crew"
+                android:text="Popularity"
+                android:textSize="@dimen/article_titles"
+                android:layout_marginBottom="@dimen/md_keylines" />
+
+            <TextView
+                android:id="@+id/poularity"
+                android:paddingLeft="@dimen/md_keylines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorAccent"
+                android:text="Cast"
                 android:textSize="@dimen/article_titles"
                 android:layout_marginBottom="@dimen/md_keylines"
                 android:layout_marginTop="@dimen/md_keylines" />
 
             <TextView
                 android:id="@+id/cast"
+                android:paddingLeft="@dimen/md_keylines"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/crew"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

@@ -42,7 +42,11 @@
             android:layout_alignBottom="@+id/card_image"
             android:layout_marginLeft="@dimen/md_keylines"
             android:text="@string/item_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            android:textColor="#FFFFFF"
+            android:shadowColor="#000000"
+            android:shadowDx="0.0"
+            android:shadowDy="0.0"
+            android:shadowRadius="5.0" />
 
         <TextView
             android:id="@+id/card_text"

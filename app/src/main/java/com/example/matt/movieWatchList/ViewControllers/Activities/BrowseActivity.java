@@ -154,7 +154,7 @@ public class BrowseActivity extends AppCompatActivity {
 
         adapterViewPager.addFragment(popularMovies, "Popular");
         adapterViewPager.addFragment(nowShowingMovies, "Now Showing");
-        adapterViewPager.addFragment(newReleaseMovies, "New Releases");
+        adapterViewPager.addFragment(newReleaseMovies, "Upcoming");
         adapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
@@ -219,7 +219,5 @@ public class BrowseActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
 }
 
