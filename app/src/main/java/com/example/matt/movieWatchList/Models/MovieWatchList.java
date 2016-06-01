@@ -11,15 +11,15 @@ import io.realm.annotations.PrimaryKey;
  */
 public class MovieWatchList extends RealmObject {
     private Integer id;
-    private RealmList<Movie> movieList;
+    private RealmList<JSONMovie> movieList;
 
     public MovieWatchList() { }
 
-    public RealmList<Movie> getMovieList() {
+    public RealmList<JSONMovie> getMovieList() {
         return movieList;
     }
 
-    public void setMovieList(RealmList<Movie> movieList) {
+    public void setMovieList(RealmList<JSONMovie> movieList) {
         this.movieList = movieList;
     }
 

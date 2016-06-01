@@ -20,13 +20,6 @@
         <activity android:name=".ViewControllers.Activities.BrowseActivity">
         </activity>
         <activity
-            android:name=".ViewControllers.Activities.DetailActivity"
-            android:parentActivityName=".ViewControllers.Activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ViewControllers.Activities.MainActivity" />
-        </activity>
-        <activity
             android:name=".ViewControllers.Activities.TmdbActivity"
             android:parentActivityName=".ViewControllers.Activities.BrowseActivity">
             <meta-data

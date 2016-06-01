@@ -16,7 +16,6 @@
 
 package com.example.matt.movieWatchList.ViewControllers.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,10 +34,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.Movie;
+import com.example.matt.movieWatchList.Models.JSONCast;
+import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Activities.DetailActivity;
+import com.example.matt.movieWatchList.ViewControllers.Activities.TmdbActivity;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -48,15 +48,14 @@ import io.realm.RealmResults;
  * Provides UI for the view with Cards.
  */
 public class MovieWatchListFragment extends Fragment {
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        ContentAdapter adapter = new ContentAdapter((MyApplication) getActivity().getApplication());
-        recyclerView.setAdapter(adapter);
+        ContentAdapter cardAdapter = new ContentAdapter((MyApplication) getActivity().getApplication());
+        recyclerView.setAdapter(cardAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         Log.d("Card content","Content");
@@ -65,15 +64,15 @@ public class MovieWatchListFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<Movie> movieList) {
+        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONMovie> movieList, final Realm uiRealm,final ContentAdapter adapter) {
             super(inflater.inflate(R.layout.item_card, parent, false));
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Movie movie = movieList.get(getAdapterPosition());
-                    Intent intent = new Intent(context, DetailActivity.class);
+                    JSONMovie movie = movieList.get(getAdapterPosition());
+                    Intent intent = new Intent(context, TmdbActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }
@@ -103,8 +102,17 @@ public class MovieWatchListFragment extends Fragment {
             shareImageButton.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Snackbar.make(v, "Share article",
-                            Snackbar.LENGTH_LONG).show();
+                    JSONMovie movie = movieList.get(getAdapterPosition());
+
+                    uiRealm.beginTransaction();
+                    //JSONMovie movieToAdd = uiRealm.createObject(movie);
+                    RealmResults<JSONMovie> result1 = uiRealm.where(JSONMovie.class)
+                            .equalTo("title", movie.getTitle())
+                            .findAll();
+                    result1.clear();
+                    uiRealm.commitTransaction();
+                    adapter.notifyDataSetChanged();
+
                 }
             });
         }
@@ -116,23 +124,22 @@ public class MovieWatchListFragment extends Fragment {
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Card in RecyclerView.
         private Realm uiRealm;
-        private RealmResults<Movie> movieList;
-
+        private RealmResults<JSONMovie> movieList;
 
         public ContentAdapter(MyApplication app) {
             uiRealm = app.getUiRealm();
 
             // Build the query looking at all users:
-            RealmQuery<Movie> query = uiRealm.where(Movie.class);
+            RealmQuery<JSONMovie> query = uiRealm.where(JSONMovie.class);
 
             // Execute the query:
-            RealmResults<Movie> movies = query.findAll();
+            RealmResults<JSONMovie> movies = query.findAll();
             movieList = movies;
         }
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, movieList);
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, movieList, uiRealm, this);
         }
 
         @Override
@@ -141,11 +148,10 @@ public class MovieWatchListFragment extends Fragment {
             TextView genre = (TextView) holder.itemView.findViewById(R.id.card_text);
             ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
 
-            Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
-            coverArt.setImageBitmap(bmp);
+            //coverArt.setImageBitmap(movieList.get(position).getBackdropBitmap());
 
-            title.setText(movieList.get(position).getName());
-            genre.setText(movieList.get(position).getGenre());
+            title.setText(movieList.get(position).getTitle());
+            genre.setText(movieList.get(position).getOverview());
         }
 
         @Override

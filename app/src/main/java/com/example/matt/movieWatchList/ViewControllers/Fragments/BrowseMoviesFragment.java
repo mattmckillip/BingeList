@@ -20,12 +20,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +36,6 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Activities.DetailActivity;
 import com.example.matt.movieWatchList.ViewControllers.Activities.TmdbActivity;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.PreCachingLayoutManager;
@@ -48,14 +45,10 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
+import io.realm.RealmList;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -64,7 +57,7 @@ import okhttp3.Response;
  * Provides UI for the view with Cards.
  */
 public class BrowseMoviesFragment extends Fragment {
-    private ArrayList<JSONMovie> popularMovies;
+    private RealmList<JSONMovie> popularMovies;
     private RecyclerView recyclerView;
     private ContentAdapter adapter;
     private ImageLoaderConfiguration imageLoaderConfig;
@@ -76,7 +69,7 @@ public class BrowseMoviesFragment extends Fragment {
                              Bundle savedInstanceState) {
         movieType = getArguments().getInt("movieType");
 
-        popularMovies = new ArrayList<JSONMovie>();
+        popularMovies = new RealmList<JSONMovie>();
         // Create global configuration and initialize ImageLoader with this config
         imageLoaderConfig = new ImageLoaderConfiguration.Builder(getContext()).build();
         ImageLoader.getInstance().init(imageLoaderConfig);
@@ -96,7 +89,7 @@ public class BrowseMoviesFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final ArrayList<JSONMovie> movieList) {
+        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmList<JSONMovie> movieList) {
             super(inflater.inflate(R.layout.item_card, parent, false));
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -145,8 +138,8 @@ public class BrowseMoviesFragment extends Fragment {
      * Adapter to display recycler view.
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        ArrayList<JSONMovie> popularMovies;
-        public ContentAdapter(ArrayList<JSONMovie> movieList) {
+        RealmList<JSONMovie> popularMovies;
+        public ContentAdapter(RealmList<JSONMovie> movieList) {
             popularMovies = movieList;
         }
 
@@ -156,7 +149,7 @@ public class BrowseMoviesFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, final int position) {
             TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
             TextView overview = (TextView) holder.itemView.findViewById(R.id.card_text);
             ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
@@ -170,16 +163,9 @@ public class BrowseMoviesFragment extends Fragment {
             if (path != null) {
                 String imageUri = "https://image.tmdb.org/t/p/w300//" + path;
                 imageLoader.displayImage(imageUri, coverArt);
-                // Load image, decode it to Bitmap and return Bitmap to callback
                 imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
                     @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    }
-                    @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    }
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
                     }
                 });
             }
@@ -194,13 +180,13 @@ public class BrowseMoviesFragment extends Fragment {
         }
     }
 
-    private class AsyncTaskRunner extends AsyncTask<String, String, ArrayList<JSONMovie>> {
+    private class AsyncTaskRunner extends AsyncTask<String, String, RealmList<JSONMovie>> {
 
-        private ArrayList<JSONMovie> resp;
+        private RealmList<JSONMovie> resp;
         ProgressDialog progressDialog;
 
         @Override
-        protected ArrayList<JSONMovie> doInBackground(String... params) {
+        protected RealmList<JSONMovie> doInBackground(String... params) {
             publishProgress("Sleeping..."); // Calls onProgressUpdate()
             try {
                 Log.d("TESTING", "1");
@@ -218,7 +204,7 @@ public class BrowseMoviesFragment extends Fragment {
                     JSONArray array = reader.getJSONArray("results");
 
 
-                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    RealmList<JSONMovie> movieList = new RealmList<JSONMovie>();
                     for(int i=0; i < array.length(); i++){
                         JSONObject movieJSON = array.getJSONObject(i);
                         JSONMovie movie = new JSONMovie();
@@ -245,7 +231,7 @@ public class BrowseMoviesFragment extends Fragment {
                     JSONArray array = reader.getJSONArray("results");
 
 
-                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    RealmList<JSONMovie> movieList = new RealmList<JSONMovie>();
                     for(int i=0; i < array.length(); i++){
                         JSONObject movieJSON = array.getJSONObject(i);
                         JSONMovie movie = new JSONMovie();
@@ -273,7 +259,8 @@ public class BrowseMoviesFragment extends Fragment {
                     JSONArray array = reader.getJSONArray("results");
 
 
-                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    RealmList<JSONMovie> movieList = new RealmList<JSONMovie>();
+
                     for(int i=0; i < array.length(); i++){
                         JSONObject movieJSON = array.getJSONObject(i);
                         JSONMovie movie = new JSONMovie();
@@ -301,7 +288,7 @@ public class BrowseMoviesFragment extends Fragment {
                     JSONArray array = reader.getJSONArray("results");
 
 
-                    ArrayList<JSONMovie> movieList = new ArrayList<JSONMovie>();
+                    RealmList<JSONMovie> movieList = new RealmList<JSONMovie>();
                     for(int i=0; i < array.length(); i++){
                         JSONObject movieJSON = array.getJSONObject(i);
                         JSONMovie movie = new JSONMovie();
@@ -323,7 +310,7 @@ public class BrowseMoviesFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                resp = new ArrayList<JSONMovie>();
+                resp = new RealmList<JSONMovie>();
             }
             Log.d("ArrayList", resp.toString());
             return resp;
@@ -331,7 +318,7 @@ public class BrowseMoviesFragment extends Fragment {
 
 
         @Override
-        protected void onPostExecute(ArrayList<JSONMovie> result) {
+        protected void onPostExecute(RealmList<JSONMovie> result) {
             // execution of result of Long time consuming operation
             progressDialog.dismiss();
             popularMovies = result;

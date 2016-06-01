@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
 
 
 /**
@@ -59,81 +61,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         // Instantiate realms
         Realm uiRealm =  Realm.getInstance(getApplicationContext());
-        /*RealmConfiguration config1 = new RealmConfiguration.Builder(this)
+        RealmConfiguration config1 = new RealmConfiguration.Builder(this)
                 .name("default")
                 .schemaVersion(1)
                 .migration(new RealmMigration() {
                     @Override
                     public long execute(Realm realm, long version) {
-                        return 1;
+                        return 2;
                     }
                 })
                 .build();
 
-        Realm uiRealm = Realm.getInstance(config1);*/
-
-
-        /*uiRealm.beginTransaction();
-        Movie movie1 = uiRealm.createObject(Movie.class); // Create a new object
-        Movie movie2 = uiRealm.createObject(Movie.class); // Create a new object
-        Movie movie3 = uiRealm.createObject(Movie.class); // Create a new object
-        MovieWatchList list = uiRealm.createObject(MovieWatchList.class);
-
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.the_godfather);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        movie1.setId(0);
-        movie1.setName("The Godfather");
-        movie1.setCountry("United States");
-        movie1.setGenre("Drama, Crime");
-        movie1.setPlot("The story spans the years from 1945 to 1955 and chronicles the fictional Italian-American Corleone crime family. When organized crime family patriarch Vito Corleone barely survives an attempt on his life, his youngest son, Michael, steps in to take care of the would-be killers, launching a campaign of bloody revenge.");
-        movie1.setReleaseDate("1972-03-15");
-        movie1.setImage(byteArray);
-
-        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.good_will_hunting);
-        stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byteArray = stream.toByteArray();
-
-
-        movie2.setId(1);
-        movie2.setName("Good Will Hunting");
-        movie2.setCountry("United States");
-        movie2.setGenre("Drama");
-        movie2.setPlot("Will Hunting, a janitor at MIT, has a gift for mathematics but needs help from a psychologist to find direction in his life.");
-        movie2.setReleaseDate("1998-01-09");
-        movie2.setImage(byteArray);
-
-        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.the_revenant);
-        stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byteArray = stream.toByteArray();
-
-        movie3.setId(2);
-        movie3.setName("The Revenant");
-        movie3.setCountry("United States");
-        movie3.setGenre("Drama");
-        movie3.setPlot("In the 1820s, a frontiersman, Hugh Glass, sets out on a path of vengeance against those who left him for dead after a bear mauling.");
-        movie3.setReleaseDate("2016-01-06");
-        movie3.setImage(byteArray);
-
-        // Add movies to realm movie list
-        RealmResults<Movie> movieResult = uiRealm.where(Movie.class).findAll();
-        RealmList<Movie> movieList = new RealmList<Movie>();
-        for(Movie student : movieResult) {
-            movieList.add(student);
-        }
-        list.setMovieList(movieList);
-        list.setId(0);
-
-        uiRealm.commitTransaction();*/
         Realm.setDefaultConfiguration(uiRealm.getConfiguration());
         ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 

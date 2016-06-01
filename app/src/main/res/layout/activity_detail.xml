@@ -56,9 +56,11 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -83,7 +85,7 @@
                 android:isIndicator="true"
                 android:id="@+id/rating"
                 android:rating="0"
-                android:stepSize="0.1"
+                android:stepSize="0.5"
                 android:numStars="10"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"/>
@@ -96,11 +98,35 @@
                 android:textSize="@dimen/article_titles"
                 android:layout_marginBottom="@dimen/md_keylines" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/plot"
                 android:paddingLeft="@dimen/md_keylines"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            -->
+
+            <!-- sample xml -->
+            <com.ms.square.android.expandabletextview.ExpandableTextView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/expand_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                expandableTextView:maxCollapsedLines="4"
+                expandableTextView:animDuration="200">
+                <TextView
+                    android:paddingLeft="@dimen/md_keylines"
+                    android:id="@id/expandable_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@id/expand_collapse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_gravity="right|bottom"
+                    android:background="@android:color/transparent"/>
+            </com.ms.square.android.expandabletextview.ExpandableTextView>
 
             <TextView
                 android:layout_width="match_parent"
@@ -125,137 +151,139 @@
                 android:layout_marginBottom="@dimen/md_keylines"
                 android:layout_marginTop="@dimen/md_keylines" />
 
-            <LinearLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/cast_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="fill_horizontal"
-                android:gravity="center"
-                android:orientation="horizontal" >
+                android:layout_height="match_parent" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="15dp">
-                    <ImageView
-                        android:id="@+id/cast1"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:contentDescription="@string/app_name"
-                        android:layout_weight="1"
-                        android:layout_gravity="left"
-                        android:paddingTop="15dp"/>
+            <!-- <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="fill_horizontal"
+                 android:gravity="center"
+                 android:orientation="horizontal" >
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/character1" />
+                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:orientation="vertical"
+                     android:layout_width="100dp"
+                     android:layout_height="match_parent"
+                     android:paddingLeft="15dp">
+                     <ImageView
+                         android:id="@+id/cast1"
+                         android:layout_width="match_parent"
+                         android:layout_height="100dp"
+                         android:contentDescription="@string/app_name"
+                         android:layout_weight="1"
+                         android:layout_gravity="left"
+                         android:paddingTop="15dp"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/actor1" />
-                </LinearLayout>
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/character1" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="15dp">
-                    <ImageView
-                        android:id="@+id/cast2"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/app_name"
-                        android:layout_weight="1"
-                        android:layout_gravity="left"
-                        android:paddingTop="15dp"/>
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/actor1" />
+                 </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/character2" />
+                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:orientation="vertical"
+                     android:layout_width="100dp"
+                     android:layout_height="match_parent"
+                     android:paddingLeft="15dp">
+                     <ImageView
+                         android:id="@+id/cast2"
+                         android:layout_width="100dp"
+                         android:layout_height="wrap_content"
+                         android:contentDescription="@string/app_name"
+                         android:layout_weight="1"
+                         android:layout_gravity="left"
+                         android:paddingTop="15dp"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/actor2" />
-                </LinearLayout>
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/character2" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="15dp">
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/actor2" />
+                 </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/cast3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/app_name"
-                        android:layout_weight="1"
-                        android:layout_gravity="left"
-                        android:paddingTop="15dp"/>
+                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:orientation="vertical"
+                     android:layout_width="100dp"
+                     android:layout_height="match_parent"
+                     android:paddingLeft="15dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/character3" />
+                     <ImageView
+                         android:id="@+id/cast3"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:contentDescription="@string/app_name"
+                         android:layout_weight="1"
+                         android:layout_gravity="left"
+                         android:paddingTop="15dp"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/actor3" />
-                </LinearLayout>
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/character3" />
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:orientation="vertical"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="15dp">
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/actor3" />
+                 </LinearLayout>
 
-                    <ImageView
-                        android:id="@+id/cast4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/app_name"
-                        android:layout_weight="1"
-                        android:layout_gravity="left"
-                        android:paddingTop="15dp"/>
+                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                     android:orientation="vertical"
+                     android:layout_width="100dp"
+                     android:layout_height="match_parent"
+                     android:paddingLeft="15dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/character4" />
+                     <ImageView
+                         android:id="@+id/cast4"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:contentDescription="@string/app_name"
+                         android:layout_weight="1"
+                         android:layout_gravity="left"
+                         android:paddingTop="15dp"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="4pt"
-                        android:id="@+id/actor4" />
-                </LinearLayout>
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/character4" />
+
+                     <TextView
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:textSize="4pt"
+                         android:id="@+id/actor4" />
+                 </LinearLayout>
+
+             </LinearLayout>-->
+
+         </LinearLayout>
+
+     </android.support.v4.widget.NestedScrollView>
+
+     <android.support.design.widget.FloatingActionButton
+         android:id="@+id/fab"
+         app:layout_anchor="@id/appbar"
+         app:layout_anchorGravity="bottom|right|end"
+         style="@style/FabStyle"/>
 
 
-            </LinearLayout>
-
-
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom"
-        android:layout_marginBottom="@dimen/md_keylines"
-        android:layout_marginRight="@dimen/md_keylines"
-        android:src="@drawable/ic_add_white_24dp" />
-
-</android.support.design.widget.CoordinatorLayout>
+ </android.support.design.widget.CoordinatorLayout>

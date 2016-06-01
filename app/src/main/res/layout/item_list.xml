@@ -24,8 +24,7 @@
         android:id="@+id/list_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
-        android:scaleType="centerCrop"
-        android:src="@drawable/paris_avatar" />
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/list_title"
