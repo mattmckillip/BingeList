@@ -89,13 +89,10 @@ public class BrowseActivity extends AppCompatActivity {
                         Adapter adapter = new Adapter(getSupportFragmentManager());
                         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
 
-
                         //Check to see which item was being clicked and perform appropriate action
                         switch (menuItem.getItemId()) {
 
                             //Replacing the main content with ContentFragment
-
-
                             case R.id.watch_list_menu_item:
 
                                 Snackbar.make(getCurrentFocus(), "Browse",

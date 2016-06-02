@@ -61,20 +61,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // Instantiate realms
-        Realm uiRealm =  Realm.getInstance(getApplicationContext());
         RealmConfiguration config1 = new RealmConfiguration.Builder(this)
                 .name("default")
-                .schemaVersion(1)
+                .schemaVersion(4)
                 .migration(new RealmMigration() {
                     @Override
                     public long execute(Realm realm, long version) {
-                        return 2;
+                        return 4;
                     }
                 })
                 .build();
 
-        Realm.setDefaultConfiguration(uiRealm.getConfiguration());
+        Realm.setDefaultConfiguration(config1);
+        Realm uiRealm =  Realm.getInstance(getApplicationContext());
+
         ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 
         // Adding Toolbar to Main screen

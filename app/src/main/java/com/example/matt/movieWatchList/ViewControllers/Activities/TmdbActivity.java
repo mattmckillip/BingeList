@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,7 @@ import com.example.matt.movieWatchList.Models.JSONCast;
 import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.ViewControllers.Adapters.CastAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -49,8 +51,9 @@ public class TmdbActivity extends AppCompatActivity {
     Integer movieID;
     Bitmap thisBitmap;
     JSONMovie movie;
-    private RecyclerView recyclerView;
-    private CastAdapter adapter;
+    private RealmList<JSONCast> castList = new RealmList<>();
+    private RecyclerView castRecyclerView;
+    private CastAdapter castAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,15 @@ public class TmdbActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+
+        // Cast recycler view
+        castRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        castAdapter = new CastAdapter(castList);
+        castRecyclerView.setLayoutManager(mLayoutManager);
+        castRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        castRecyclerView.setAdapter(castAdapter);
 
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
@@ -82,15 +94,6 @@ public class TmdbActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
-
-        recyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(llm);
-
-        adapter = new CastAdapter(new RealmList<JSONCast>());
-        recyclerView.setAdapter(adapter);
     }
 
 
@@ -102,7 +105,6 @@ public class TmdbActivity extends AppCompatActivity {
 
         // Set title of Detail page
         collapsingToolbar.setTitle(movie.getTitle());
-
         final ImageView image = (ImageView) findViewById(R.id.image);
 
         //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
@@ -153,71 +155,8 @@ public class TmdbActivity extends AppCompatActivity {
         TextView popularity = (TextView) layout.findViewById(R.id.poularity);
         RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
 
+        castRecyclerView.setAdapter( new CastAdapter(movie.getCast()));
 
-
-        //TODO Do better
-        /*ImageView actorImage = (ImageView) layout.findViewById(R.id.cast1);
-        TextView actor = (TextView) layout.findViewById(R.id.actor1);
-        TextView character = (TextView) layout.findViewById(R.id.character1);
-        actor.setText(movie.getCast().get(0).getActorName());
-        character.setText(movie.getCast().get(0).getCharacterName());
-
-        imageLoader.displayImage(movie.getCast().get(0).getImagePath(), actorImage);
-        // Load image, decode it to Bitmap and return Bitmap to callback
-        imageLoader.loadImage(movie.getCast().get(0).getImagePath(), new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // Do whatever you want with Bitmap
-            }
-        });
-
-        actorImage = (ImageView) layout.findViewById(R.id.cast2);
-        actor = (TextView) layout.findViewById(R.id.actor2);
-        character = (TextView) layout.findViewById(R.id.character2);
-        actor.setText(movie.getCast().get(1).getActorName());
-        character.setText(movie.getCast().get(1).getCharacterName());
-
-        imageLoader.displayImage(movie.getCast().get(1).getImagePath(), actorImage);
-        // Load image, decode it to Bitmap and return Bitmap to callback
-        imageLoader.loadImage(movie.getCast().get(1).getImagePath(), new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // Do whatever you want with Bitmap
-            }
-        });
-
-        actorImage = (ImageView) layout.findViewById(R.id.cast3);
-        actor = (TextView) layout.findViewById(R.id.actor3);
-        character = (TextView) layout.findViewById(R.id.character3);
-        actor.setText(movie.getCast().get(2).getActorName());
-        character.setText(movie.getCast().get(2).getCharacterName());
-
-        imageLoader.displayImage(movie.getCast().get(2).getImagePath(), actorImage);
-        // Load image, decode it to Bitmap and return Bitmap to callback
-        imageLoader.loadImage(movie.getCast().get(2).getImagePath(), new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // Do whatever you want with Bitmap
-            }
-        });
-
-        actorImage = (ImageView) layout.findViewById(R.id.cast4);
-        actor = (TextView) layout.findViewById(R.id.actor4);
-        character = (TextView) layout.findViewById(R.id.character4);
-        actor.setText(movie.getCast().get(3).getActorName());
-        character.setText(movie.getCast().get(3).getCharacterName());
-
-        imageLoader.displayImage(movie.getCast().get(3).getImagePath(), actorImage);
-        // Load image, decode it to Bitmap and return Bitmap to callback
-        imageLoader.loadImage(movie.getCast().get(3).getImagePath(), new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // Do whatever you want with Bitmap
-            }
-        });*/
-
-
-        recyclerView.setAdapter( new CastAdapter(movie.getCast()));
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
             @Override
             public void onExpandStateChanged(TextView textView, boolean isExpanded) {
@@ -227,6 +166,9 @@ public class TmdbActivity extends AppCompatActivity {
         plot.setText(movie.getOverview());
         popularity.setText(Double.toString(Math.ceil(movie.getPopularity()))+"/100");
         stars.setRating(movie.getVote_average().floatValue());
+
+        castList = movie.getCast();
+        castAdapter.notifyDataSetChanged();
     }
 
     private static class ViewHolder {
@@ -297,6 +239,7 @@ public class TmdbActivity extends AppCompatActivity {
             //progressDialog.dismiss();
             Log.d("Popular movies On Post", result.getTitle());
             updateUI(result);
+
         }
 
         @Override
@@ -307,3 +250,4 @@ public class TmdbActivity extends AppCompatActivity {
         }
     }
 }
+
