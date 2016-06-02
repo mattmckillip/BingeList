@@ -16,7 +16,9 @@
 
 package com.example.matt.movieWatchList.ViewControllers.Activities;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -35,6 +37,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
@@ -65,11 +68,11 @@ public class MainActivity extends AppCompatActivity {
         // Instantiate realms
         RealmConfiguration config1 = new RealmConfiguration.Builder(this)
                 .name("default")
-                .schemaVersion(4)
+                .schemaVersion(5)
                 .migration(new RealmMigration() {
                     @Override
                     public long execute(Realm realm, long version) {
-                        return 4;
+                        return 5;
                     }
                 })
                 .build();
@@ -82,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        applyFontForToolbarTitle(this);
 
         // Setting ViewPager for each Tabs
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -215,6 +219,22 @@ public class MainActivity extends AppCompatActivity {
             this.mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    public static void applyFontForToolbarTitle(Activity context){
+        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
+                if(tv.getText().equals(context.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
         }
     }
 

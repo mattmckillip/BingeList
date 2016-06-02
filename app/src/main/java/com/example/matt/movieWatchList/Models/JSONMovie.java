@@ -33,6 +33,7 @@ public class JSONMovie extends RealmObject {
     private Double vote_average;
     private RealmList<JSONCast> cast;
     private byte[] backdropBitmap;
+    private RealmList<JSONCast> crew;
 
     public JSONMovie() { }
 
@@ -59,6 +60,7 @@ public class JSONMovie extends RealmObject {
     public Double getVote_average() { return vote_average; }
     public RealmList<JSONCast> getCast() { return cast; }
     public byte[] getBackdropBitmap() {return backdropBitmap; }
+    public RealmList<JSONCast> getCrew() {return  crew; }
 
     public void setTitle(String title) {this.title = title; }
     public void setBackdropURL(String backdropURL) { this.backdropURL = backdropURL; }
@@ -81,5 +83,6 @@ public class JSONMovie extends RealmObject {
     public void setVote_average(Double vote_average) { this.vote_average = vote_average; }
     public void setCast(RealmList<JSONCast> cast) { this.cast = cast; }
     public void setBackdropBitmap(byte[] backdropBitmap) { this.backdropBitmap = backdropBitmap; }
+    public void setCrew(RealmList<JSONCast> crew) { this.crew = crew; }
 
 }

@@ -25,7 +25,7 @@
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
         app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"/>
+        app:civ_border_color="@color/medium_grey"/>
 
     <TextView
         android:id="@+id/list_title"
@@ -33,7 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/md_keylines"
         android:layout_toRightOf="@+id/list_avatar"
-        android:text="@string/item_title"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="@dimen/article_subheading" />
 
@@ -47,7 +46,6 @@
         android:textColor="@color/medium_grey"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="@string/item_desc"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="@dimen/list_body" />
 </RelativeLayout>

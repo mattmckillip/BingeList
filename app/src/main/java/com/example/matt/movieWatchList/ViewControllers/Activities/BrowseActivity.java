@@ -17,6 +17,7 @@
 package com.example.matt.movieWatchList.ViewControllers.Activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -34,6 +35,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.ViewControllers.Fragments.BrowseMoviesFragment;
@@ -59,6 +61,19 @@ public class BrowseActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
+                if(tv.getText().equals(this.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
 
         // Setting ViewPager for each Tabs
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

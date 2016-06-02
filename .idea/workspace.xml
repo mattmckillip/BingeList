@@ -27,17 +27,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0c53e106-d391-4253-9388-4786240c9aaa" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/CastAdapter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/cast_image.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/layout/cast_list.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONMovie.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONMovie.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/BrowseMoviesFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/BrowseMoviesFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_card.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_card.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_list.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_list.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_tile.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_tile.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
     </list>
     <ignored path="movieWatchList.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -71,29 +74,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TmdbActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TmdbActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8340081">
-              <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+            <state vertical-scroll-proportion="-7.2413793">
+              <caret line="128" column="0" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3117#3629#0" expanded="true" />
-                <element signature="e#3628#3629#0" expanded="true" />
-                <element signature="e#4683#6720#0" expanded="true" />
-                <element signature="e#6719#6720#0" expanded="true" />
-                <element signature="e#9635#9645#0" expanded="true" />
+                <element signature="e#4032#4544#0" expanded="true" />
+                <element signature="e#4543#4544#0" expanded="true" />
+                <element signature="e#6147#8554#0" expanded="true" />
+                <element signature="e#8553#8554#0" expanded="true" />
+                <element signature="e#12120#12130#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="82" column="35" selection-start-line="82" selection-start-column="35" selection-end-line="82" selection-end-column="35" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -102,11 +95,53 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1895#2139#0" expanded="true" />
-                <element signature="e#2138#2139#0" expanded="true" />
+                <element signature="e#1175#1176#0" expanded="true" />
+                <element signature="e#1229#1230#0" expanded="true" />
+                <element signature="e#1284#1285#0" expanded="true" />
+                <element signature="e#1333#1334#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BrowseActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="65" column="25" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="25" />
+              <folding>
+                <element signature="method#addFragment#0;class#Adapter#0;class#BrowseActivity#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="item_card.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_card.xml">
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.038724374">
+              <caret line="34" column="60" selection-start-line="34" selection-start-column="60" selection-end-line="34" selection-end-column="60" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="item_list.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_list.xml">
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.018182">
+              <caret line="44" column="23" selection-start-line="44" selection-start-column="23" selection-end-line="44" selection-end-column="23" />
+              <folding>
+                <element signature="e#1861#1881#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -118,29 +153,19 @@
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.3454545">
-              <caret line="155" column="50" selection-start-line="155" selection-start-column="37" selection-end-line="155" selection-end-column="50" />
-              <folding>
-                <element signature="e#1156#1179#0" expanded="true" />
-                <element signature="e#1698#1723#0" expanded="true" />
-                <element signature="e#1765#1785#0" expanded="true" />
-                <element signature="e#2810#2850#0" expanded="true" />
-                <element signature="e#3087#3107#0" expanded="true" />
-                <element signature="e#3141#3161#0" expanded="true" />
-                <element signature="e#3193#3213#0" expanded="true" />
-                <element signature="e#3473#3496#0" expanded="true" />
-                <element signature="e#3541#3561#0" expanded="true" />
-                <element signature="e#4141#4164#0" expanded="true" />
-                <element signature="e#4209#4229#0" expanded="true" />
-                <element signature="e#4832#4852#0" expanded="true" />
-                <element signature="e#5720#5743#0" expanded="true" />
-                <element signature="e#5788#5808#0" expanded="true" />
-                <element signature="e#5915#5935#0" expanded="true" />
-                <element signature="e#6295#6318#0" expanded="true" />
-                <element signature="e#6363#6383#0" expanded="true" />
-                <element signature="e#6425#6445#0" expanded="true" />
-                <element signature="e#6755#6795#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="-42.963634">
+              <caret line="175" column="11" selection-start-line="175" selection-start-column="11" selection-end-line="175" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="237" column="9" selection-start-line="225" selection-start-column="8" selection-end-line="237" selection-end-column="9" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -152,6 +177,7 @@
       <list>
         <option value="layoutResourceFile_vertical" />
         <option value="Class" />
+        <option value="resourceFile" />
       </list>
     </option>
   </component>
@@ -1518,7 +1544,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="4392120691219" />
+        <entry key="$PROJECT_DIR$" value="4392125362400" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1858,8 +1884,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/uitls/TMDbRestClientUsage.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/RealmMovie.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/cast_image.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_card.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/cast_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/DetailActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/MovieWatchList.java" />
@@ -1867,21 +1891,26 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCompany.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCountry.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONGenre.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONMovie.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/BrowseMoviesFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_tile.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/MovieWatchListFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/CastAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCrew.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCastAndCrew.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAndCrewAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONMovie.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_card.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_tile.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_list.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/drawable/unkown_person.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/BrowseMoviesFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_detail.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java" />
       </list>
     </option>
   </component>
@@ -1982,6 +2011,86 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="styles.xml" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="drawable" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2054,6 +2163,10 @@
               <option name="myItemId" value="ViewControllers" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2116,18 +2229,6 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="movieWatchList" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Models" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
@@ -2144,7 +2245,7 @@
     <property name="ExportApk.Flavors" value="" />
     <property name="ExportApk.BuildType" value="release" />
   </component>
-  <component name="RunManager" selected="Android Application.app">
+  <component name="RunManager" selected="Gradle.movieWatchList">
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
       <module name="" />
       <option name="DEPLOY" value="true" />
@@ -2241,6 +2342,15 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -2471,12 +2581,18 @@
       <option name="project" value="LOCAL" />
       <updated>1464818287412</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Got cast working">
+      <created>1464891419366</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1464891419366</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
@@ -2484,7 +2600,7 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41870824" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41870824" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -2523,7 +2639,8 @@
     <MESSAGE value="Now using OKHTTP instead of library&#10;" />
     <MESSAGE value="Kind of added cast images" />
     <MESSAGE value="Basic realm integration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Basic realm integration" />
+    <MESSAGE value="Got cast working" />
+    <option name="LAST_COMMIT_MESSAGE" value="Got cast working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2538,11 +2655,11 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3117#3629#0" expanded="true" />
-            <element signature="e#3628#3629#0" expanded="true" />
-            <element signature="e#4683#6720#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#9635#9645#0" expanded="true" />
+            <element signature="e#4032#4544#0" expanded="true" />
+            <element signature="e#4543#4544#0" expanded="true" />
+            <element signature="e#6147#8554#0" expanded="true" />
+            <element signature="e#8553#8554#0" expanded="true" />
+            <element signature="e#12120#12130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2578,12 +2695,9 @@
             <element signature="e#916#936#0" expanded="true" />
             <element signature="e#1115#1135#0" expanded="true" />
             <element signature="e#1166#1186#0" expanded="true" />
-            <element signature="e#1440#1460#0" expanded="true" />
-            <element signature="e#1534#1554#0" expanded="true" />
-            <element signature="e#1642#1669#0" expanded="true" />
-            <element signature="e#1894#1914#0" expanded="true" />
-            <element signature="e#2101#2120#0" expanded="true" />
-            <element signature="e#2208#2226#0" expanded="true" />
+            <element signature="e#1449#1469#0" expanded="true" />
+            <element signature="e#1609#1636#0" expanded="true" />
+            <element signature="e#2134#2152#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2599,22 +2713,21 @@
             <element signature="e#1156#1179#0" expanded="true" />
             <element signature="e#1698#1723#0" expanded="true" />
             <element signature="e#1765#1785#0" expanded="true" />
-            <element signature="e#2810#2850#0" expanded="true" />
-            <element signature="e#3087#3107#0" expanded="true" />
-            <element signature="e#3141#3161#0" expanded="true" />
-            <element signature="e#3193#3213#0" expanded="true" />
-            <element signature="e#3473#3496#0" expanded="true" />
-            <element signature="e#3541#3561#0" expanded="true" />
-            <element signature="e#4141#4164#0" expanded="true" />
-            <element signature="e#4209#4229#0" expanded="true" />
-            <element signature="e#4832#4852#0" expanded="true" />
-            <element signature="e#5720#5743#0" expanded="true" />
-            <element signature="e#5788#5808#0" expanded="true" />
-            <element signature="e#5915#5935#0" expanded="true" />
-            <element signature="e#6295#6318#0" expanded="true" />
-            <element signature="e#6363#6383#0" expanded="true" />
-            <element signature="e#6425#6445#0" expanded="true" />
-            <element signature="e#6755#6795#0" expanded="true" />
+            <element signature="e#3179#3219#0" expanded="true" />
+            <element signature="e#3456#3476#0" expanded="true" />
+            <element signature="e#3510#3530#0" expanded="true" />
+            <element signature="e#3562#3582#0" expanded="true" />
+            <element signature="e#4574#4597#0" expanded="true" />
+            <element signature="e#4704#4724#0" expanded="true" />
+            <element signature="e#5327#5347#0" expanded="true" />
+            <element signature="e#6258#6281#0" expanded="true" />
+            <element signature="e#6326#6346#0" expanded="true" />
+            <element signature="e#6388#6408#0" expanded="true" />
+            <element signature="e#6718#6758#0" expanded="true" />
+            <element signature="e#7366#7389#0" expanded="true" />
+            <element signature="e#7434#7454#0" expanded="true" />
+            <element signature="e#7496#7516#0" expanded="true" />
+            <element signature="e#7826#7866#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2635,14 +2748,14 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
           <folding>
-            <element signature="e#6544#6545#0" expanded="true" />
-            <element signature="e#6582#6583#0" expanded="true" />
-            <element signature="e#6649#6650#0" expanded="true" />
-            <element signature="e#6707#6708#0" expanded="true" />
-            <element signature="e#6758#6759#0" expanded="true" />
-            <element signature="e#6809#6810#0" expanded="true" />
-            <element signature="e#7047#7048#0" expanded="true" />
-            <element signature="e#7110#7111#0" expanded="true" />
+            <element signature="e#6679#6680#0" expanded="true" />
+            <element signature="e#6717#6718#0" expanded="true" />
+            <element signature="e#6784#6785#0" expanded="true" />
+            <element signature="e#6842#6843#0" expanded="true" />
+            <element signature="e#6893#6894#0" expanded="true" />
+            <element signature="e#6944#6945#0" expanded="true" />
+            <element signature="e#7182#7183#0" expanded="true" />
+            <element signature="e#7245#7246#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2653,11 +2766,11 @@
           <caret line="74" column="80" selection-start-line="74" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3117#3629#0" expanded="true" />
-            <element signature="e#3628#3629#0" expanded="true" />
-            <element signature="e#4683#6720#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#9635#9645#0" expanded="true" />
+            <element signature="e#4032#4544#0" expanded="true" />
+            <element signature="e#4543#4544#0" expanded="true" />
+            <element signature="e#6147#8554#0" expanded="true" />
+            <element signature="e#8553#8554#0" expanded="true" />
+            <element signature="e#12120#12130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2688,12 +2801,9 @@
             <element signature="e#916#936#0" expanded="true" />
             <element signature="e#1115#1135#0" expanded="true" />
             <element signature="e#1166#1186#0" expanded="true" />
-            <element signature="e#1440#1460#0" expanded="true" />
-            <element signature="e#1534#1554#0" expanded="true" />
-            <element signature="e#1642#1669#0" expanded="true" />
-            <element signature="e#1894#1914#0" expanded="true" />
-            <element signature="e#2101#2120#0" expanded="true" />
-            <element signature="e#2208#2226#0" expanded="true" />
+            <element signature="e#1449#1469#0" expanded="true" />
+            <element signature="e#1609#1636#0" expanded="true" />
+            <element signature="e#2134#2152#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2720,22 +2830,21 @@
             <element signature="e#1156#1179#0" expanded="true" />
             <element signature="e#1698#1723#0" expanded="true" />
             <element signature="e#1765#1785#0" expanded="true" />
-            <element signature="e#2810#2850#0" expanded="true" />
-            <element signature="e#3087#3107#0" expanded="true" />
-            <element signature="e#3141#3161#0" expanded="true" />
-            <element signature="e#3193#3213#0" expanded="true" />
-            <element signature="e#3473#3496#0" expanded="true" />
-            <element signature="e#3541#3561#0" expanded="true" />
-            <element signature="e#4141#4164#0" expanded="true" />
-            <element signature="e#4209#4229#0" expanded="true" />
-            <element signature="e#4832#4852#0" expanded="true" />
-            <element signature="e#5720#5743#0" expanded="true" />
-            <element signature="e#5788#5808#0" expanded="true" />
-            <element signature="e#5915#5935#0" expanded="true" />
-            <element signature="e#6295#6318#0" expanded="true" />
-            <element signature="e#6363#6383#0" expanded="true" />
-            <element signature="e#6425#6445#0" expanded="true" />
-            <element signature="e#6755#6795#0" expanded="true" />
+            <element signature="e#3179#3219#0" expanded="true" />
+            <element signature="e#3456#3476#0" expanded="true" />
+            <element signature="e#3510#3530#0" expanded="true" />
+            <element signature="e#3562#3582#0" expanded="true" />
+            <element signature="e#4574#4597#0" expanded="true" />
+            <element signature="e#4704#4724#0" expanded="true" />
+            <element signature="e#5327#5347#0" expanded="true" />
+            <element signature="e#6258#6281#0" expanded="true" />
+            <element signature="e#6326#6346#0" expanded="true" />
+            <element signature="e#6388#6408#0" expanded="true" />
+            <element signature="e#6718#6758#0" expanded="true" />
+            <element signature="e#7366#7389#0" expanded="true" />
+            <element signature="e#7434#7454#0" expanded="true" />
+            <element signature="e#7496#7516#0" expanded="true" />
+            <element signature="e#7826#7866#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2757,11 +2866,11 @@
           <caret line="150" column="41" selection-start-line="150" selection-start-column="41" selection-end-line="150" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3117#3629#0" expanded="true" />
-            <element signature="e#3628#3629#0" expanded="true" />
-            <element signature="e#4683#6720#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#9635#9645#0" expanded="true" />
+            <element signature="e#4032#4544#0" expanded="true" />
+            <element signature="e#4543#4544#0" expanded="true" />
+            <element signature="e#6147#8554#0" expanded="true" />
+            <element signature="e#8553#8554#0" expanded="true" />
+            <element signature="e#12120#12130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2792,11 +2901,11 @@
           <caret line="62" column="29" selection-start-line="62" selection-start-column="29" selection-end-line="62" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3117#3629#0" expanded="true" />
-            <element signature="e#3628#3629#0" expanded="true" />
-            <element signature="e#4683#6720#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#9635#9645#0" expanded="true" />
+            <element signature="e#4032#4544#0" expanded="true" />
+            <element signature="e#4543#4544#0" expanded="true" />
+            <element signature="e#6147#8554#0" expanded="true" />
+            <element signature="e#8553#8554#0" expanded="true" />
+            <element signature="e#12120#12130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2823,11 +2932,11 @@
           <caret line="104" column="20" selection-start-line="104" selection-start-column="20" selection-end-line="104" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3117#3629#0" expanded="true" />
-            <element signature="e#3628#3629#0" expanded="true" />
-            <element signature="e#4683#6720#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#9635#9645#0" expanded="true" />
+            <element signature="e#4032#4544#0" expanded="true" />
+            <element signature="e#4543#4544#0" expanded="true" />
+            <element signature="e#6147#8554#0" expanded="true" />
+            <element signature="e#8553#8554#0" expanded="true" />
+            <element signature="e#12120#12130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2874,47 +2983,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_card.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.52215797">
-          <caret line="41" column="43" selection-start-line="41" selection-start-column="43" selection-end-line="41" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.65217394">
-          <caret line="31" column="61" selection-start-line="31" selection-start-column="61" selection-end-line="31" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCompany.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2369338">
           <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="19" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONMovie.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="40" selection-start-line="82" selection-start-column="40" selection-end-line="82" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2946,17 +3018,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_tile.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.65384614">
-          <caret line="18" column="40" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/MovieWatchListFragment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2976,25 +3037,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.5876993">
-          <caret line="10" column="12" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.148149">
-          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://E:/Programs/extras/android/m2repository/com/android/support/recyclerview-v7/23.0.1/recyclerview-v7-23.0.1-sources.jar!/android/support/v7/widget/RecyclerView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3319838">
@@ -3003,23 +3045,95 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCast.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
+          <caret line="9" column="28" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_tile.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.036364">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6938776">
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.018182">
+          <caret line="40" column="68" selection-start-line="40" selection-start-column="68" selection-end-line="40" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.754717">
+          <caret line="37" column="12" selection-start-line="37" selection-start-column="12" selection-end-line="37" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONMovie.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8967611">
+          <caret line="85" column="70" selection-start-line="85" selection-start-column="70" selection-end-line="85" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24089068">
+          <caret line="7" column="49" selection-start-line="7" selection-start-column="49" selection-end-line="7" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
           <folding>
-            <element signature="method#addFragment#0;class#Adapter#0;class#BrowseActivity#0" expanded="false" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1175#1176#0" expanded="true" />
+            <element signature="e#1229#1230#0" expanded="true" />
+            <element signature="e#1284#1285#0" expanded="true" />
+            <element signature="e#1333#1334#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Fragments/BrowseMoviesFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.3448277">
-          <caret line="89" column="30" selection-start-line="89" selection-start-column="24" selection-end-line="89" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
+        <state vertical-scroll-proportion="0.5526882">
+          <caret line="165" column="27" selection-start-line="165" selection-start-column="27" selection-end-line="165" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -3028,27 +3142,11 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.3636365">
-          <caret line="27" column="42" selection-start-line="27" selection-start-column="42" selection-end-line="27" selection-end-column="42" />
+        <state vertical-scroll-proportion="-8.018182">
+          <caret line="44" column="23" selection-start-line="44" selection-start-column="23" selection-end-line="44" selection-end-column="23" />
           <folding>
-            <element signature="e#916#936#0" expanded="true" />
-            <element signature="e#1115#1135#0" expanded="true" />
-            <element signature="e#1166#1186#0" expanded="true" />
-            <element signature="e#1440#1460#0" expanded="true" />
-            <element signature="e#1534#1554#0" expanded="true" />
-            <element signature="e#1642#1669#0" expanded="true" />
-            <element signature="e#1894#1914#0" expanded="true" />
-            <element signature="e#2101#2120#0" expanded="true" />
-            <element signature="e#2208#2226#0" expanded="true" />
+            <element signature="e#1861#1881#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/Models/JSONCast.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.27732792">
-          <caret line="9" column="28" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3057,40 +3155,23 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.3454545">
-          <caret line="155" column="50" selection-start-line="155" selection-start-column="37" selection-end-line="155" selection-end-column="50" />
-          <folding>
-            <element signature="e#1156#1179#0" expanded="true" />
-            <element signature="e#1698#1723#0" expanded="true" />
-            <element signature="e#1765#1785#0" expanded="true" />
-            <element signature="e#2810#2850#0" expanded="true" />
-            <element signature="e#3087#3107#0" expanded="true" />
-            <element signature="e#3141#3161#0" expanded="true" />
-            <element signature="e#3193#3213#0" expanded="true" />
-            <element signature="e#3473#3496#0" expanded="true" />
-            <element signature="e#3541#3561#0" expanded="true" />
-            <element signature="e#4141#4164#0" expanded="true" />
-            <element signature="e#4209#4229#0" expanded="true" />
-            <element signature="e#4832#4852#0" expanded="true" />
-            <element signature="e#5720#5743#0" expanded="true" />
-            <element signature="e#5788#5808#0" expanded="true" />
-            <element signature="e#5915#5935#0" expanded="true" />
-            <element signature="e#6295#6318#0" expanded="true" />
-            <element signature="e#6363#6383#0" expanded="true" />
-            <element signature="e#6425#6445#0" expanded="true" />
-            <element signature="e#6755#6795#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="-42.963634">
+          <caret line="175" column="11" selection-start-line="175" selection-start-column="11" selection-end-line="175" selection-end-column="11" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Adapters/CastAdapter.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+        <state vertical-scroll-proportion="-7.2413793">
+          <caret line="128" column="0" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1895#2139#0" expanded="true" />
-            <element signature="e#2138#2139#0" expanded="true" />
+            <element signature="e#4032#4544#0" expanded="true" />
+            <element signature="e#4543#4544#0" expanded="true" />
+            <element signature="e#6147#8554#0" expanded="true" />
+            <element signature="e#8553#8554#0" expanded="true" />
+            <element signature="e#12120#12130#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3098,23 +3179,29 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="82" column="35" selection-start-line="82" selection-start-column="35" selection-end-line="82" selection-end-column="35" />
+          <caret line="237" column="9" selection-start-line="225" selection-start-column="8" selection-end-line="237" selection-end-column="9" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/TmdbActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/movieWatchList/ViewControllers/Activities/BrowseActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8340081">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="25" selection-start-line="65" selection-start-column="24" selection-end-line="65" selection-end-column="25" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3117#3629#0" expanded="true" />
-            <element signature="e#3628#3629#0" expanded="true" />
-            <element signature="e#4683#6720#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#9635#9645#0" expanded="true" />
+            <element signature="method#addFragment#0;class#Adapter#0;class#BrowseActivity#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_card.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.038724374">
+          <caret line="34" column="60" selection-start-line="34" selection-start-column="60" selection-end-line="34" selection-end-column="60" />
+          <folding />
         </state>
       </provider>
     </entry>

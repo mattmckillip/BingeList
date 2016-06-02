@@ -1,9 +1,11 @@
 package com.example.matt.movieWatchList.ViewControllers.Activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,7 +38,10 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+
+import java.lang.reflect.Field;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -55,25 +61,39 @@ public class TmdbActivity extends AppCompatActivity {
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
 
+    private RealmList<JSONCast> crewList = new RealmList<>();
+    private RecyclerView crewRecyclerView;
+    private CastAdapter crewAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         movieID = getIntent().getIntExtra("movieId",0);
-        System.out.print(movieID);
 
         setContentView(R.layout.activity_detail);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
 
         // Cast recycler view
-        castRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        castRecyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
         castAdapter = new CastAdapter(castList);
-        castRecyclerView.setLayoutManager(mLayoutManager);
+        RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
+        castRecyclerView.setLayoutManager(castLayoutManager);
         castRecyclerView.setItemAnimator(new DefaultItemAnimator());
         castRecyclerView.setAdapter(castAdapter);
+
+        // Cast recycler view
+        crewRecyclerView = (RecyclerView) findViewById(R.id.crew_recycler_view);
+        crewAdapter = new CastAdapter(crewList);
+        RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(getApplicationContext());
+        crewRecyclerView.setLayoutManager(crewLayoutManager);
+        crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        crewRecyclerView.setAdapter(crewAdapter);
+
+        findViewById(R.id.appbar).setVisibility(View.GONE);
+        findViewById(R.id.collapsing_toolbar).setVisibility(View.GONE);
+        findViewById(R.id.scroll_view).setVisibility(View.GONE);
 
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
@@ -107,11 +127,24 @@ public class TmdbActivity extends AppCompatActivity {
         collapsingToolbar.setTitle(movie.getTitle());
         final ImageView image = (ImageView) findViewById(R.id.image);
 
+        final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
+        try {
+            final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
+            field.setAccessible(true);
+
+            final Object object = field.get(collapsingToolbar);
+            final Field tpf = object.getClass().getDeclaredField("mTextPaint");
+            tpf.setAccessible(true);
+
+            ((TextPaint) tpf.get(object)).setTypeface(tf);
+        } catch (Exception ignored) {
+        }
+
         //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
         ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
         // Load image, decode it to Bitmap and display Bitmap in ImageView (or any other view
         //  which implements ImageAware interface)
-        String imageUri = "https://image.tmdb.org/t/p/w300//" + movie.getBackdropURL();
+        String imageUri = "https://image.tmdb.org/t/p/w780//" + movie.getBackdropURL();
 
         imageLoader.displayImage(imageUri, image);
         // Load image, decode it to Bitmap and return Bitmap to callback
@@ -125,27 +158,42 @@ public class TmdbActivity extends AppCompatActivity {
                 if (thisBitmap != null && !thisBitmap.isRecycled()) {
                     int defaultColor = 0x000000;
                     Palette palette = Palette.from(thisBitmap).generate();
-                    NestedScrollView nestedScrollView = (NestedScrollView) findViewById(R.id.scroll_view);
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                     CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
                     RatingBar stars = (RatingBar) findViewById(R.id.rating);
+                    TextView plotTitle = (TextView) findViewById(R.id.plot_title);
+                    TextView castTitle = (TextView) findViewById(R.id.cast_title);
+                    TextView crewTitle = (TextView) findViewById(R.id.crew_title);
 
-                    //nestedScrollView.setBackgroundColor(palette.getLightMutedColor(defaultColor));
-                    fab.setBackgroundTintList(ColorStateList.valueOf(palette.getVibrantColor(defaultColor)));
+
 
                     int vibrantColor = palette.getVibrantColor(defaultColor);
+                    Log.d("vibrant color", Integer.toString(vibrantColor));
 
-                    LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
-                    starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
-                    starProgressDrawable.getDrawable(1).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
-                    //starProgressDrawable.getDrawable(0).setColorFilter(vibrantColor, PorterDuff.Mode.SRC_ATOP);
+                    if (vibrantColor != 0){
+                        plotTitle.setTextColor(vibrantColor);
+                        castTitle.setTextColor(vibrantColor);
+                        crewTitle.setTextColor(vibrantColor);
 
-                    collapsingToolbar.setBackgroundColor(vibrantColor);
-                    collapsingToolbar.setContentScrimColor(vibrantColor);
-                    collapsingToolbar.setStatusBarScrimColor(vibrantColor);
+
+                        LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
+                        starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
+                        starProgressDrawable.getDrawable(1).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
+
+                        collapsingToolbar.setBackgroundColor(vibrantColor);
+                        collapsingToolbar.setContentScrimColor(vibrantColor);
+                        collapsingToolbar.setStatusBarScrimColor(vibrantColor);
+
+                        fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+
+                    } else {
+                        Log.d("Palette", "Could not gather vibrant color");
+                    }
+
+
                 }
                 else {
-                    Log.d("PAllete", "Bitmap Null");
+                    Log.d("Pallete", "Bitmap Null");
                 }
             }
         });
@@ -155,7 +203,8 @@ public class TmdbActivity extends AppCompatActivity {
         TextView popularity = (TextView) layout.findViewById(R.id.poularity);
         RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
 
-        castRecyclerView.setAdapter( new CastAdapter(movie.getCast()));
+
+
 
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
             @Override
@@ -164,11 +213,26 @@ public class TmdbActivity extends AppCompatActivity {
             }
         });
         plot.setText(movie.getOverview());
-        popularity.setText(Double.toString(Math.ceil(movie.getPopularity()))+"/100");
+        popularity.setText("Popularity: " + Double.toString(Math.ceil(movie.getPopularity()))+"/100");
         stars.setRating(movie.getVote_average().floatValue());
 
-        castList = movie.getCast();
-        castAdapter.notifyDataSetChanged();
+
+        RealmList<JSONCast> slicedCastList = new RealmList<>();
+        RealmList<JSONCast> slicedCrewList = new RealmList<>();
+
+        for (int i=0; i < 3; i++){
+            slicedCastList.add(movie.getCast().get(i));
+            slicedCrewList.add(movie.getCrew().get(i));
+        }
+        // Populate cast and crew recycler views
+        castRecyclerView.setAdapter( new CastAdapter(slicedCastList));
+        crewRecyclerView.setAdapter( new CastAdapter(slicedCrewList));
+
+        findViewById(R.id.appbar).setVisibility(View.VISIBLE);
+        findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
+        findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
     }
 
     private static class ViewHolder {
@@ -208,10 +272,10 @@ public class TmdbActivity extends AppCompatActivity {
                         .build();
 
                 castResponse = client.newCall(castRequest).execute();
+
+                // Populate Cast
                 JSONObject castJSON = new JSONObject(castResponse.body().string());
-
                 JSONArray array = castJSON.getJSONArray("cast");
-
                 RealmList<JSONCast> cast = new RealmList<JSONCast>();
                 for(int i=0; i < array.length(); i++){
                     JSONObject movieJSON = array.getJSONObject(i);
@@ -219,11 +283,35 @@ public class TmdbActivity extends AppCompatActivity {
 
                     castMember.setCharacterName(movieJSON.get("character").toString());
                     castMember.setActorName(movieJSON.get("name").toString());
-                    castMember.setImagePath("https://image.tmdb.org/t/p/w185/" + movieJSON.get("profile_path").toString());
-
+                    if (!movieJSON.get("profile_path").toString().equals("null")){
+                        castMember.setImagePath("https://image.tmdb.org/t/p/w185/" + movieJSON.get("profile_path").toString());
+                    }
                     cast.add(castMember);
                 };
                 movie.setCast(cast);
+                Log.d("In Backgroud", "add cast");
+
+                // Populate Crew
+                Log.d("In Backgroud", "before crew array");
+
+                JSONArray crewArray = castJSON.getJSONArray("crew");
+                Log.d("In Backgroud", "after crew array");
+
+                RealmList<JSONCast> crew = new RealmList<>();
+                for(int i=0; i < crewArray.length(); i++){
+                    JSONObject movieJSON = crewArray.getJSONObject(i);
+                    JSONCast crewMember = new JSONCast();
+
+                    crewMember.setCharacterName(movieJSON.get("name").toString());
+                    crewMember.setActorName(movieJSON.get("job").toString());
+                    if (!movieJSON.get("profile_path").toString().equals("null")){
+                        crewMember.setImagePath("https://image.tmdb.org/t/p/w185/" + movieJSON.get("profile_path").toString());
+                    }
+
+                    crew.add(crewMember);
+                };
+                movie.setCrew(crew);
+
 
                 resp = movie;
             } catch (Exception t) {
@@ -239,7 +327,6 @@ public class TmdbActivity extends AppCompatActivity {
             //progressDialog.dismiss();
             Log.d("Popular movies On Post", result.getTitle());
             updateUI(result);
-
         }
 
         @Override

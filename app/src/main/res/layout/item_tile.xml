@@ -37,7 +37,6 @@
         android:layout_height="@dimen/tile_height"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/item_title"
         android:textColor="@color/white"
         android:textSize="@dimen/article_titles" />
 </RelativeLayout>

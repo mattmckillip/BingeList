@@ -161,7 +161,7 @@ public class BrowseMoviesFragment extends Fragment {
             String path = popularMovies.get(position).getBackdropURL();
 
             if (path != null) {
-                String imageUri = "https://image.tmdb.org/t/p/w300//" + path;
+                String imageUri = "https://image.tmdb.org/t/p/w780//" + path;
                 imageLoader.displayImage(imageUri, coverArt);
                 imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
                     @Override
