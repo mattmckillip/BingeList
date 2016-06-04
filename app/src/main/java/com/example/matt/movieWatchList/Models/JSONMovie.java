@@ -34,6 +34,9 @@ public class JSONMovie extends RealmObject {
     private RealmList<JSONCast> cast;
     private byte[] backdropBitmap;
     private RealmList<JSONCast> crew;
+    private boolean isWatched;
+    private boolean onWatchList;
+
 
     public JSONMovie() { }
 
@@ -61,6 +64,9 @@ public class JSONMovie extends RealmObject {
     public RealmList<JSONCast> getCast() { return cast; }
     public byte[] getBackdropBitmap() {return backdropBitmap; }
     public RealmList<JSONCast> getCrew() {return  crew; }
+    public boolean getOnWatchList() { return onWatchList; }
+    public boolean getIsWatched() { return isWatched; }
+
 
     public void setTitle(String title) {this.title = title; }
     public void setBackdropURL(String backdropURL) { this.backdropURL = backdropURL; }
@@ -84,5 +90,7 @@ public class JSONMovie extends RealmObject {
     public void setCast(RealmList<JSONCast> cast) { this.cast = cast; }
     public void setBackdropBitmap(byte[] backdropBitmap) { this.backdropBitmap = backdropBitmap; }
     public void setCrew(RealmList<JSONCast> crew) { this.crew = crew; }
+    public void setOnWatchList(boolean onWatchList) { this.onWatchList = onWatchList; }
+    public void setWatched(boolean isWatched) { this.isWatched = isWatched; }
 
 }

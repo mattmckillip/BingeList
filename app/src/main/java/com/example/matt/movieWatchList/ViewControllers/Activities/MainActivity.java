@@ -41,7 +41,9 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.ViewControllers.Fragments.BrowseMoviesFragment;
 import com.example.matt.movieWatchList.ViewControllers.Fragments.MovieWatchListFragment;
+import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,15 +66,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // Instantiate realms
         RealmConfiguration config1 = new RealmConfiguration.Builder(this)
                 .name("default")
-                .schemaVersion(5)
+                .schemaVersion(6)
                 .migration(new RealmMigration() {
                     @Override
                     public long execute(Realm realm, long version) {
-                        return 5;
+                        return 6;
                     }
                 })
                 .build();
@@ -157,8 +158,19 @@ public class MainActivity extends AppCompatActivity {
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         adapterViewPager = new Adapter(getSupportFragmentManager());
-        adapterViewPager.addFragment(new MovieWatchListFragment(), "Watch List");
-        adapterViewPager.addFragment(new MovieWatchListFragment(), "Watched");
+
+        Bundle watchedMoviesBundle = new Bundle();
+        watchedMoviesBundle.putInt("watched", 1);
+        MovieWatchListFragment watchedMovies = new MovieWatchListFragment();
+        watchedMovies.setArguments(watchedMoviesBundle);
+
+        Bundle watchListMoviesBundle = new Bundle();
+        watchListMoviesBundle.putInt("watched", 0);
+        MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
+        watchListMovies.setArguments(watchListMoviesBundle);
+
+        adapterViewPager.addFragment(watchListMovies, "Watch List");
+        adapterViewPager.addFragment(watchedMovies, "Watched");
         viewPager.setAdapter(adapterViewPager);
     }
 

@@ -30,5 +30,4 @@ dependencies {
     compile 'com.android.support:palette-v7:+'
     compile 'com.ms-square:expandableTextView:0.1.4'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-
 }

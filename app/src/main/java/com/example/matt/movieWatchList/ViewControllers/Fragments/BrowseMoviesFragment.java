@@ -16,14 +16,17 @@
 
 package com.example.matt.movieWatchList.ViewControllers.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -80,9 +83,10 @@ public class BrowseMoviesFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        adapter = new ContentAdapter(popularMovies);
+        adapter = new ContentAdapter(popularMovies, getActivity());
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new PreCachingLayoutManager(getActivity()));
+        RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(castLayoutManager);
         this.recyclerView = recyclerView;
         return recyclerView;
     }
@@ -112,25 +116,6 @@ public class BrowseMoviesFragment extends Fragment {
                             Snackbar.LENGTH_LONG).show();
                 }
             });
-
-            ImageButton favoriteImageButton =
-                    (ImageButton) itemView.findViewById(R.id.favorite_button);
-            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Added to Favorite",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
-
-            ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-            shareImageButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Snackbar.make(v, "Share article",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
         }
     }
 
@@ -139,8 +124,12 @@ public class BrowseMoviesFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         RealmList<JSONMovie> popularMovies;
-        public ContentAdapter(RealmList<JSONMovie> movieList) {
+        Activity activity;
+
+        public ContentAdapter(RealmList<JSONMovie> movieList, Activity activity) {
+
             popularMovies = movieList;
+            this.activity = activity;
         }
 
         @Override
@@ -150,9 +139,10 @@ public class BrowseMoviesFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, final int position) {
-            TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
+            final TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
             TextView overview = (TextView) holder.itemView.findViewById(R.id.card_text);
             ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
+            title.setVisibility(View.GONE);
 
             //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
             ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
@@ -161,16 +151,19 @@ public class BrowseMoviesFragment extends Fragment {
             String path = popularMovies.get(position).getBackdropURL();
 
             if (path != null) {
-                String imageUri = "https://image.tmdb.org/t/p/w780//" + path;
+                String imageUri = "https://image.tmdb.org/t/p/w500//" + path;
                 imageLoader.displayImage(imageUri, coverArt);
                 imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        title.setVisibility(View.VISIBLE);
                     }
                 });
             }
 
             title.setText(popularMovies.get(position).getTitle());
+            Typeface type = Typeface.createFromAsset(this.activity.getAssets(),"fonts/Lobster-Regular.ttf");
+            title.setTypeface(type);
             overview.setText(popularMovies.get(position).getOverview());
         }
 
@@ -322,7 +315,7 @@ public class BrowseMoviesFragment extends Fragment {
             // execution of result of Long time consuming operation
             progressDialog.dismiss();
             popularMovies = result;
-            recyclerView.setAdapter( new ContentAdapter(popularMovies));
+            recyclerView.setAdapter( new ContentAdapter(popularMovies, getActivity()));
         }
 
 

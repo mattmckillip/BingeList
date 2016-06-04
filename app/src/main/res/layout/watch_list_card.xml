@@ -63,34 +63,24 @@
             android:textSize="@dimen/article_subheading" />
 
         <Button
-            android:id="@+id/action_button"
+            android:id="@+id/remove_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_text"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="?attr/colorAccent"
+            android:layout_alignParentRight="true"
+            android:text="Remove to Watchlist" />
+
+        <Button
+            android:id="@+id/watch_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
             android:textColor="?attr/colorPrimary"
-            android:text="Add to Watchlist" />
+            android:layout_alignParentLeft="true"
+            android:text="Watch!" />
 
-        <!--<ImageButton
-            android:id="@+id/share_button"
-            android:layout_width="@dimen/cards_button_width"
-            android:layout_height="@dimen/cards_button_height"
-            android:layout_marginRight="@dimen/md_keylines"
-            android:src="@drawable/ic_share_black_24dp"
-            android:layout_below="@+id/card_text"
-            android:layout_alignParentRight="true"
-            style="?android:attr/borderlessButtonStyle"
-            android:tint="@color/button_grey" />
-
-        <ImageButton
-            android:id="@+id/favorite_button"
-            android:layout_width="@dimen/cards_button_width"
-            android:layout_height="@dimen/cards_button_height"
-            android:layout_marginRight="@dimen/md_keylines"
-            android:src="@drawable/ic_favorite_black_24dp"
-            android:layout_below="@+id/card_text"
-            android:layout_toLeftOf="@id/share_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:tint="@color/button_grey" />-->
     </RelativeLayout>
 </android.support.v7.widget.CardView>

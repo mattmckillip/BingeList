@@ -87,8 +87,8 @@
             android:paddingTop="@dimen/md_keylines">
 
             <RatingBar
-                style="?android:attr/ratingBarStyleIndicator"
                 android:isIndicator="true"
+                style="?android:attr/ratingBarStyleSmall"
                 android:id="@+id/rating"
                 android:rating="0"
                 android:stepSize="0.1"
@@ -96,14 +96,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:paddingTop="@dimen/md_keylines"
-                />
+                android:gravity="center_horizontal" />
 
             <TextView
-                android:id="@+id/poularity"
-                android:paddingLeft="@dimen/md_keylines"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:id="@+id/runtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/md_keylines"
+                android:layout_marginBottom="@dimen/md_keylines" />
 
+            <TextView
+                android:id="@+id/release_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/md_keylines"
+                android:layout_marginBottom="@dimen/md_keylines" />
 
             <TextView
                 android:id="@+id/plot_title"

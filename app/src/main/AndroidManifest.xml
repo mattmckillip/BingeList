@@ -24,6 +24,14 @@
             android:parentActivityName=".ViewControllers.Activities.BrowseActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ViewControllers.Activities.BrowseActivity" />
+        </activity>
+
+        <activity
+            android:name=".ViewControllers.Activities.WatchListDetailActivity"
+            android:parentActivityName=".ViewControllers.Activities.BrowseActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ViewControllers.Activities.MainActivity" />
         </activity>
 

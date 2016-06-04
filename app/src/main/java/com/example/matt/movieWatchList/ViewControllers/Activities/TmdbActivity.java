@@ -1,6 +1,5 @@
 package com.example.matt.movieWatchList.ViewControllers.Activities;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,9 +36,9 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 
 import io.realm.Realm;
@@ -56,7 +54,7 @@ import okhttp3.Response;
 public class TmdbActivity extends AppCompatActivity {
     Integer movieID;
     Bitmap thisBitmap;
-    JSONMovie movie;
+    private JSONMovie movie;
     private RealmList<JSONCast> castList = new RealmList<>();
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
@@ -73,7 +71,6 @@ public class TmdbActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         // Cast recycler view
         castRecyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
@@ -94,10 +91,10 @@ public class TmdbActivity extends AppCompatActivity {
         findViewById(R.id.appbar).setVisibility(View.GONE);
         findViewById(R.id.collapsing_toolbar).setVisibility(View.GONE);
         findViewById(R.id.scroll_view).setVisibility(View.GONE);
+        findViewById(R.id.fab).setVisibility(View.GONE);
 
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
-
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -114,8 +111,12 @@ public class TmdbActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
+        findViewById(R.id.fab).setVisibility(View.GONE);
     }
 
+    private void addByteArray(byte[] image) {
+        movie.setBackdropBitmap(image);
+    }
 
     private void updateUI(JSONMovie movie){
         this.movie = movie;
@@ -126,7 +127,6 @@ public class TmdbActivity extends AppCompatActivity {
         // Set title of Detail page
         collapsingToolbar.setTitle(movie.getTitle());
         final ImageView image = (ImageView) findViewById(R.id.image);
-
         final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
         try {
             final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
@@ -156,6 +156,12 @@ public class TmdbActivity extends AppCompatActivity {
                 Log.d("In call back", "loading image");
 
                 if (thisBitmap != null && !thisBitmap.isRecycled()) {
+                    // save image as byte array
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    thisBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                    addByteArray(stream.toByteArray());
+
                     int defaultColor = 0x000000;
                     Palette palette = Palette.from(thisBitmap).generate();
                     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -165,8 +171,6 @@ public class TmdbActivity extends AppCompatActivity {
                     TextView castTitle = (TextView) findViewById(R.id.cast_title);
                     TextView crewTitle = (TextView) findViewById(R.id.crew_title);
 
-
-
                     int vibrantColor = palette.getVibrantColor(defaultColor);
                     Log.d("vibrant color", Integer.toString(vibrantColor));
 
@@ -174,7 +178,6 @@ public class TmdbActivity extends AppCompatActivity {
                         plotTitle.setTextColor(vibrantColor);
                         castTitle.setTextColor(vibrantColor);
                         crewTitle.setTextColor(vibrantColor);
-
 
                         LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
                         starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
@@ -190,7 +193,11 @@ public class TmdbActivity extends AppCompatActivity {
                         Log.d("Palette", "Could not gather vibrant color");
                     }
 
-
+                    findViewById(R.id.appbar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
+                    findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
+                    findViewById(R.id.fab).setVisibility(View.VISIBLE);
+                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
                 }
                 else {
                     Log.d("Pallete", "Bitmap Null");
@@ -200,10 +207,9 @@ public class TmdbActivity extends AppCompatActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
         ExpandableTextView plot = (ExpandableTextView) findViewById(R.id.expand_text_view);
-        TextView popularity = (TextView) layout.findViewById(R.id.poularity);
         RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
-
-
+        TextView runtime = (TextView) layout.findViewById(R.id.runtime);
+        TextView releaseDate = (TextView) layout.findViewById(R.id.release_date);
 
 
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
@@ -213,8 +219,9 @@ public class TmdbActivity extends AppCompatActivity {
             }
         });
         plot.setText(movie.getOverview());
-        popularity.setText("Popularity: " + Double.toString(Math.ceil(movie.getPopularity()))+"/100");
         stars.setRating(movie.getVote_average().floatValue());
+        runtime.setText(Integer.toString(movie.getRuntime()));
+        releaseDate.setText(movie.getReleaseDate());
 
 
         RealmList<JSONCast> slicedCastList = new RealmList<>();
@@ -227,15 +234,8 @@ public class TmdbActivity extends AppCompatActivity {
         // Populate cast and crew recycler views
         castRecyclerView.setAdapter( new CastAdapter(slicedCastList));
         crewRecyclerView.setAdapter( new CastAdapter(slicedCrewList));
-
-        findViewById(R.id.appbar).setVisibility(View.VISIBLE);
-        findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
-        findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
-
-        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-    }
-
-    private static class ViewHolder {
+        castRecyclerView.setFocusable(false);
+        crewRecyclerView.setFocusable(false);
     }
 
     private class AsyncTaskRunner extends AsyncTask<String, String, JSONMovie> {
@@ -258,7 +258,7 @@ public class TmdbActivity extends AppCompatActivity {
                 movieResponse = client.newCall(movieRequest).execute();
                 JSONMovie movie = new JSONMovie();
                 JSONObject reader = new JSONObject(movieResponse.body().string());
-                Log.d("reader", reader.toString());
+
                 movie.setTitle(reader.get("title").toString());
                 movie.setTagline(reader.get("tagline").toString());
                 movie.setOverview(reader.get("overview").toString());
@@ -266,6 +266,9 @@ public class TmdbActivity extends AppCompatActivity {
                 movie.setPopularity((Double)reader.get("popularity"));
                 movie.setVote_average((Double) reader.get("vote_average"));
                 movie.setPosterURL(reader.get("poster_path").toString());
+                movie.setId((Integer) reader.get("id"));
+                movie.setReleaseDate(reader.get("release_date").toString());
+                movie.setRuntime((Integer) reader.get("runtime"));
 
                 Request castRequest = new Request.Builder()
                         .url("https://api.themoviedb.org/3/movie/" + movieID + "/credits?api_key=788bf2d4d9f5db03979efed58cbf6713")
@@ -277,7 +280,8 @@ public class TmdbActivity extends AppCompatActivity {
                 JSONObject castJSON = new JSONObject(castResponse.body().string());
                 JSONArray array = castJSON.getJSONArray("cast");
                 RealmList<JSONCast> cast = new RealmList<JSONCast>();
-                for(int i=0; i < array.length(); i++){
+                Integer numberOfCast = 3;
+                for(int i=0; i < numberOfCast; i++){
                     JSONObject movieJSON = array.getJSONObject(i);
                     JSONCast castMember = new JSONCast();
 
@@ -298,7 +302,7 @@ public class TmdbActivity extends AppCompatActivity {
                 Log.d("In Backgroud", "after crew array");
 
                 RealmList<JSONCast> crew = new RealmList<>();
-                for(int i=0; i < crewArray.length(); i++){
+                for(int i=0; i < numberOfCast; i++){
                     JSONObject movieJSON = crewArray.getJSONObject(i);
                     JSONCast crewMember = new JSONCast();
 

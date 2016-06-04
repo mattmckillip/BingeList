@@ -10,6 +10,7 @@ public class JSONCast extends RealmObject {
     private String actorName;
     private String imagePath;
     private Integer id;
+    private byte[] imageArray;
 
     public void setCharacterName(String characterName) { this.characterName = characterName;}
     public void setActorName(String actorName) { this.actorName = actorName; }
@@ -17,6 +18,7 @@ public class JSONCast extends RealmObject {
     public void setId(Integer id){
         this.id = id;
     }
+    public void setImageArray(byte[] imageArray) { this.imageArray = imageArray; }
 
     public String getCharacterName() { return characterName; }
     public String getActorName() { return actorName; }
@@ -24,5 +26,6 @@ public class JSONCast extends RealmObject {
     public Integer getId() {
         return id;
     }
+    public byte[] getImageArray() { return imageArray; }
 
 }
