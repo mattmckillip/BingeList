@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,7 +32,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,11 +39,7 @@ import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.ViewControllers.Activities.TmdbActivity;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.uitls.PreCachingLayoutManager;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,7 +57,6 @@ public class BrowseMoviesFragment extends Fragment {
     private RealmList<JSONMovie> popularMovies;
     private RecyclerView recyclerView;
     private ContentAdapter adapter;
-    private ImageLoaderConfiguration imageLoaderConfig;
 
     private Integer movieType;
 
@@ -71,11 +64,7 @@ public class BrowseMoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         movieType = getArguments().getInt("movieType");
-
         popularMovies = new RealmList<JSONMovie>();
-        // Create global configuration and initialize ImageLoader with this config
-        imageLoaderConfig = new ImageLoaderConfiguration.Builder(getContext()).build();
-        ImageLoader.getInstance().init(imageLoaderConfig);
 
         AsyncTaskRunner runner = new AsyncTaskRunner();
         runner.execute();
@@ -101,6 +90,8 @@ public class BrowseMoviesFragment extends Fragment {
                 public void onClick(View v) {
                     Context context = v.getContext();
                     JSONMovie movie = movieList.get(getAdapterPosition());
+                    //Intent intent = new Intent(context, CollapsingToolbarActivity.class);
+
                     Intent intent = new Intent(context, TmdbActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
@@ -144,21 +135,12 @@ public class BrowseMoviesFragment extends Fragment {
             ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
             title.setVisibility(View.GONE);
 
-            //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
-            ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-            // Load image, decode it to Bitmap and display Bitmap in ImageView (or any other view
-            //  which implements ImageAware interface)
             String path = popularMovies.get(position).getBackdropURL();
 
             if (path != null) {
-                String imageUri = "https://image.tmdb.org/t/p/w500//" + path;
-                imageLoader.displayImage(imageUri, coverArt);
-                imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        title.setVisibility(View.VISIBLE);
-                    }
-                });
+                Picasso.with(activity.getApplicationContext()).load(path).into(coverArt);
+                title.setVisibility(View.VISIBLE);
+
             }
 
             title.setText(popularMovies.get(position).getTitle());
@@ -204,7 +186,7 @@ public class BrowseMoviesFragment extends Fragment {
 
                         movie.setTitle(movieJSON.get("title").toString());
                         movie.setOverview(movieJSON.get("overview").toString());
-                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setBackdropURL("https://image.tmdb.org/t/p/w500//" + movieJSON.get("backdrop_path").toString());
                         movie.setId((Integer) movieJSON.get("id"));
 
                         movieList.add(movie);
@@ -231,7 +213,7 @@ public class BrowseMoviesFragment extends Fragment {
 
                         movie.setTitle(movieJSON.get("title").toString());
                         movie.setOverview(movieJSON.get("overview").toString());
-                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setBackdropURL("https://image.tmdb.org/t/p/w500//" + movieJSON.get("backdrop_path").toString());
                         movie.setId((Integer) movieJSON.get("id"));
 
                         movieList.add(movie);
@@ -260,7 +242,7 @@ public class BrowseMoviesFragment extends Fragment {
 
                         movie.setTitle(movieJSON.get("title").toString());
                         movie.setOverview(movieJSON.get("overview").toString());
-                        movie.setBackdropURL(movieJSON.get("backdrop_path").toString());
+                        movie.setBackdropURL("https://image.tmdb.org/t/p/w500//" + movieJSON.get("backdrop_path").toString());
                         movie.setId((Integer) movieJSON.get("id"));
 
                         movieList.add(movie);

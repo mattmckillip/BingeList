@@ -1,5 +1,6 @@
 package com.example.matt.movieWatchList.ViewControllers.Adapters;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +13,7 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.JSONCast;
 import com.example.matt.movieWatchList.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import io.realm.RealmList;
 
@@ -27,9 +23,11 @@ import io.realm.RealmList;
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHolder> {
 
         private RealmList<JSONCast> contactList;
+        private Context context;
 
-        public CastAdapter( RealmList<JSONCast> contactList) {
+        public CastAdapter( RealmList<JSONCast> contactList, Context context) {
             this.contactList = contactList;
+            this.context = context;
         }
 
         @Override
@@ -43,30 +41,10 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
             contactViewHolder.characterTextView.setText(castMember.getCharacterName());
             contactViewHolder.actorTextView.setText(castMember.getActorName());
             Log.d("Cast Adapter", "Loading Image");
-            ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-            DisplayImageOptions options = new DisplayImageOptions.Builder().showImageForEmptyUri(R.drawable.unkown_person).build();
-            imageLoader.displayImage(castMember.getImagePath(), contactViewHolder.actorImageView, options, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
 
-                }
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+            Picasso.with(context).load(castMember.getImagePath()).into(contactViewHolder.actorImageView);
+            Log.d("Cast Adapter", "Done Loading Image");
 
-                }
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-
-                }
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            }, new ImageLoadingProgressListener() {
-                @Override
-                public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                }
-            });
         }
 
         @Override

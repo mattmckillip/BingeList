@@ -173,8 +173,10 @@ public class MovieWatchListFragment extends Fragment {
             Bitmap bmp;
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inMutable = true;
-            bmp = BitmapFactory.decodeByteArray(movieList.get(position).getBackdropBitmap(), 0, movieList.get(position).getBackdropBitmap().length, options);
-            coverArt.setImageBitmap(bmp);
+            if (movieList.get(position).getBackdropBitmap() != null) {
+                bmp = BitmapFactory.decodeByteArray(movieList.get(position).getBackdropBitmap(), 0, movieList.get(position).getBackdropBitmap().length, options);
+                coverArt.setImageBitmap(bmp);
+            }
 
             title.setText(movieList.get(position).getTitle());
 

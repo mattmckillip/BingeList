@@ -64,7 +64,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
 
         // Cast recycler view
         castRecyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
-        castAdapter = new CastAdapter(castList);
+        castAdapter = new CastAdapter(castList, getApplicationContext());
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         castRecyclerView.setLayoutManager(castLayoutManager);
         castRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -72,7 +72,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
 
         // Cast recycler view
         crewRecyclerView = (RecyclerView) findViewById(R.id.crew_recycler_view);
-        crewAdapter = new CastAdapter(crewList);
+        crewAdapter = new CastAdapter(crewList, getApplicationContext());
         RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(getApplicationContext());
         crewRecyclerView.setLayoutManager(crewLayoutManager);
         crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -90,7 +90,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
 
         // Execute the query:
         this.movie = query.equalTo("id",movieID).findFirst();
-        updateUI();
+
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -110,6 +110,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.fab).setVisibility(View.GONE);
+        updateUI();
     }
 
     private void updateUI(){
@@ -136,8 +137,15 @@ public class WatchListDetailActivity extends AppCompatActivity {
         Bitmap thisBitmap;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
-        thisBitmap = BitmapFactory.decodeByteArray(movie.getBackdropBitmap(), 0, movie.getBackdropBitmap().length, options);
-        image.setImageBitmap(thisBitmap);
+
+        if (movie.getBackdropBitmap() != null){
+            thisBitmap = BitmapFactory.decodeByteArray(movie.getBackdropBitmap(), 0, movie.getBackdropBitmap().length, options);
+            image.setImageBitmap(thisBitmap);
+        }
+        else {
+            thisBitmap = null;
+        }
+
 
         if (thisBitmap != null) {
             // save image as byte array

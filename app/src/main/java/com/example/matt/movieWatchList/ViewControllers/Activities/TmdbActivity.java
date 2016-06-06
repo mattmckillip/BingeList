@@ -5,6 +5,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,13 +32,13 @@ import com.example.matt.movieWatchList.Models.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.ViewControllers.Adapters.CastAdapter;
+import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
@@ -74,7 +76,7 @@ public class TmdbActivity extends AppCompatActivity {
 
         // Cast recycler view
         castRecyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
-        castAdapter = new CastAdapter(castList);
+        castAdapter = new CastAdapter(castList, getApplicationContext());
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         castRecyclerView.setLayoutManager(castLayoutManager);
         castRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -82,7 +84,7 @@ public class TmdbActivity extends AppCompatActivity {
 
         // Cast recycler view
         crewRecyclerView = (RecyclerView) findViewById(R.id.crew_recycler_view);
-        crewAdapter = new CastAdapter(crewList);
+        crewAdapter = new CastAdapter(crewList, getApplicationContext());
         RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(getApplicationContext());
         crewRecyclerView.setLayoutManager(crewLayoutManager);
         crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -93,8 +95,6 @@ public class TmdbActivity extends AppCompatActivity {
         findViewById(R.id.scroll_view).setVisibility(View.GONE);
         findViewById(R.id.fab).setVisibility(View.GONE);
 
-        AsyncTaskRunner runner = new AsyncTaskRunner();
-        runner.execute();
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -112,6 +112,9 @@ public class TmdbActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.fab).setVisibility(View.GONE);
+
+        AsyncTaskRunner runner = new AsyncTaskRunner();
+        runner.execute();
     }
 
     private void addByteArray(byte[] image) {
@@ -119,14 +122,18 @@ public class TmdbActivity extends AppCompatActivity {
     }
 
     private void updateUI(JSONMovie movie){
+        Log.d("Update UI", "1");
+
         this.movie = movie;
         // Set Collapsing Toolbar layout to the screen
-        CollapsingToolbarLayout collapsingToolbar =
+        final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         // Set title of Detail page
         collapsingToolbar.setTitle(movie.getTitle());
-        final ImageView image = (ImageView) findViewById(R.id.image);
+        Log.d("Update UI", "2");
+
+        final ImageView image = (ImageView) findViewById(R.id.backdrop);
         final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
         try {
             final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
@@ -139,71 +146,93 @@ public class TmdbActivity extends AppCompatActivity {
             ((TextPaint) tpf.get(object)).setTypeface(tf);
         } catch (Exception ignored) {
         }
-
-        //Bitmap bmp = BitmapFactory.decodeByteArray(movieList.get(position).getImage(), 0, movieList.get(position).getImage().length);
-        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-        // Load image, decode it to Bitmap and display Bitmap in ImageView (or any other view
-        //  which implements ImageAware interface)
-        String imageUri = "https://image.tmdb.org/t/p/w780//" + movie.getBackdropURL();
-
-        imageLoader.displayImage(imageUri, image);
-        // Load image, decode it to Bitmap and return Bitmap to callback
-        imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
+        Log.d("Update UI", "3");
+        Target target = new Target() {
             @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // Do whatever you want with Bitmap
-                thisBitmap = loadedImage;
-                Log.d("In call back", "loading image");
-
-                if (thisBitmap != null && !thisBitmap.isRecycled()) {
-                    // save image as byte array
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    thisBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                    addByteArray(stream.toByteArray());
-
-                    int defaultColor = 0x000000;
-                    Palette palette = Palette.from(thisBitmap).generate();
-                    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                    CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-                    RatingBar stars = (RatingBar) findViewById(R.id.rating);
-                    TextView plotTitle = (TextView) findViewById(R.id.plot_title);
-                    TextView castTitle = (TextView) findViewById(R.id.cast_title);
-                    TextView crewTitle = (TextView) findViewById(R.id.crew_title);
-
-                    int vibrantColor = palette.getVibrantColor(defaultColor);
-                    Log.d("vibrant color", Integer.toString(vibrantColor));
-
-                    if (vibrantColor != 0){
-                        plotTitle.setTextColor(vibrantColor);
-                        castTitle.setTextColor(vibrantColor);
-                        crewTitle.setTextColor(vibrantColor);
-
-                        LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
-                        starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
-                        starProgressDrawable.getDrawable(1).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
-
+            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
+                    public void onGenerated(Palette palette) {
+                        image.setImageBitmap(bitmap);
+                        int defaultColor = 0x000000;
+                        int vibrantColor = palette.getVibrantColor(defaultColor);
                         collapsingToolbar.setBackgroundColor(vibrantColor);
                         collapsingToolbar.setContentScrimColor(vibrantColor);
                         collapsingToolbar.setStatusBarScrimColor(vibrantColor);
+                    }
+                });
+            }
 
-                        fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
 
-                    } else {
-                        Log.d("Palette", "Could not gather vibrant color");
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+
+        Picasso.with(this)
+                .load(movie.getBackdropURL())
+                .fit().centerCrop()
+                .transform(PaletteTransformation.instance())
+                .into(image, new PaletteTransformation.PaletteCallback(image) {
+                    @Override public void onSuccess(Palette palette) {
+                        Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap(); // Ew!
+
+                        findViewById(R.id.appbar).setVisibility(View.VISIBLE);
+                        findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
+                        findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
+                        findViewById(R.id.fab).setVisibility(View.VISIBLE);
+                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+
+                        // TODO apply palette to text views, backgrounds, etc.
+                        Log.d("Picasso", "pallete");
+
+                        int defaultColor = 0x000000;
+                        int vibrantColor = palette.getVibrantColor(defaultColor);
+
+                        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+                        RatingBar stars = (RatingBar) findViewById(R.id.rating);
+                        TextView plotTitle = (TextView) findViewById(R.id.plot_title);
+                        TextView castTitle = (TextView) findViewById(R.id.cast_title);
+                        TextView crewTitle = (TextView) findViewById(R.id.crew_title);
+
+                        Log.d("vibrant color", Integer.toString(vibrantColor));
+
+                        if (vibrantColor != 0){
+                            plotTitle.setTextColor(vibrantColor);
+                            castTitle.setTextColor(vibrantColor);
+                            crewTitle.setTextColor(vibrantColor);
+
+                            LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
+                            starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
+                            starProgressDrawable.getDrawable(1).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
+
+                            collapsingToolbar.setBackgroundColor(vibrantColor);
+                            collapsingToolbar.setContentScrimColor(vibrantColor);
+                            collapsingToolbar.setStatusBarScrimColor(vibrantColor);
+
+                            fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+
+                        } else {
+                            Log.d("Palette", "Could not gather vibrant color");
+                        }
+
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                        addByteArray(stream.toByteArray());
                     }
 
-                    findViewById(R.id.appbar).setVisibility(View.VISIBLE);
-                    findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
-                    findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
-                    findViewById(R.id.fab).setVisibility(View.VISIBLE);
-                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                }
-                else {
-                    Log.d("Pallete", "Bitmap Null");
-                }
-            }
-        });
+                    @Override
+                    public void onError() {
+                        //TODO
+                    }
+                });
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
         ExpandableTextView plot = (ExpandableTextView) findViewById(R.id.expand_text_view);
@@ -218,24 +247,20 @@ public class TmdbActivity extends AppCompatActivity {
 
             }
         });
+
         plot.setText(movie.getOverview());
         stars.setRating(movie.getVote_average().floatValue());
         runtime.setText(Integer.toString(movie.getRuntime()));
         releaseDate.setText(movie.getReleaseDate());
 
 
-        RealmList<JSONCast> slicedCastList = new RealmList<>();
-        RealmList<JSONCast> slicedCrewList = new RealmList<>();
-
-        for (int i=0; i < 3; i++){
-            slicedCastList.add(movie.getCast().get(i));
-            slicedCrewList.add(movie.getCrew().get(i));
-        }
         // Populate cast and crew recycler views
-        castRecyclerView.setAdapter( new CastAdapter(slicedCastList));
-        crewRecyclerView.setAdapter( new CastAdapter(slicedCrewList));
+        castRecyclerView.setAdapter( new CastAdapter(movie.getCast(), getApplicationContext()));
+        crewRecyclerView.setAdapter( new CastAdapter(movie.getCrew(), getApplicationContext()));
         castRecyclerView.setFocusable(false);
         crewRecyclerView.setFocusable(false);
+
+        findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
     }
 
     private class AsyncTaskRunner extends AsyncTask<String, String, JSONMovie> {
@@ -262,7 +287,7 @@ public class TmdbActivity extends AppCompatActivity {
                 movie.setTitle(reader.get("title").toString());
                 movie.setTagline(reader.get("tagline").toString());
                 movie.setOverview(reader.get("overview").toString());
-                movie.setBackdropURL(reader.get("backdrop_path").toString());
+                movie.setBackdropURL("https://image.tmdb.org/t/p/w780//" + reader.get("backdrop_path").toString());
                 movie.setPopularity((Double)reader.get("popularity"));
                 movie.setVote_average((Double) reader.get("vote_average"));
                 movie.setPosterURL(reader.get("poster_path").toString());
