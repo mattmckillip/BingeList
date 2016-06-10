@@ -70,7 +70,10 @@
             style="?android:attr/borderlessButtonStyle"
             android:textColor="?attr/colorAccent"
             android:layout_alignParentRight="true"
-            android:text="Remove from Watchlist" />
+            android:text="Remove"
+            android:drawableLeft="@drawable/ic_remove_from_queue_black_24dp"
+            android:drawableTint="?attr/colorAccent"
+            android:drawablePadding="6dp"/>
 
         <Button
             android:id="@+id/watch_button"
@@ -80,7 +83,10 @@
             style="?android:attr/borderlessButtonStyle"
             android:textColor="?attr/colorPrimary"
             android:layout_alignParentLeft="true"
-            android:text="Watch!" />
+            android:text="Watch!"
+            android:drawableLeft="@drawable/ic_add_to_queue_black_24dp"
+            android:drawableTint="?attr/colorPrimary"
+            android:drawablePadding="6dp"/>
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

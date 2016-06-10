@@ -9,6 +9,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.Cast;
@@ -38,8 +38,6 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.Adapters.CastAdapter;
 import com.example.matt.movieWatchList.uitls.MovieAPI;
 import com.example.matt.movieWatchList.uitls.PaletteTransformation;
-import com.getbase.floatingactionbutton.FloatingActionButton;
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
@@ -77,8 +75,8 @@ public class TmdbActivity extends AppCompatActivity {
 
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
 
-    /*@BindView(R.id.fab_detail)
-    FloatingActionButton fab_detail;*/
+    /*@BindView(R.id.fab)
+    FloatingActionButton fab;*/
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -128,6 +126,8 @@ public class TmdbActivity extends AppCompatActivity {
     @BindView(R.id.expand_text_view)
     ExpandableTextView plot;
 
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,11 +137,6 @@ public class TmdbActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         movieID = getIntent().getIntExtra("movieId",0);
-
-
-        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
-        actionC.setTitle("Hide/Show Action above");
-
 
         // Attach the Slidr Mechanism to this activity
         Slidr.attach(this);
@@ -168,10 +163,9 @@ public class TmdbActivity extends AppCompatActivity {
         appbar.setVisibility(View.GONE);
         collapsing_toolbar.setVisibility(View.GONE);
         scroll_view.setVisibility(View.GONE);
-        //fab_detail.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
 
-        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        /*fab_detail.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
@@ -186,7 +180,6 @@ public class TmdbActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
-        fab_detail.setVisibility(View.GONE);*/
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/movie/")
@@ -236,7 +229,6 @@ public class TmdbActivity extends AppCompatActivity {
                             Log.d("GetCredits()", "Callback Failure");
                         }
                     });
-                    //TODOgenre
                 }
 
                 @Override
@@ -287,8 +279,9 @@ public class TmdbActivity extends AppCompatActivity {
                         appbar.setVisibility(View.VISIBLE);
                         collapsing_toolbar.setVisibility(View.VISIBLE);
                         scroll_view.setVisibility(View.VISIBLE);
-                        //fab_detail.setVisibility(View.VISIBLE);
+                        fab.setVisibility(View.VISIBLE);
                         loadingPanel.setVisibility(View.GONE);
+
 
                         int defaultColor = 0x000000;
                         int vibrantColor = palette.getVibrantColor(defaultColor);
@@ -307,7 +300,8 @@ public class TmdbActivity extends AppCompatActivity {
                             collapsingToolbar.setContentScrimColor(vibrantColor);
                             collapsingToolbar.setStatusBarScrimColor(vibrantColor);
 
-                            //fab_detail.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+                            fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+
 
                         } else {
                             Log.d("Palette", "Could not gather vibrant color");

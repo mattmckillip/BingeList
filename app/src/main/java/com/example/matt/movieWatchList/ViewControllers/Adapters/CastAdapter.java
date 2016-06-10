@@ -46,7 +46,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
             Picasso.with(context)
                     .load(castMember.getImagePath())
                     //.placeholder(R.drawable.unkown_person)
-                    .error(R.drawable.unkown_person)
+                    .error(R.drawable.ic_person_black_24dp)
                     .into(contactViewHolder.actorImageView);
 
 

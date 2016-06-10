@@ -368,7 +368,7 @@ public class BrowseMoviesFragment extends Fragment {
             // Build the query looking at all users:
             Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
-            RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
+            /*RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
             RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).findAll();
             for (JSONMovie movieInList : watchListMovies) {
                 if(movieInList != null && popularMovies.get(position) != null && movieInList.getId() != null) {
@@ -376,17 +376,20 @@ public class BrowseMoviesFragment extends Fragment {
                         holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
                     }
                 }
-            }
+            }*/
             RealmQuery<JSONMovie> watchedQuery = uiRealm.where(JSONMovie.class);
-            RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).findAll();
-            Log.d("Watched Movies", Integer.toString(watchedMovies.size()));
-            for (JSONMovie movieInList : watchedMovies) {
-                if(movieInList != null && popularMovies.get(position) != null && movieInList.getId() != null) {
-                    if (movieInList.getId().equals(popularMovies.get(position).getId())){
-                        holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
-                    }
-                }
+            RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id",popularMovies.get(position).getId()).findAll();
+            if (watchedMovies.size() == 1) {
+                holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
             }
+
+            RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
+            RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id",popularMovies.get(position).getId()).findAll();
+
+            if (watchListMovies.size() == 1) {
+                holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
+            }
+
         }
 
         @Override

@@ -108,7 +108,10 @@ public class SearchActivity extends AppCompatActivity {
         crewRecyclerView.setLayoutManager(crewLayoutManager);
         crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
         crewRecyclerView.setAdapter(crewAdapter);*/
-
+        TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        Typeface font = Typeface.
+                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
+        navHeaderText.setTypeface(font);
     }
 
     /*

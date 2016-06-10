@@ -93,6 +93,13 @@ public class MainActivity extends AppCompatActivity {
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+        try {
+            tabs.getTabAt(0).setIcon(R.drawable.ic_dvr_white_24dp);
+            tabs.getTabAt(1).setIcon(R.drawable.ic_playlist_add_check_white_24dp);
+        } catch(NullPointerException npe) {
+            //pass
+        }
+
 
         // Create Navigation drawer and inlfate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -179,8 +186,8 @@ public class MainActivity extends AppCompatActivity {
         MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
-        adapterViewPager.addFragment(watchListMovies, "Watch List");
-        adapterViewPager.addFragment(watchedMovies, "Watched");
+        adapterViewPager.addFragment(watchListMovies, " Watch List");
+        adapterViewPager.addFragment(watchedMovies, " Watched");
         viewPager.setAdapter(adapterViewPager);
     }
 
@@ -217,16 +224,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        MenuItem sortMenuItem = menu.findItem(R.id.action_sort);
+
+
+        /*MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                /*UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
+                UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
                 if( ! searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
-                myActionMenuItem.collapseActionView();*/
+                myActionMenuItem.collapseActionView();
                 return false;
             }
             @Override
@@ -234,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
                 return false;
             }
-        });
+        });*/
         return true;
     }
 

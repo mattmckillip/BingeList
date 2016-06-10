@@ -18,6 +18,7 @@ package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -26,12 +27,18 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +59,7 @@ public class BrowseActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     Adapter adapterViewPager;
     private DrawerLayout mDrawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +90,10 @@ public class BrowseActivity extends AppCompatActivity {
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+        tabs.getTabAt(0).setIcon(R.drawable.ic_theaters_white_24dp);
+        tabs.getTabAt(1).setIcon(R.drawable.ic_trending_up_white_24dp);
+        tabs.getTabAt(2).setIcon(R.drawable.ic_thumb_up_white_24dp);
+
 
         // Create Navigation drawer and inlfate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -137,6 +149,11 @@ public class BrowseActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
+
+        TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        Typeface font = Typeface.
+                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
+        navHeaderText.setTypeface(font);
     }
 
     // Add Fragments to Tabs
@@ -160,30 +177,11 @@ public class BrowseActivity extends AppCompatActivity {
         topRatedMovies.setArguments(topRatedBundle);
 
 
-        adapterViewPager.addFragment(nowShowingMovies, "Now Showing");
-        adapterViewPager.addFragment(popularMovies, "Popular");
-        adapterViewPager.addFragment(topRatedMovies, "Top Rated");
+        adapterViewPager.addFragment(nowShowingMovies, " Now Showing");
+        adapterViewPager.addFragment(popularMovies, " Popular");
+        adapterViewPager.addFragment(topRatedMovies, " Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
-        /*viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.d("OnPageListener()", "OnPageScrolled()");
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.d("OnPageListener()", "onPageSelected()");
-                adapterViewPager.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                Log.d("OnPageListener()", "onPageScrollStateChanged()");
-
-            }
-        });*/
     }
 
     static class Adapter extends FragmentPagerAdapter {
