@@ -32,7 +32,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,11 +40,13 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.Fragments.MovieWatchListFragment;
+import com.example.matt.movieWatchList.viewControllers.fragments.MovieWatchListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
@@ -148,7 +149,15 @@ public class MainActivity extends AppCompatActivity {
                                 Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
                                 startActivity(searchIntent);
                                 return true;
+
+                            case R.id.settings_menu_item:
+                                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                                startActivity(settingsIntent);
+                                return true;
                         }
+
+
+
 
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
@@ -166,10 +175,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        /*TextView navHeaderText = (TextView) mDrawerLayout.findViewById(R.id.nav_header_text);
         Typeface font = Typeface.
                 createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);
+        navHeaderText.setTypeface(font);*/
     }
 
     // Add Fragments to Tabs
@@ -224,27 +233,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem sortMenuItem = menu.findItem(R.id.action_sort);
-
-
-        /*MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
-        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
-                if( ! searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }
-                myActionMenuItem.collapseActionView();
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String s) {
-                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
-                return false;
-            }
-        });*/
         return true;
     }
 

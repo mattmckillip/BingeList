@@ -18,7 +18,6 @@ package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -27,25 +26,20 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.DynamicDrawableSpan;
-import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.Fragments.BrowseMoviesFragment;
+import com.example.matt.movieWatchList.viewControllers.fragments.BrowseMoviesFragment;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 
 import java.util.ArrayList;
@@ -82,7 +76,7 @@ public class BrowseActivity extends AppCompatActivity {
                 }
             }
         }
-
+        
         // Setting ViewPager for each Tabs
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -132,6 +126,11 @@ public class BrowseActivity extends AppCompatActivity {
                             case R.id.browse_menu_item:
                                 mDrawerLayout.closeDrawers();
                                 return true;
+
+                            case R.id.settings_menu_item:
+                                Intent settingsIntent = new Intent(BrowseActivity.this, SettingsActivity.class);
+                                startActivity(settingsIntent);
+                                return true;
                         }
 
                         // Closing drawer on item click
@@ -142,6 +141,8 @@ public class BrowseActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setImageResource(R.drawable.ic_search_white);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +154,7 @@ public class BrowseActivity extends AppCompatActivity {
         TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
         Typeface font = Typeface.
                 createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);
+        //navHeaderText.setTypeface(font);
     }
 
     // Add Fragments to Tabs
@@ -177,7 +178,7 @@ public class BrowseActivity extends AppCompatActivity {
         topRatedMovies.setArguments(topRatedBundle);
 
 
-        adapterViewPager.addFragment(nowShowingMovies, " Now Showing");
+        adapterViewPager.addFragment(nowShowingMovies, " In Theaters");
         adapterViewPager.addFragment(popularMovies, " Popular");
         adapterViewPager.addFragment(topRatedMovies, " Top Rated");
 
@@ -223,7 +224,29 @@ public class BrowseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        MenuItem sortMenuItem = menu.findItem(R.id.action_sort);
+
+
+        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                /*UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                myActionMenuItem.collapseActionView();*/
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                return false;
+            }
+        });
+
         return true;
     }
 

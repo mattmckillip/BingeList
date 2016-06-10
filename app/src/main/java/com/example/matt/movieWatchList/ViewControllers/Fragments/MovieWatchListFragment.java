@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.Fragments;
+package com.example.matt.movieWatchList.viewControllers.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -55,15 +55,6 @@ public class MovieWatchListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-
-        /*View view = inflater.inflate(R.layout.recycler_view, container, false);
-
-        // Retrieve the SwipeRefreshLayout and ListView instances
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.my_recycler_view);
-        swipeRefreshLayout.setRefreshing(true);
-        /*RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);*/
         boolean isWatched;
 
         if (getArguments().getInt("watched") == 1) {
@@ -77,14 +68,14 @@ public class MovieWatchListFragment extends Fragment {
         recyclerView.setAdapter(cardAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //return view;
         return  recyclerView;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONMovie> movieList, final Realm uiRealm,final ContentAdapter adapter) {
+        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONMovie> movieList, final Realm uiRealm,final ContentAdapter adapter, final boolean isWatched) {
             super(inflater.inflate(R.layout.watch_list_card, parent, false));
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,23 +89,30 @@ public class MovieWatchListFragment extends Fragment {
             });
 
             // Adding Snackbar to Action Button inside card
+
             Button watchButton = (Button)itemView.findViewById(R.id.watch_button);
-            watchButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    JSONMovie movie = movieList.get(getAdapterPosition());
-                    uiRealm.beginTransaction();
-                    //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                    movie.setWatched(true);
-                    movie.setOnWatchList(false);
-                    uiRealm.commitTransaction();
+            if (isWatched) {
+                watchButton.setVisibility(View.GONE);
+            }
+            else {
+                watchButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        JSONMovie movie = movieList.get(getAdapterPosition());
+                        uiRealm.beginTransaction();
+                        //JSONMovie movieToAdd = uiRealm.createObject(movie);
+                        movie.setWatched(true);
+                        movie.setOnWatchList(false);
+                        uiRealm.commitTransaction();
 
-                    adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
 
-                    Snackbar.make(v, "Added to watch list!",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            });
+                        Snackbar.make(v, "Watched!",
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+
 
             // Adding Snackbar to Action Button inside card
             Button removeButton = (Button)itemView.findViewById(R.id.remove_button);
@@ -132,7 +130,7 @@ public class MovieWatchListFragment extends Fragment {
                     uiRealm.commitTransaction();
                     adapter.notifyDataSetChanged();
 
-                    Snackbar.make(v, "Remove is pressed",
+                    Snackbar.make(v, "Removed from watch list",
                             Snackbar.LENGTH_LONG).show();
                 }
             });
@@ -147,9 +145,11 @@ public class MovieWatchListFragment extends Fragment {
         private Realm uiRealm;
         private RealmResults<JSONMovie> movieList;
         private Activity activity;
+        private boolean isWatched;
 
         public ContentAdapter(MyApplication app, Activity activity, boolean isWatched) {
             uiRealm = app.getUiRealm();
+            this.isWatched = isWatched;
 
             // Build the query looking at all users:
             RealmQuery<JSONMovie> query = uiRealm.where(JSONMovie.class);
@@ -169,7 +169,7 @@ public class MovieWatchListFragment extends Fragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, movieList, uiRealm, this);
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, movieList, uiRealm, this, isWatched);
         }
 
         @Override

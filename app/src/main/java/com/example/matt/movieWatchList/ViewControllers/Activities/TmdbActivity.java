@@ -35,7 +35,7 @@ import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.Adapters.CastAdapter;
+import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.example.matt.movieWatchList.uitls.MovieAPI;
 import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -198,7 +198,7 @@ public class TmdbActivity extends AppCompatActivity {
                     movie.setBackdropPath("https://image.tmdb.org/t/p/w500//" + movie.getBackdropPath());
                     realmMovie = movie.convertToRealm();
 
-                    MovieAPI service = retrofit.create(MovieAPI.class);
+                    /*MovieAPI service = retrofit.create(MovieAPI.class);
                     Call<Credits> call = service.getCredits(Integer.toString(movieID));
 
                     call.enqueue(new Callback<Credits>() {
@@ -228,7 +228,8 @@ public class TmdbActivity extends AppCompatActivity {
                         public void onFailure(Throwable t) {
                             Log.d("GetCredits()", "Callback Failure");
                         }
-                    });
+                    });*/
+                    updateUI();
                 }
 
                 @Override
@@ -333,12 +334,50 @@ public class TmdbActivity extends AppCompatActivity {
         releaseDate.setText(realmMovie.getReleaseDate());
         userRating.setText(Double.toString(realmMovie.getVote_average())+ "/10");
 
-        // Populate cast and crew recycler views
-        castRecyclerView.setAdapter( new CastAdapter(realmMovie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
-        crewRecyclerView.setAdapter( new CastAdapter(realmMovie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
-        castRecyclerView.setFocusable(false);
-        crewRecyclerView.setFocusable(false);
+
 
         collapsing_toolbar.setVisibility(View.VISIBLE);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieAPI service = retrofit.create(MovieAPI.class);
+        Call<Credits> call = service.getCredits(Integer.toString(movieID));
+
+        call.enqueue(new Callback<Credits>() {
+            @Override
+            public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
+                Log.d("GetCredits()", "Callback Success");
+                List<Cast> cast = response.body().getCast();
+                List<Crew> crew = response.body().getCrew();
+
+                RealmList<JSONCast> realmCast = new RealmList<>();
+                for( int i = 0; i <= 3; i++) {
+                    realmCast.add(cast.get(i).convertToRealm());
+                }
+
+                RealmList<JSONCast> realmCrew = new RealmList<>();
+                for( int i = 0; i <= 3; i++) {
+                    realmCrew.add(crew.get(i).convertToRealm());
+                }
+
+                realmMovie.setCrew(realmCrew);
+                realmMovie.setCast(realmCast);
+
+                // Populate cast and crew recycler views
+                castRecyclerView.setAdapter( new CastAdapter(realmMovie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+                crewRecyclerView.setAdapter( new CastAdapter(realmMovie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+                castRecyclerView.setFocusable(false);
+                crewRecyclerView.setFocusable(false);
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("GetCredits()", "Callback Failure");
+            }
+        });
     }
 }

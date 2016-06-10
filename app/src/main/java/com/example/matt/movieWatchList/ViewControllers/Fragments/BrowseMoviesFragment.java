@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.Fragments;
+package com.example.matt.movieWatchList.viewControllers.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,8 +35,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidviewhover.BlurLayout;
 import com.example.matt.movieWatchList.Models.POJO.Browse;
 import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
@@ -57,6 +60,8 @@ import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
@@ -79,6 +84,7 @@ public class BrowseMoviesFragment extends Fragment {
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static JSONMovie realmMovie;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,40 +92,9 @@ public class BrowseMoviesFragment extends Fragment {
         browseMoviesList = new RealmList<JSONMovie>();
         uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
 
-        /*//View view = inflater.inflate(R.layout.recycler_view, container, false);
-
-        View view = inflater.inflate(R.layout.swipe_refresh_recycler, container, false);
-
-        // Retrieve the SwipeRefreshLayout and ListView instances
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.my_recycler_view2);
-
-        swipeRefreshLayout.setColorSchemeColors(
-                ContextCompat.getColor(getContext(), android.R.color.background_dark),
-                ContextCompat.getColor(getContext(), android.R.color.background_dark),
-                ContextCompat.getColor(getContext(), android.R.color.background_dark)
-        );
-
-        swipeRefreshLayout.setRefreshing(true);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Log.d("onRefresh()", "refresh");
-                loadData();
-            }
-        });
-
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-
-        adapter = new ContentAdapter(browseMoviesList, getActivity());
-        recyclerView.setAdapter(adapter);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        return view;*/
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
+        
 
         adapter = new ContentAdapter(browseMoviesList, getActivity());
         recyclerView.setAdapter(adapter);
@@ -185,18 +160,20 @@ public class BrowseMoviesFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.watch_list_layout)
+        RelativeLayout watchListLayout;
+
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmList<JSONMovie> movieList, final MyApplication app) {
             super(inflater.inflate(R.layout.item_card, parent, false));
+            View view = inflater.inflate(R.layout.item_card, parent, false);
 
-
-
+            ButterKnife.bind(this, view);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
                     JSONMovie movie = movieList.get(getAdapterPosition());
-                    //Intent intent = new Intent(context, CollapsingToolbarActivity.class);
 
                     Intent intent = new Intent(context, TmdbActivity.class);
                     intent.putExtra("movieId", movie.getId());
@@ -210,6 +187,8 @@ public class BrowseMoviesFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     final int movieID = movieList.get(getAdapterPosition()).getId();
+
+                    watchListLayout.setVisibility(View.VISIBLE);
 
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://api.themoviedb.org/3/movie/")
@@ -274,8 +253,6 @@ public class BrowseMoviesFragment extends Fragment {
                                     realmMovie.setCrew(realmCrew);
                                     realmMovie.setCast(realmCast);
 
-
-
                                     Snackbar.make(recyclerView, "Added to watchlist!",
                                             Snackbar.LENGTH_LONG).show();
                                 }
@@ -295,6 +272,7 @@ public class BrowseMoviesFragment extends Fragment {
                     });
                 }
             });
+
         }
     }
 
@@ -368,15 +346,6 @@ public class BrowseMoviesFragment extends Fragment {
             // Build the query looking at all users:
             Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
-            /*RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
-            RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).findAll();
-            for (JSONMovie movieInList : watchListMovies) {
-                if(movieInList != null && popularMovies.get(position) != null && movieInList.getId() != null) {
-                    if (movieInList.getId().equals(popularMovies.get(position).getId())){
-                        holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
-                    }
-                }
-            }*/
             RealmQuery<JSONMovie> watchedQuery = uiRealm.where(JSONMovie.class);
             RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id",popularMovies.get(position).getId()).findAll();
             if (watchedMovies.size() == 1) {

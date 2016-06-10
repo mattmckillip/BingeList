@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.Adapters;
+package com.example.matt.movieWatchList.viewControllers.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

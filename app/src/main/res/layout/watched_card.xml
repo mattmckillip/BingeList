@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_image_height"
             android:scaleType="centerCrop" />
+
         <TextView
             android:id="@+id/card_title"
             android:textSize="32sp"
@@ -47,63 +48,6 @@
             android:shadowDy="0.0"
             android:shadowRadius="5.0" />
 
-
-        <RelativeLayout
-            android:id="@+id/watched_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/card_image_height"
-                android:background="#000000"
-                android:alpha=".25"/>
-
-            <TextView
-                android:id="@+id/card_watched"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/card_image_height"
-                android:gravity="center_horizontal|center_vertical"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textSize="@dimen/article_subheading"
-                android:textColor="#FFFFFF"
-                android:shadowColor="#000000"
-                android:shadowDx="0.0"
-                android:shadowDy="0.0"
-                android:shadowRadius="5.0"
-                android:text="Watched!" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/watch_list_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            >
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/card_image_height"
-                android:background="#000000"
-                android:alpha=".50"/>
-
-            <TextView
-                android:id="@+id/card_watch_list"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/card_image_height"
-                android:gravity="center_horizontal|center_vertical"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textSize="@dimen/article_subheading"
-                android:textColor="#FFFFFF"
-                android:shadowColor="#000000"
-                android:shadowDx="0.0"
-                android:shadowDy="0.0"
-                android:shadowRadius="5.0"
-                android:text="On Watch List!" />
-        </RelativeLayout>
-
         <TextView
             android:id="@+id/card_text"
             android:layout_width="match_parent"
@@ -116,21 +60,20 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/dark_grey"
-            android:textSize="@dimen/article_subheading"/>
-
+            android:textSize="@dimen/article_subheading" />
 
         <Button
-            android:id="@+id/action_button"
+            android:id="@+id/remove_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorPrimary"
-            android:text="Add to Watchlist"
-            android:drawableLeft="@drawable/ic_add_to_queue_black_24dp"
-            android:drawableTint="?attr/colorPrimary"
+            android:textColor="?attr/colorAccent"
+            android:layout_alignParentRight="true"
+            android:text="Remove"
+            android:drawableLeft="@drawable/ic_remove_from_queue_black_24dp"
+            android:drawableTint="?attr/colorAccent"
             android:drawablePadding="6dp"/>
 
     </RelativeLayout>
-
 </android.support.v7.widget.CardView>
