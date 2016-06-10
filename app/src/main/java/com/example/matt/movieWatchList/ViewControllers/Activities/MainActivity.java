@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.ViewControllers.Activities;
+package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,8 +32,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,9 +41,7 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Fragments.BrowseMoviesFragment;
-import com.example.matt.movieWatchList.ViewControllers.Fragments.MovieWatchListFragment;
-import com.example.matt.movieWatchList.uitls.BrowseMovieType;
+import com.example.matt.movieWatchList.viewControllers.Fragments.MovieWatchListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,12 +127,19 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
 
                             case R.id.browse_menu_item:
-                                Log.d("ADAPTER COUNT", Integer.toString(adapter.getCount()));
                                 Snackbar.make(getCurrentFocus(), "Browse",
                                         Snackbar.LENGTH_LONG).show();
 
                                 Intent i = new Intent(MainActivity.this, BrowseActivity.class);
                                 startActivity(i);
+                                return true;
+
+                            case R.id.search_menu_item:
+                                Snackbar.make(getCurrentFocus(), "Browse",
+                                        Snackbar.LENGTH_LONG).show();
+
+                                Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
+                                startActivity(searchIntent);
                                 return true;
                         }
 
@@ -153,6 +158,11 @@ public class MainActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
+
+        TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        Typeface font = Typeface.
+                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
+        navHeaderText.setTypeface(font);
     }
 
     // Add Fragments to Tabs
@@ -207,6 +217,24 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                /*UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                myActionMenuItem.collapseActionView();*/
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -249,6 +277,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }

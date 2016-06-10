@@ -17,6 +17,7 @@
 
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -76,7 +77,8 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/cardview_light_background" >
 
         <LinearLayout
             android:id="@+id/more_info"
@@ -87,31 +89,81 @@
             android:paddingRight="@dimen/md_keylines"
             android:paddingTop="@dimen/md_keylines">
 
-            <RatingBar
-                android:isIndicator="true"
-                style="?android:attr/ratingBarStyleSmall"
-                android:id="@+id/rating"
-                android:rating="0"
-                android:stepSize="0.1"
-                android:numStars="10"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:paddingTop="@dimen/md_keylines"
-                android:gravity="center_horizontal" />
 
+            <TextView
+                android:id="@+id/overview_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="?attr/colorAccent"
+                android:text="Overview"
+                android:textSize="@dimen/article_titles"
+                android:layout_marginTop="@dimen/md_keylines"
+                android:layout_marginBottom="@dimen/md_keylines" />
+
+            <TextView
+                android:text="User Rating"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/md_keylines"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rating_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/md_keylines"
+                android:paddingRight="@dimen/md_keylines">
+                <RatingBar
+                    android:isIndicator="true"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:id="@+id/rating"
+                    android:rating="0"
+                    android:stepSize="0.1"
+                    android:numStars="10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    />
+
+                <TextView
+                    android:id="@+id/user_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/rating"
+                    android:layout_alignBaseline="@id/rating"
+                    android:layout_marginBottom="@dimen/md_keylines"
+                    android:layout_marginLeft="@dimen/md_keylines"
+
+                    />
+            </RelativeLayout>
+            <TextView
+                android:text="Runtime"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/md_keylines"
+                />
             <TextView
                 android:id="@+id/runtime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/md_keylines"
-                android:layout_marginBottom="@dimen/md_keylines" />
-
+                android:layout_marginBottom="@dimen/md_keylines"
+                android:paddingLeft="@dimen/md_keylines"
+                />
+            <TextView
+                android:text="Release Date"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/md_keylines"
+                />
             <TextView
                 android:id="@+id/release_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/md_keylines"
-                android:layout_marginBottom="@dimen/md_keylines" />
+                android:layout_marginBottom="@dimen/md_keylines"
+                android:paddingLeft="@dimen/md_keylines"
+                />
 
             <TextView
                 android:id="@+id/plot_title"
@@ -198,13 +250,34 @@
 
         </LinearLayout>
 
-     </android.support.v4.widget.NestedScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
-     <android.support.design.widget.FloatingActionButton
-         android:id="@+id/fab"
+    <!--<android.support.design.widget.FloatingActionButton
+         android:id="@+id/fab_detail"
          app:layout_anchor="@id/appbar"
          app:layout_anchorGravity="bottom|right|end"
-         style="@style/FabStyle"/>
+         style="@style/FabStyle"/>-->
 
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/multiple_actions_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end"
+        fab:fab_addButtonColorNormal="@color/white"
+        fab:fab_addButtonColorPressed="@color/white_pressed"
+        fab:fab_addButtonSize="mini"
+        fab:fab_addButtonPlusIconColor="@color/half_black"
+        fab:fab_expandDirection="down"
+        style="@style/FabStyle">
 
- </android.support.design.widget.CoordinatorLayout>
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/white"
+            fab:fab_colorPressed="@color/white_pressed"
+            fab:fab_size="mini"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</android.support.design.widget.CoordinatorLayout>

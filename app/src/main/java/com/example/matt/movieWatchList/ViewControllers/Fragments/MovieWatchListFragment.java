@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.ViewControllers.Fragments;
+package com.example.matt.movieWatchList.viewControllers.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,21 +27,17 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.JSONCast;
-import com.example.matt.movieWatchList.Models.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Activities.TmdbActivity;
-import com.example.matt.movieWatchList.ViewControllers.Activities.WatchListDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.WatchListDetailActivity;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -55,12 +51,22 @@ public class MovieWatchListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
+
+        /*View view = inflater.inflate(R.layout.recycler_view, container, false);
+
+        // Retrieve the SwipeRefreshLayout and ListView instances
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.my_recycler_view);
+        swipeRefreshLayout.setRefreshing(true);
+        /*RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+                R.layout.recycler_view, container, false);*/
         boolean isWatched;
 
-        if(getArguments().getInt("watched") == 1) {
+        if (getArguments().getInt("watched") == 1) {
             isWatched = true;
         }
         else {
@@ -71,7 +77,8 @@ public class MovieWatchListFragment extends Fragment {
         recyclerView.setAdapter(cardAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+        //return view;
+        return  recyclerView;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -99,6 +106,7 @@ public class MovieWatchListFragment extends Fragment {
                     uiRealm.beginTransaction();
                     //JSONMovie movieToAdd = uiRealm.createObject(movie);
                     movie.setWatched(true);
+                    movie.setOnWatchList(false);
                     uiRealm.commitTransaction();
 
                     adapter.notifyDataSetChanged();

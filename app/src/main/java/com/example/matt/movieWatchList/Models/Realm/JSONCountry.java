@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.Models;
+package com.example.matt.movieWatchList.Models.Realm;
 
 import io.realm.RealmObject;
 

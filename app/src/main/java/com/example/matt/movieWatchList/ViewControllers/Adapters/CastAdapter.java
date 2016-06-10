@@ -1,17 +1,14 @@
-package com.example.matt.movieWatchList.ViewControllers.Adapters;
+package com.example.matt.movieWatchList.viewControllers.Adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.R;
 import com.squareup.picasso.Picasso;
 
@@ -25,8 +22,13 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
         private RealmList<JSONCast> contactList;
         private Context context;
 
-        public CastAdapter( RealmList<JSONCast> contactList, Context context) {
-            this.contactList = contactList;
+        public CastAdapter( RealmList<JSONCast> contactList, Context context, int numberToDisplay) {
+            this.contactList = new RealmList<>();
+
+            int castNumber = Math.min(numberToDisplay, contactList.size());
+            for (int i = 0; i < castNumber ; i++){
+                this.contactList.add(contactList.get(i));
+            }
             this.context = context;
         }
 
@@ -40,10 +42,13 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
             JSONCast castMember = contactList.get(i);
             contactViewHolder.characterTextView.setText(castMember.getCharacterName());
             contactViewHolder.actorTextView.setText(castMember.getActorName());
-            Log.d("Cast Adapter", "Loading Image");
 
-            Picasso.with(context).load(castMember.getImagePath()).into(contactViewHolder.actorImageView);
-            Log.d("Cast Adapter", "Done Loading Image");
+            Picasso.with(context)
+                    .load(castMember.getImagePath())
+                    //.placeholder(R.drawable.unkown_person)
+                    .error(R.drawable.unkown_person)
+                    .into(contactViewHolder.actorImageView);
+
 
         }
 

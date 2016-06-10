@@ -1,21 +1,19 @@
 package com.example.matt.movieWatchList.uitls;
 
 import android.graphics.Bitmap;
-        import android.graphics.drawable.BitmapDrawable;
-        import android.graphics.drawable.Drawable;
-        import android.support.annotation.NonNull;
-        import android.support.v4.util.Pools;
-        import android.support.v7.graphics.Palette;
-        import android.widget.ImageView;
+import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.NonNull;
+import android.support.v7.graphics.Palette;
+import android.widget.ImageView;
 
-        import com.squareup.picasso.Callback;
-        import com.squareup.picasso.Picasso;
-        import com.squareup.picasso.Target;
-        import com.squareup.picasso.Transformation;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
-        import java.lang.ref.WeakReference;
-        import java.util.Map;
-        import java.util.WeakHashMap;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * Transformation used to extract {@link Palette} information from the {@linkplain Bitmap}.

@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.ViewControllers.Activities;
+package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -24,12 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.JSONCast;
-import com.example.matt.movieWatchList.Models.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Adapters.CastAdapter;
+import com.example.matt.movieWatchList.viewControllers.Adapters.CastAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.r0adkll.slidr.Slidr;
 
 import java.lang.reflect.Field;
 
@@ -52,11 +53,15 @@ public class WatchListDetailActivity extends AppCompatActivity {
     private RecyclerView crewRecyclerView;
     private CastAdapter crewAdapter;
 
+    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         movieID = getIntent().getIntExtra("movieId",0);
-        Log.d("Movie ID", Integer.toString(movieID));
+
+        Slidr.attach(this);
 
         setContentView(R.layout.activity_detail);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
@@ -64,7 +69,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
 
         // Cast recycler view
         castRecyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
-        castAdapter = new CastAdapter(castList, getApplicationContext());
+        castAdapter = new CastAdapter(castList, getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY);
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         castRecyclerView.setLayoutManager(castLayoutManager);
         castRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -72,7 +77,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
 
         // Cast recycler view
         crewRecyclerView = (RecyclerView) findViewById(R.id.crew_recycler_view);
-        crewAdapter = new CastAdapter(crewList, getApplicationContext());
+        crewAdapter = new CastAdapter(crewList, getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY);
         RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(getApplicationContext());
         crewRecyclerView.setLayoutManager(crewLayoutManager);
         crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -120,7 +125,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
 
         // Set title of Detail page
         collapsingToolbar.setTitle(movie.getTitle());
-        final ImageView image = (ImageView) findViewById(R.id.image);
+        final ImageView image = (ImageView) findViewById(R.id.backdrop);
         final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
         try {
             final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
@@ -157,6 +162,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
             TextView plotTitle = (TextView) findViewById(R.id.plot_title);
             TextView castTitle = (TextView) findViewById(R.id.cast_title);
             TextView crewTitle = (TextView) findViewById(R.id.crew_title);
+            TextView overviewTitle = (TextView) findViewById(R.id.overview_title);
 
             int vibrantColor = palette.getVibrantColor(defaultColor);
             Log.d("vibrant color", Integer.toString(vibrantColor));
@@ -165,6 +171,8 @@ public class WatchListDetailActivity extends AppCompatActivity {
                 plotTitle.setTextColor(vibrantColor);
                 castTitle.setTextColor(vibrantColor);
                 crewTitle.setTextColor(vibrantColor);
+                overviewTitle.setTextColor(vibrantColor);
+
 
                 LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
                 starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
@@ -195,6 +203,7 @@ public class WatchListDetailActivity extends AppCompatActivity {
         RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
         TextView runtime = (TextView) layout.findViewById(R.id.runtime);
         TextView releaseDate = (TextView) layout.findViewById(R.id.release_date);
+        TextView userRating = (TextView) layout.findViewById(R.id.user_rating);
 
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
             @Override
@@ -204,20 +213,14 @@ public class WatchListDetailActivity extends AppCompatActivity {
         });
         plot.setText(movie.getOverview());
         stars.setRating(movie.getVote_average().floatValue());
-        runtime.setText(Integer.toString(movie.getRuntime()));
+        runtime.setText(Integer.toString(movie.getRuntime()) + " min");
         releaseDate.setText(movie.getReleaseDate());
+        userRating.setText(Double.toString(movie.getVote_average())+ "/10");
 
-        /*RealmList<JSONCast> slicedCastList = new RealmList<>();
-        RealmList<JSONCast> slicedCrewList = new RealmList<>();
-
-        for (int i=0; i < 3; i++){
-            slicedCastList.add(movie.getCast().get(i));
-            slicedCrewList.add(movie.getCrew().get(i));
-        }*/
         // Populate cast and crew recycler views
-        /*castRecyclerView.setAdapter( new CastAdapter(slicedCastList));
-        crewRecyclerView.setAdapter( new CastAdapter(slicedCrewList));
+        castRecyclerView.setAdapter( new CastAdapter(movie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+        crewRecyclerView.setAdapter( new CastAdapter(movie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
         castRecyclerView.setFocusable(false);
-        crewRecyclerView.setFocusable(false);*/
+        crewRecyclerView.setFocusable(false);
     }
 }

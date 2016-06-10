@@ -70,7 +70,7 @@
             style="?android:attr/borderlessButtonStyle"
             android:textColor="?attr/colorAccent"
             android:layout_alignParentRight="true"
-            android:text="Remove to Watchlist" />
+            android:text="Remove from Watchlist" />
 
         <Button
             android:id="@+id/watch_button"

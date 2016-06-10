@@ -29,7 +29,10 @@
     <dimen name="cards_button_width">48dp</dimen>
     <dimen name="cards_button_height">48dp</dimen>
     <dimen name="article_subheading">16sp</dimen>
+    <dimen name="nav_header_size">25sp</dimen>
     <dimen name="card_image_height">200dp</dimen>
     <dimen name="list_body">14sp</dimen>
-    <dimen name="navheader_height">222dp</dimen>
+    <dimen name="navheader_height">150dp</dimen>
+    <dimen name="fab_margin">10dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
 </resources>

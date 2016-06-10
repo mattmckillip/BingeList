@@ -25,5 +25,16 @@
             android:icon="@drawable/ic_favorite_black_24dp"
             android:tint="@color/button_grey"
             android:title="Browse" />
+
+        <item
+            android:id="@+id/search_menu_item"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:tint="@color/button_grey"
+            android:title="Search" />
+        <item
+            android:id="@+id/settings_menu_item"
+            android:icon="@drawable/ic_settings_black"
+            android:tint="@color/button_grey"
+            android:title="Settings" />
     </group>
 </menu>

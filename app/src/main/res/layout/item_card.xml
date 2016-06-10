@@ -48,6 +48,58 @@
             android:shadowDy="0.0"
             android:shadowRadius="5.0" />
 
+        <RelativeLayout
+            android:id="@+id/watched_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_image_height"
+                android:background="#000000"
+                android:alpha=".25"/>
+
+            <TextView
+                android:id="@+id/card_watched"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_image_height"
+                android:gravity="center_horizontal|center_vertical"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="@dimen/article_subheading"
+                android:textColor="#FFFFFF"
+                android:shadowColor="#000000"
+                android:shadowDx="0.0"
+                android:shadowDy="0.0"
+                android:shadowRadius="5.0"
+                android:text="Watched!" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/watch_list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_image_height"
+                android:background="#000000"
+                android:alpha=".50"/>
+
+            <TextView
+                android:id="@+id/card_watch_list"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/card_image_height"
+                android:gravity="center_horizontal|center_vertical"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textSize="@dimen/article_subheading"
+                android:textColor="#FFFFFF"
+                android:shadowColor="#000000"
+                android:shadowDx="0.0"
+                android:shadowDy="0.0"
+                android:shadowRadius="5.0"
+                android:text="On Watch List!" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/card_text"
             android:layout_width="match_parent"
@@ -60,7 +112,8 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/dark_grey"
-            android:textSize="@dimen/article_subheading" />
+            android:textSize="@dimen/article_subheading"/>
+
 
         <Button
             android:id="@+id/action_button"

@@ -1,9 +1,4 @@
-package com.example.matt.movieWatchList.Models;
-
-import android.graphics.Bitmap;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+package com.example.matt.movieWatchList.Models.Realm;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -18,7 +13,7 @@ public class JSONMovie extends RealmObject {
     private RealmList<JSONGenre> genres;
     private String officialURL;
     private Integer id;
-    private Integer imdbID;
+    private String imdbID;
     private String originalLanguage;
     private String overview;
     private Double popularity;
@@ -48,7 +43,7 @@ public class JSONMovie extends RealmObject {
     public RealmList<JSONGenre> getGenres() { return genres; }
     public String getOfficialURL() { return officialURL; }
     public Integer getId() { return id; }
-    public Integer getImdbID() { return imdbID; }
+    public String getImdbID() { return imdbID; }
     public String getOriginalLanguage() { return originalLanguage; }
     public String getOverview() { return overview; }
     public Double getPopularity() { return popularity; }
@@ -74,7 +69,7 @@ public class JSONMovie extends RealmObject {
     public void setGenres(RealmList<JSONGenre> genres) { this.genres = genres; }
     public void setOfficialURL(String officialURL) { this.officialURL = officialURL; }
     public void setId(Integer id) {this.id = id; }
-    public void setImdbID(Integer imdbID) { this.imdbID = imdbID; }
+    public void setImdbID(String imdbID) { this.imdbID = imdbID; }
     public void setOriginalLanguage(String originalLanguage) { this.originalLanguage = originalLanguage; }
     public void setOverview(String overview) { this.overview = overview; }
     public void setPopularity(Double popularity) { this.popularity = popularity; }

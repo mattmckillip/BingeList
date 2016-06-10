@@ -16,10 +16,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ViewControllers.Activities.MainActivity">
+    tools:context=".viewControllers.activities.MainActivity">
     <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_white"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="Search"/>
 </menu>

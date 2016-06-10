@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.ViewControllers.Activities;
+package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -38,7 +38,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Fragments.BrowseMoviesFragment;
+import com.example.matt.movieWatchList.viewControllers.Fragments.BrowseMoviesFragment;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 
 import java.util.ArrayList;
@@ -143,20 +143,16 @@ public class BrowseActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         adapterViewPager = new Adapter(getSupportFragmentManager());
 
-        Bundle popularBundle = new Bundle();
-        popularBundle.putInt("movieType", BrowseMovieType.POPULAR);
-        BrowseMoviesFragment popularMovies = new BrowseMoviesFragment();
-        popularMovies.setArguments(popularBundle);
-
-        Bundle newReleasesBundle = new Bundle();
-        newReleasesBundle.putInt("movieType", BrowseMovieType.NEW_RELEASE);
-        BrowseMoviesFragment newReleaseMovies = new BrowseMoviesFragment();
-        newReleaseMovies.setArguments(newReleasesBundle);
 
         Bundle nowShowingBundle = new Bundle();
         nowShowingBundle.putInt("movieType", BrowseMovieType.NOW_SHOWING);
         BrowseMoviesFragment nowShowingMovies = new BrowseMoviesFragment();
         nowShowingMovies.setArguments(nowShowingBundle);
+
+        Bundle popularBundle = new Bundle();
+        popularBundle.putInt("movieType", BrowseMovieType.POPULAR);
+        BrowseMoviesFragment popularMovies = new BrowseMoviesFragment();
+        popularMovies.setArguments(popularBundle);
 
         Bundle topRatedBundle = new Bundle();
         topRatedBundle.putInt("movieType", BrowseMovieType.TOP_RATED);
@@ -164,12 +160,30 @@ public class BrowseActivity extends AppCompatActivity {
         topRatedMovies.setArguments(topRatedBundle);
 
 
-        adapterViewPager.addFragment(popularMovies, "Popular");
         adapterViewPager.addFragment(nowShowingMovies, "Now Showing");
-        //adapterViewPager.addFragment(newReleaseMovies, "Upcoming");
+        adapterViewPager.addFragment(popularMovies, "Popular");
         adapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
+        /*viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Log.d("OnPageListener()", "OnPageScrolled()");
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.d("OnPageListener()", "onPageSelected()");
+                adapterViewPager.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                Log.d("OnPageListener()", "onPageScrollStateChanged()");
+
+            }
+        });*/
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -182,7 +196,11 @@ public class BrowseActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return mFragmentList.get(position);
+            if(position <= mFragmentList.size())
+            {
+                return mFragmentList.get(position);
+            }
+            return null;
         }
 
         @Override
@@ -201,6 +219,9 @@ public class BrowseActivity extends AppCompatActivity {
         }
     }
 
+    /*
+     * Drawer Functions
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

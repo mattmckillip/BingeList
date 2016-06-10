@@ -1,7 +1,11 @@
 package com.example.matt.movieWatchList;
 
 import android.app.Application;
+
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+
 import io.realm.Realm;
+import io.realm.RealmList;
 
 /**
  * Created by Matt on 5/10/2016.
@@ -9,6 +13,8 @@ import io.realm.Realm;
 
 public class MyApplication extends Application {
     private static Realm uiRealm;
+    public RealmList<JSONMovie> watchList;
+    public RealmList<JSONMovie> watched;
 
     public Realm getUiRealm() {
         return uiRealm;
@@ -17,5 +23,7 @@ public class MyApplication extends Application {
     public void setUiRealm(Realm uiRealm) {
         this.uiRealm = uiRealm;
     }
+
+
 
 }

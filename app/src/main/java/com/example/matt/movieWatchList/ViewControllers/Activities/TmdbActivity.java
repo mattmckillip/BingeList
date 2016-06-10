@@ -1,18 +1,16 @@
-package com.example.matt.movieWatchList.ViewControllers.Activities;
+package com.example.matt.movieWatchList.viewControllers.activities;
 
-import android.app.ProgressDialog;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,29 +23,40 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.JSONCast;
-import com.example.matt.movieWatchList.Models.JSONMovie;
+import com.example.matt.movieWatchList.Models.POJO.Cast;
+import com.example.matt.movieWatchList.Models.POJO.Credits;
+import com.example.matt.movieWatchList.Models.POJO.Crew;
+import com.example.matt.movieWatchList.Models.POJO.Movie;
+import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.ViewControllers.Adapters.CastAdapter;
+import com.example.matt.movieWatchList.viewControllers.Adapters.CastAdapter;
+import com.example.matt.movieWatchList.uitls.MovieAPI;
 import com.example.matt.movieWatchList.uitls.PaletteTransformation;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
+import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+
 
 
 /**
@@ -56,7 +65,8 @@ import okhttp3.Response;
 public class TmdbActivity extends AppCompatActivity {
     Integer movieID;
     Bitmap thisBitmap;
-    private JSONMovie movie;
+    private JSONMovie realmMovie;
+    private Movie movie;
     private RealmList<JSONCast> castList = new RealmList<>();
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
@@ -65,18 +75,83 @@ public class TmdbActivity extends AppCompatActivity {
     private RecyclerView crewRecyclerView;
     private CastAdapter crewAdapter;
 
+    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
+
+    /*@BindView(R.id.fab_detail)
+    FloatingActionButton fab_detail;*/
+
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
+
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsing_toolbar;
+
+    @BindView(R.id.scroll_view)
+    NestedScrollView scroll_view;
+
+    @BindView(R.id.backdrop)
+    ImageView backdrop;
+
+    @BindView(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.rating)
+    RatingBar stars;
+
+    @BindView(R.id.plot_title)
+    TextView plotTitle;
+
+    @BindView(R.id.cast_title)
+    TextView castTitle;
+
+    @BindView(R.id.crew_title)
+    TextView crewTitle;
+
+    @BindView(R.id.overview_title)
+    TextView overviewTitle;
+
+    @BindView(R.id.runtime)
+    TextView runtime;
+
+    @BindView(R.id.release_date)
+    TextView releaseDate;
+
+    @BindView(R.id.user_rating)
+    TextView userRating;
+
+    @BindView(R.id.more_info)
+    LinearLayout layout;
+
+    @BindView(R.id.expand_text_view)
+    ExpandableTextView plot;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_detail);
+
+        ButterKnife.bind(this);
+
         movieID = getIntent().getIntExtra("movieId",0);
 
-        setContentView(R.layout.activity_detail);
+
+        FloatingActionButton actionC = new FloatingActionButton(getBaseContext());
+        actionC.setTitle("Hide/Show Action above");
+
+
+        // Attach the Slidr Mechanism to this activity
+        Slidr.attach(this);
+
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Cast recycler view
         castRecyclerView = (RecyclerView) findViewById(R.id.cast_recycler_view);
-        castAdapter = new CastAdapter(castList, getApplicationContext());
+        castAdapter = new CastAdapter(castList, getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY);
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         castRecyclerView.setLayoutManager(castLayoutManager);
         castRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -84,54 +159,107 @@ public class TmdbActivity extends AppCompatActivity {
 
         // Cast recycler view
         crewRecyclerView = (RecyclerView) findViewById(R.id.crew_recycler_view);
-        crewAdapter = new CastAdapter(crewList, getApplicationContext());
+        crewAdapter = new CastAdapter(crewList, getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY);
         RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(getApplicationContext());
         crewRecyclerView.setLayoutManager(crewLayoutManager);
         crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
         crewRecyclerView.setAdapter(crewAdapter);
 
-        findViewById(R.id.appbar).setVisibility(View.GONE);
-        findViewById(R.id.collapsing_toolbar).setVisibility(View.GONE);
-        findViewById(R.id.scroll_view).setVisibility(View.GONE);
-        findViewById(R.id.fab).setVisibility(View.GONE);
+        appbar.setVisibility(View.GONE);
+        collapsing_toolbar.setVisibility(View.GONE);
+        scroll_view.setVisibility(View.GONE);
+        //fab_detail.setVisibility(View.GONE);
 
-
-        // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*fab_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
+
                 uiRealm.beginTransaction();
+                realmMovie.setOnWatchList(true);
                 //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                uiRealm.copyToRealm(movie);
+                uiRealm.copyToRealm(realmMovie);
                 uiRealm.commitTransaction();
 
                 Snackbar.make(v, "Added to watch list!",
                         Snackbar.LENGTH_LONG).show();
             }
         });
-        findViewById(R.id.fab).setVisibility(View.GONE);
+        fab_detail.setVisibility(View.GONE);*/
 
-        AsyncTaskRunner runner = new AsyncTaskRunner();
-        runner.execute();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieAPI service = retrofit.create(MovieAPI.class);
+
+        Call<Movie> call = service.getMovie(Integer.toString(movieID));
+
+        call.enqueue(new Callback<Movie>() {
+                @Override
+                public void onResponse(retrofit.Response<Movie> response, Retrofit retrofit) {
+                    Log.d("getMovie()", "Callback Success");
+                    movie = response.body();
+                    movie.setBackdropPath("https://image.tmdb.org/t/p/w500//" + movie.getBackdropPath());
+                    realmMovie = movie.convertToRealm();
+
+                    MovieAPI service = retrofit.create(MovieAPI.class);
+                    Call<Credits> call = service.getCredits(Integer.toString(movieID));
+
+                    call.enqueue(new Callback<Credits>() {
+                        @Override
+                        public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
+                            Log.d("GetCredits()", "Callback Success");
+                            List<Cast> cast = response.body().getCast();
+                            List<Crew> crew = response.body().getCrew();
+
+                            RealmList<JSONCast> realmCast = new RealmList<>();
+                            for( int i = 0; i <= 3; i++) {
+                                realmCast.add(cast.get(i).convertToRealm());
+                            }
+
+                            RealmList<JSONCast> realmCrew = new RealmList<>();
+                            for( int i = 0; i <= 3; i++) {
+                                realmCrew.add(crew.get(i).convertToRealm());
+                            }
+
+                            realmMovie.setCrew(realmCrew);
+                            realmMovie.setCast(realmCast);
+
+                            updateUI();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            Log.d("GetCredits()", "Callback Failure");
+                        }
+                    });
+                    //TODOgenre
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("getMovie()", "Callback Failure");
+                }
+            });
+
     }
+
 
     private void addByteArray(byte[] image) {
-        movie.setBackdropBitmap(image);
+        realmMovie.setBackdropBitmap(image);
     }
 
-    private void updateUI(JSONMovie movie){
-        Log.d("Update UI", "1");
-
-        this.movie = movie;
+    private void updateUI(){
+        //this.movie = movie;
         // Set Collapsing Toolbar layout to the screen
         final CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         // Set title of Detail page
         collapsingToolbar.setTitle(movie.getTitle());
-        Log.d("Update UI", "2");
 
         final ImageView image = (ImageView) findViewById(R.id.backdrop);
         final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
@@ -147,66 +275,29 @@ public class TmdbActivity extends AppCompatActivity {
         } catch (Exception ignored) {
         }
         Log.d("Update UI", "3");
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                Palette.generateAsync(bitmap, new Palette.PaletteAsyncListener() {
-                    public void onGenerated(Palette palette) {
-                        image.setImageBitmap(bitmap);
-                        int defaultColor = 0x000000;
-                        int vibrantColor = palette.getVibrantColor(defaultColor);
-                        collapsingToolbar.setBackgroundColor(vibrantColor);
-                        collapsingToolbar.setContentScrimColor(vibrantColor);
-                        collapsingToolbar.setStatusBarScrimColor(vibrantColor);
-                    }
-                });
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
 
         Picasso.with(this)
-                .load(movie.getBackdropURL())
+                .load(movie.getBackdropPath())
                 .fit().centerCrop()
                 .transform(PaletteTransformation.instance())
                 .into(image, new PaletteTransformation.PaletteCallback(image) {
                     @Override public void onSuccess(Palette palette) {
                         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap(); // Ew!
 
-                        findViewById(R.id.appbar).setVisibility(View.VISIBLE);
-                        findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
-                        findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
-                        findViewById(R.id.fab).setVisibility(View.VISIBLE);
-                        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-
-                        // TODO apply palette to text views, backgrounds, etc.
-                        Log.d("Picasso", "pallete");
+                        appbar.setVisibility(View.VISIBLE);
+                        collapsing_toolbar.setVisibility(View.VISIBLE);
+                        scroll_view.setVisibility(View.VISIBLE);
+                        //fab_detail.setVisibility(View.VISIBLE);
+                        loadingPanel.setVisibility(View.GONE);
 
                         int defaultColor = 0x000000;
                         int vibrantColor = palette.getVibrantColor(defaultColor);
-
-                        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-                        RatingBar stars = (RatingBar) findViewById(R.id.rating);
-                        TextView plotTitle = (TextView) findViewById(R.id.plot_title);
-                        TextView castTitle = (TextView) findViewById(R.id.cast_title);
-                        TextView crewTitle = (TextView) findViewById(R.id.crew_title);
-
-                        Log.d("vibrant color", Integer.toString(vibrantColor));
 
                         if (vibrantColor != 0){
                             plotTitle.setTextColor(vibrantColor);
                             castTitle.setTextColor(vibrantColor);
                             crewTitle.setTextColor(vibrantColor);
+                            overviewTitle.setTextColor(vibrantColor);
 
                             LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
                             starProgressDrawable.getDrawable(2).setColorFilter(palette.getMutedColor(defaultColor), PorterDuff.Mode.SRC_ATOP);
@@ -216,7 +307,7 @@ public class TmdbActivity extends AppCompatActivity {
                             collapsingToolbar.setContentScrimColor(vibrantColor);
                             collapsingToolbar.setStatusBarScrimColor(vibrantColor);
 
-                            fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
+                            //fab_detail.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
 
                         } else {
                             Log.d("Palette", "Could not gather vibrant color");
@@ -234,12 +325,6 @@ public class TmdbActivity extends AppCompatActivity {
                     }
                 });
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.more_info);
-        ExpandableTextView plot = (ExpandableTextView) findViewById(R.id.expand_text_view);
-        RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
-        TextView runtime = (TextView) layout.findViewById(R.id.runtime);
-        TextView releaseDate = (TextView) layout.findViewById(R.id.release_date);
-
 
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
             @Override
@@ -248,122 +333,18 @@ public class TmdbActivity extends AppCompatActivity {
             }
         });
 
-        plot.setText(movie.getOverview());
-        stars.setRating(movie.getVote_average().floatValue());
-        runtime.setText(Integer.toString(movie.getRuntime()));
-        releaseDate.setText(movie.getReleaseDate());
-
+        plot.setText(realmMovie.getOverview());
+        stars.setRating(realmMovie.getVote_average().floatValue());
+        runtime.setText(Integer.toString(realmMovie.getRuntime()) + " min");
+        releaseDate.setText(realmMovie.getReleaseDate());
+        userRating.setText(Double.toString(realmMovie.getVote_average())+ "/10");
 
         // Populate cast and crew recycler views
-        castRecyclerView.setAdapter( new CastAdapter(movie.getCast(), getApplicationContext()));
-        crewRecyclerView.setAdapter( new CastAdapter(movie.getCrew(), getApplicationContext()));
+        castRecyclerView.setAdapter( new CastAdapter(realmMovie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+        crewRecyclerView.setAdapter( new CastAdapter(realmMovie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
         castRecyclerView.setFocusable(false);
         crewRecyclerView.setFocusable(false);
 
-        findViewById(R.id.collapsing_toolbar).setVisibility(View.VISIBLE);
-    }
-
-    private class AsyncTaskRunner extends AsyncTask<String, String, JSONMovie> {
-        private JSONMovie resp;
-        ProgressDialog progressDialog;
-
-        @Override
-        protected JSONMovie doInBackground(String... params) {
-            publishProgress("Sleeping..."); // Calls onProgressUpdate()
-            try {
-                Response movieResponse = null;
-                Response castResponse = null;
-
-                OkHttpClient client = new OkHttpClient();
-
-                Request movieRequest = new Request.Builder()
-                        .url("https://api.themoviedb.org/3/movie/" + movieID + "?api_key=788bf2d4d9f5db03979efed58cbf6713")
-                        .build();
-
-                movieResponse = client.newCall(movieRequest).execute();
-                JSONMovie movie = new JSONMovie();
-                JSONObject reader = new JSONObject(movieResponse.body().string());
-
-                movie.setTitle(reader.get("title").toString());
-                movie.setTagline(reader.get("tagline").toString());
-                movie.setOverview(reader.get("overview").toString());
-                movie.setBackdropURL("https://image.tmdb.org/t/p/w780//" + reader.get("backdrop_path").toString());
-                movie.setPopularity((Double)reader.get("popularity"));
-                movie.setVote_average((Double) reader.get("vote_average"));
-                movie.setPosterURL(reader.get("poster_path").toString());
-                movie.setId((Integer) reader.get("id"));
-                movie.setReleaseDate(reader.get("release_date").toString());
-                movie.setRuntime((Integer) reader.get("runtime"));
-
-                Request castRequest = new Request.Builder()
-                        .url("https://api.themoviedb.org/3/movie/" + movieID + "/credits?api_key=788bf2d4d9f5db03979efed58cbf6713")
-                        .build();
-
-                castResponse = client.newCall(castRequest).execute();
-
-                // Populate Cast
-                JSONObject castJSON = new JSONObject(castResponse.body().string());
-                JSONArray array = castJSON.getJSONArray("cast");
-                RealmList<JSONCast> cast = new RealmList<JSONCast>();
-                Integer numberOfCast = 3;
-                for(int i=0; i < numberOfCast; i++){
-                    JSONObject movieJSON = array.getJSONObject(i);
-                    JSONCast castMember = new JSONCast();
-
-                    castMember.setCharacterName(movieJSON.get("character").toString());
-                    castMember.setActorName(movieJSON.get("name").toString());
-                    if (!movieJSON.get("profile_path").toString().equals("null")){
-                        castMember.setImagePath("https://image.tmdb.org/t/p/w185/" + movieJSON.get("profile_path").toString());
-                    }
-                    cast.add(castMember);
-                };
-                movie.setCast(cast);
-                Log.d("In Backgroud", "add cast");
-
-                // Populate Crew
-                Log.d("In Backgroud", "before crew array");
-
-                JSONArray crewArray = castJSON.getJSONArray("crew");
-                Log.d("In Backgroud", "after crew array");
-
-                RealmList<JSONCast> crew = new RealmList<>();
-                for(int i=0; i < numberOfCast; i++){
-                    JSONObject movieJSON = crewArray.getJSONObject(i);
-                    JSONCast crewMember = new JSONCast();
-
-                    crewMember.setCharacterName(movieJSON.get("name").toString());
-                    crewMember.setActorName(movieJSON.get("job").toString());
-                    if (!movieJSON.get("profile_path").toString().equals("null")){
-                        crewMember.setImagePath("https://image.tmdb.org/t/p/w185/" + movieJSON.get("profile_path").toString());
-                    }
-
-                    crew.add(crewMember);
-                };
-                movie.setCrew(crew);
-
-
-                resp = movie;
-            } catch (Exception t) {
-                t.printStackTrace();
-                resp = null;
-            }
-            return resp;
-        }
-
-        @Override
-        protected void onPostExecute(JSONMovie result) {
-            // execution of result of Long time consuming operation
-            //progressDialog.dismiss();
-            Log.d("Popular movies On Post", result.getTitle());
-            updateUI(result);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            /*progressDialog = ProgressDialog.show(getApplicationContext(),
-                    "ProgressDialog",
-                    "Wait for ");*/
-        }
+        collapsing_toolbar.setVisibility(View.VISIBLE);
     }
 }
-
