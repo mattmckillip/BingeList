@@ -76,7 +76,7 @@ public class BrowseActivity extends AppCompatActivity {
                 }
             }
         }
-        
+
         // Setting ViewPager for each Tabs
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -115,16 +115,17 @@ public class BrowseActivity extends AppCompatActivity {
 
                             //Replacing the main content with ContentFragment
                             case R.id.watch_list_menu_item:
-
-                                Snackbar.make(getCurrentFocus(), "Browse",
-                                        Snackbar.LENGTH_LONG).show();
-
-                                Intent i = new Intent(BrowseActivity.this, MainActivity.class);
-                                startActivity(i);
+                                Intent watchListIntent = new Intent(BrowseActivity.this, MainActivity.class);
+                                startActivity(watchListIntent);
                                 return true;
 
                             case R.id.browse_menu_item:
                                 mDrawerLayout.closeDrawers();
+                                return true;
+
+                            case R.id.search_menu_item:
+                                Intent searchIntent = new Intent(BrowseActivity.this, SearchActivity.class);
+                                startActivity(searchIntent);
                                 return true;
 
                             case R.id.settings_menu_item:
@@ -142,12 +143,12 @@ public class BrowseActivity extends AppCompatActivity {
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_search_white);
+        final Intent intent = new Intent(this, SearchActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Search for a movie!",
-                        Snackbar.LENGTH_LONG).show();
+                startActivity(intent);
             }
         });
 

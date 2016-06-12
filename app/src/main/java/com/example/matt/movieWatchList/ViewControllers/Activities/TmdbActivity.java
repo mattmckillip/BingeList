@@ -198,37 +198,6 @@ public class TmdbActivity extends AppCompatActivity {
                     movie.setBackdropPath("https://image.tmdb.org/t/p/w500//" + movie.getBackdropPath());
                     realmMovie = movie.convertToRealm();
 
-                    /*MovieAPI service = retrofit.create(MovieAPI.class);
-                    Call<Credits> call = service.getCredits(Integer.toString(movieID));
-
-                    call.enqueue(new Callback<Credits>() {
-                        @Override
-                        public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
-                            Log.d("GetCredits()", "Callback Success");
-                            List<Cast> cast = response.body().getCast();
-                            List<Crew> crew = response.body().getCrew();
-
-                            RealmList<JSONCast> realmCast = new RealmList<>();
-                            for( int i = 0; i <= 3; i++) {
-                                realmCast.add(cast.get(i).convertToRealm());
-                            }
-
-                            RealmList<JSONCast> realmCrew = new RealmList<>();
-                            for( int i = 0; i <= 3; i++) {
-                                realmCrew.add(crew.get(i).convertToRealm());
-                            }
-
-                            realmMovie.setCrew(realmCrew);
-                            realmMovie.setCast(realmCast);
-
-                            updateUI();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-                            Log.d("GetCredits()", "Callback Failure");
-                        }
-                    });*/
                     updateUI();
                 }
 

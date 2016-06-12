@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
 
                             case R.id.browse_menu_item:
-                                Snackbar.make(getCurrentFocus(), "Browse",
+                                Snackbar.make(getCurrentFocus(), "QueryReturn",
                                         Snackbar.LENGTH_LONG).show();
 
                                 Intent i = new Intent(MainActivity.this, BrowseActivity.class);
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                                 return true;
 
                             case R.id.search_menu_item:
-                                Snackbar.make(getCurrentFocus(), "Browse",
+                                Snackbar.make(getCurrentFocus(), "QueryReturn",
                                         Snackbar.LENGTH_LONG).show();
 
                                 Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
@@ -167,11 +167,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final Intent intent = new Intent(this, BrowseActivity.class);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Search for a movie!",
-                        Snackbar.LENGTH_LONG).show();
+                startActivity(intent);
             }
         });
 

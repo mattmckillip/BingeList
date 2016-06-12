@@ -38,9 +38,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidviewhover.BlurLayout;
-import com.example.matt.movieWatchList.Models.POJO.Browse;
+import com.example.matt.movieWatchList.Models.POJO.QueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.Crew;
@@ -116,7 +114,7 @@ public class BrowseMoviesFragment extends Fragment {
 
         BrowseMoviesAPI service = retrofit.create(BrowseMoviesAPI.class);
 
-        Call<Browse> call;
+        Call<QueryReturn> call;
         if (movieType == BrowseMovieType.POPULAR) {
             call = service.getPopularMovies();
         } else if (movieType == BrowseMovieType.NOW_SHOWING) {
@@ -127,9 +125,9 @@ public class BrowseMoviesFragment extends Fragment {
             call = null;
         }
         if (call != null) {
-            call.enqueue(new Callback<Browse>() {
+            call.enqueue(new Callback<QueryReturn>() {
                 @Override
-                public void onResponse(retrofit.Response<Browse> response, Retrofit retrofit) {
+                public void onResponse(retrofit.Response<QueryReturn> response, Retrofit retrofit) {
                     Log.d("BrowseMovies()", "Callback Success");
                     List<Result> results = response.body().getResults();
                     browseMoviesList = new RealmList<JSONMovie>();
