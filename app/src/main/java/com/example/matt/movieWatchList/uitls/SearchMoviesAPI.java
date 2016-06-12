@@ -1,10 +1,9 @@
 package com.example.matt.movieWatchList.uitls;
 
-import com.example.matt.movieWatchList.Models.POJO.QueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
 
 import retrofit.Call;
 import retrofit.http.GET;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -12,5 +11,5 @@ import retrofit.http.Query;
  */
 public interface SearchMoviesAPI {
     @GET("?api_key=788bf2d4d9f5db03979efed58cbf6713")
-    Call<QueryReturn> searchKeywords(@Query("query") String keywords);
+    Call<MovieQueryReturn> searchKeywords(@Query("query") String keywords);
 }

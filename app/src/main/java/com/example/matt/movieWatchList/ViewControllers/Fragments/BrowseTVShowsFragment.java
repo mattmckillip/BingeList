@@ -38,19 +38,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.matt.movieWatchList.Models.POJO.MovieResult;
 import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.Crew;
 import com.example.matt.movieWatchList.Models.POJO.Movie;
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
+import com.example.matt.movieWatchList.Models.POJO.TVShowQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.TVShowResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.uitls.BrowseTVShowsAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.uitls.BrowseMoviesAPI;
 import com.example.matt.movieWatchList.uitls.MovieAPI;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -72,7 +74,7 @@ import retrofit.Retrofit;
 /**
  * Provides UI for the view with Cards.
  */
-public class BrowseMoviesFragment extends Fragment {
+public class BrowseTVShowsFragment extends Fragment {
     private RealmList<JSONMovie> browseMoviesList;
     private static RecyclerView recyclerView;
     private ContentAdapter adapter;
@@ -107,32 +109,32 @@ public class BrowseMoviesFragment extends Fragment {
     public void loadData() {
         //return recyclerView;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl("http://api.themoviedb.org/3/tv/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        BrowseMoviesAPI service = retrofit.create(BrowseMoviesAPI.class);
+        BrowseTVShowsAPI service = retrofit.create(BrowseTVShowsAPI.class);
 
-        Call<MovieQueryReturn> call;
+        Call<TVShowQueryReturn> call;
         if (movieType == BrowseMovieType.POPULAR) {
-            call = service.getPopularMovies();
+            call = service.getPopularTVShows();
         } else if (movieType == BrowseMovieType.NOW_SHOWING) {
-            call = service.getInTheatersMovies();
+            call = service.getAiringTodayTVShows();
         } else if (movieType == BrowseMovieType.TOP_RATED) {
-            call = service.getTopRatedMovies();
+            call = service.getTopRatedTVShows();
         } else {
             call = null;
         }
         if (call != null) {
-            call.enqueue(new Callback<MovieQueryReturn>() {
+            call.enqueue(new Callback<TVShowQueryReturn>() {
                 @Override
-                public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
-                    Log.d("BrowseMovies()", "Callback Success");
-                    List<MovieResult> movieResults = response.body().getMovieResults();
-                    browseMoviesList = new RealmList<JSONMovie>();
-                    for (MovieResult movie : movieResults){
+                public void onResponse(retrofit.Response<TVShowQueryReturn> response, Retrofit retrofit) {
+                    Log.d("Browsetv()", response.raw().toString());
+                    List<TVShowResult> movieResults = response.body().getResults();
+                    browseMoviesList = new RealmList<>();
+                    for (TVShowResult movie : movieResults){
                         JSONMovie jsonMove = new JSONMovie();
-                        jsonMove.setTitle(movie.getTitle());
+                        jsonMove.setTitle(movie.getName());
                         jsonMove.setId(movie.getId());
                         jsonMove.setOverview(movie.getOverview());
                         jsonMove.setBackdropURL("https://image.tmdb.org/t/p/w300" + movie.getBackdropPath());

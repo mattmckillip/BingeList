@@ -40,16 +40,14 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
         @Override
         public void onBindViewHolder(ContactViewHolder contactViewHolder, int i) {
             JSONCast castMember = contactList.get(i);
-            contactViewHolder.characterTextView.setText(castMember.getCharacterName());
-            contactViewHolder.actorTextView.setText(castMember.getActorName());
+            contactViewHolder.characterTextView.setText(castMember.getActorName());
+            contactViewHolder.actorTextView.setText("as " + castMember.getCharacterName());
 
             Picasso.with(context)
                     .load(castMember.getImagePath())
                     //.placeholder(R.drawable.unkown_person)
                     .error(R.drawable.ic_person_black_24dp)
                     .into(contactViewHolder.actorImageView);
-
-
         }
 
         @Override

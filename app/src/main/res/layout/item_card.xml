@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_image_height"
             android:scaleType="centerCrop" />
+
         <TextView
             android:id="@+id/card_title"
             android:textSize="32sp"
@@ -47,33 +48,24 @@
             android:shadowDy="0.0"
             android:shadowRadius="5.0" />
 
-
         <RelativeLayout
             android:id="@+id/watched_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/watched_blur"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/card_image_height"
                 android:background="#000000"
-                android:alpha=".25"/>
+                android:alpha=".50"/>
 
-            <TextView
-                android:id="@+id/card_watched"
+            <ImageView
+                android:id="@+id/watched_image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/card_image_height"
-                android:gravity="center_horizontal|center_vertical"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textSize="@dimen/article_subheading"
-                android:textColor="#FFFFFF"
-                android:shadowColor="#000000"
-                android:shadowDx="0.0"
-                android:shadowDy="0.0"
-                android:shadowRadius="5.0"
-                android:text="Watched!" />
-
+                android:layout_height="@dimen/card_overlay_image_height"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_playlist_add_check_white_24dp"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -83,25 +75,18 @@
             android:animateLayoutChanges="true"
             >
             <ImageView
+                android:id="@+id/watch_list_blur"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/card_image_height"
                 android:background="#000000"
                 android:alpha=".50"/>
 
-            <TextView
-                android:id="@+id/card_watch_list"
+            <ImageView
+                android:id="@+id/watch_list_image"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/card_image_height"
-                android:gravity="center_horizontal|center_vertical"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textSize="@dimen/article_subheading"
-                android:textColor="#FFFFFF"
-                android:shadowColor="#000000"
-                android:shadowDx="0.0"
-                android:shadowDy="0.0"
-                android:shadowRadius="5.0"
-                android:text="On Watch List!" />
+                android:layout_height="@dimen/card_overlay_image_height"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_dvr_white_24dp"/>
         </RelativeLayout>
 
         <TextView
@@ -111,10 +96,10 @@
             android:layout_below="@+id/card_image"
             android:layout_marginLeft="@dimen/md_keylines"
             android:layout_marginTop="@dimen/md_keylines"
-            android:layout_marginBottom="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="2"
+            android:lines="2"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/article_subheading"/>
 

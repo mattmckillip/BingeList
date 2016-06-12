@@ -21,7 +21,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,7 +30,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,27 +39,48 @@ import android.widget.TextView;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.fragments.BrowseMoviesFragment;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
+import com.example.matt.movieWatchList.viewControllers.fragments.BrowseTVShowsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
  * Provides UI for the main screen.
  */
-public class BrowseActivity extends AppCompatActivity {
+public class BrowseTVShowsActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     Adapter adapterViewPager;
-    private DrawerLayout mDrawerLayout;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.drawer)
+    DrawerLayout mDrawerLayout;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         for(int i = 0; i < toolbar.getChildCount(); i++){
@@ -78,20 +97,13 @@ public class BrowseActivity extends AppCompatActivity {
         }
 
         // Setting ViewPager for each Tabs
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        tabs.getTabAt(0).setIcon(R.drawable.ic_theaters_white_24dp);
-        tabs.getTabAt(1).setIcon(R.drawable.ic_trending_up_white_24dp);
+        tabs.getTabAt(0).setIcon(R.drawable.ic_trending_up_white_24dp);
+        tabs.getTabAt(1).setIcon(R.drawable.ic_theaters_white_24dp);
         tabs.getTabAt(2).setIcon(R.drawable.ic_thumb_up_white_24dp);
-
-
-        // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -107,29 +119,27 @@ public class BrowseActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // Set item in checked state
                         menuItem.setChecked(true);
-                        Adapter adapter = new Adapter(getSupportFragmentManager());
-                        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
 
                         //Check to see which item was being clicked and perform appropriate action
                         switch (menuItem.getItemId()) {
 
                             //Replacing the main content with ContentFragment
-                            case R.id.watch_list_menu_item:
-                                Intent watchListIntent = new Intent(BrowseActivity.this, MainActivity.class);
+                            case R.id.movie_watch_list_menu_item:
+                                Intent watchListIntent = new Intent(BrowseTVShowsActivity.this, MainActivity.class);
                                 startActivity(watchListIntent);
                                 return true;
 
-                            case R.id.browse_menu_item:
+                            case R.id.movie_browse_menu_item:
                                 mDrawerLayout.closeDrawers();
                                 return true;
 
-                            case R.id.search_menu_item:
-                                Intent searchIntent = new Intent(BrowseActivity.this, SearchActivity.class);
+                            case R.id.movie_search_menu_item:
+                                Intent searchIntent = new Intent(BrowseTVShowsActivity.this, SearchActivity.class);
                                 startActivity(searchIntent);
                                 return true;
 
                             case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(BrowseActivity.this, SettingsActivity.class);
+                                Intent settingsIntent = new Intent(BrowseTVShowsActivity.this, SettingsActivity.class);
                                 startActivity(settingsIntent);
                                 return true;
                         }
@@ -141,7 +151,6 @@ public class BrowseActivity extends AppCompatActivity {
                 });
 
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_search_white);
         final Intent intent = new Intent(this, SearchActivity.class);
 
@@ -152,10 +161,10 @@ public class BrowseActivity extends AppCompatActivity {
             }
         });
 
-        TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
         Typeface font = Typeface.
                 createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        //navHeaderText.setTypeface(font);
+        navHeaderText.setTypeface(font);*/
     }
 
     // Add Fragments to Tabs
@@ -165,22 +174,21 @@ public class BrowseActivity extends AppCompatActivity {
 
         Bundle nowShowingBundle = new Bundle();
         nowShowingBundle.putInt("movieType", BrowseMovieType.NOW_SHOWING);
-        BrowseMoviesFragment nowShowingMovies = new BrowseMoviesFragment();
+        BrowseTVShowsFragment nowShowingMovies = new BrowseTVShowsFragment();
         nowShowingMovies.setArguments(nowShowingBundle);
 
         Bundle popularBundle = new Bundle();
         popularBundle.putInt("movieType", BrowseMovieType.POPULAR);
-        BrowseMoviesFragment popularMovies = new BrowseMoviesFragment();
+        BrowseTVShowsFragment popularMovies = new BrowseTVShowsFragment();
         popularMovies.setArguments(popularBundle);
 
         Bundle topRatedBundle = new Bundle();
         topRatedBundle.putInt("movieType", BrowseMovieType.TOP_RATED);
-        BrowseMoviesFragment topRatedMovies = new BrowseMoviesFragment();
+        BrowseTVShowsFragment topRatedMovies = new BrowseTVShowsFragment();
         topRatedMovies.setArguments(topRatedBundle);
 
-
-        adapterViewPager.addFragment(nowShowingMovies, " In Theaters");
         adapterViewPager.addFragment(popularMovies, " Popular");
+        adapterViewPager.addFragment(nowShowingMovies, " Now Airing");
         adapterViewPager.addFragment(topRatedMovies, " Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
@@ -225,28 +233,34 @@ public class BrowseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        MenuItem sortMenuItem = menu.findItem(R.id.action_sort);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        // Inflate the menu; this adds items to the action bar if it is present.
+        /*getMenuInflater().inflate(R.menu.menu_search, menu);
 
         MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                /*UserFeedback.show( "SearchOnQueryTextSubmit: " + query);
-                if( ! searchView.isIconified()) {
-                    searchView.setIconified(true);
-                }
-                myActionMenuItem.collapseActionView();*/
+                Log.d("onQueryTextSubmit()", "HERE");
+
+                Bundle searchBundle = new Bundle();
+                searchBundle.putString("query", query);
+                SearchFragment searchMovies = new SearchFragment();
+                searchMovies.setArguments(searchBundle);
+
+                adapterViewPager.addFragment(searchMovies, " Search");
+                adapterViewPager.notifyDataSetChanged();
                 return false;
             }
             @Override
             public boolean onQueryTextChange(String s) {
-                // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
+                Log.d("onQueryTextChange()", "HERE");
                 return false;
             }
-        });
+        });*/
 
         return true;
     }

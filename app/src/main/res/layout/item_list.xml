@@ -24,8 +24,8 @@
         android:id="@+id/list_avatar"
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
-        app:civ_border_width="2dp"
-        app:civ_border_color="@color/medium_grey"/>
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/black"/>
 
     <TextView
         android:id="@+id/list_title"

@@ -170,8 +170,7 @@
                 android:textColor="?attr/colorAccent"
                 android:text="Plot"
                 android:textSize="@dimen/article_titles"
-                android:layout_marginTop="@dimen/md_keylines"
-                android:layout_marginBottom="@dimen/md_keylines" />
+                android:layout_marginTop="@dimen/md_keylines"/>
 
 
             <!-- sample xml -->

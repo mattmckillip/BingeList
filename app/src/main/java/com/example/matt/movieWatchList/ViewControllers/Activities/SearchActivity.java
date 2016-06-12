@@ -1,11 +1,9 @@
 package com.example.matt.movieWatchList.viewControllers.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -19,18 +17,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.Movie;
-import com.example.matt.movieWatchList.Models.POJO.QueryReturn;
-import com.example.matt.movieWatchList.Models.POJO.Result;
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.MovieResult;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.MovieAPI;
 import com.example.matt.movieWatchList.uitls.SearchMoviesAPI;
-import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
 
 import java.util.ArrayList;
@@ -38,7 +30,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.RealmList;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -48,13 +39,20 @@ import retrofit.Retrofit;
  * Created by Matt on 6/7/2016.
  */
 public class SearchActivity extends AppCompatActivity {
-    Adapter adapterViewPager;
-    private DrawerLayout mDrawerLayout;
     private SearchAdapter searchAdapter;
-    private List<Result> searchResults;
+    private List<MovieResult> searchMovieResults;
 
     @BindView(R.id.search_recycler_view)
     RecyclerView searchRecyclerView;
+
+    @BindView(R.id.search_toolber)
+    Toolbar toolbar;
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.drawer)
+    DrawerLayout mDrawerLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,15 +61,14 @@ public class SearchActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        searchResults = new ArrayList<>();
-        searchAdapter = new SearchAdapter(searchResults, getApplicationContext());
+        searchMovieResults = new ArrayList<>();
+        searchAdapter = new SearchAdapter(searchMovieResults, getApplicationContext());
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         searchRecyclerView.setLayoutManager(castLayoutManager);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
         searchRecyclerView.setAdapter(searchAdapter);
 
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.search_toolber);
         setSupportActionBar(toolbar);
 
         for(int i = 0; i < toolbar.getChildCount(); i++){
@@ -86,9 +83,6 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         }
-        // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -104,23 +98,22 @@ public class SearchActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // Set item in checked state
                         menuItem.setChecked(true);
-                        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
 
                         //Check to see which item was being clicked and perform appropriate action
                         switch (menuItem.getItemId()) {
 
                             //Replacing the main content with ContentFragment
-                            case R.id.watch_list_menu_item:
+                            case R.id.movie_watch_list_menu_item:
                                 Intent watchListIntent = new Intent(SearchActivity.this, MainActivity.class);
                                 startActivity(watchListIntent);
                                 return true;
 
-                            case R.id.browse_menu_item:
-                                Intent browseIntent = new Intent(SearchActivity.this, BrowseActivity.class);
+                            case R.id.movie_browse_menu_item:
+                                Intent browseIntent = new Intent(SearchActivity.this, BrowseMoviesActivity.class);
                                 startActivity(browseIntent);
                                 return true;
 
-                            case R.id.search_menu_item:
+                            case R.id.movie_search_menu_item:
                                 mDrawerLayout.closeDrawers();
                                 return true;
 
@@ -137,10 +130,10 @@ public class SearchActivity extends AppCompatActivity {
                 });
 
 
-        TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
         Typeface font = Typeface.
                 createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        //navHeaderText.setTypeface(font);
+        navHeaderText.setTypeface(font);*/
     }
 
     /*
@@ -154,7 +147,6 @@ public class SearchActivity extends AppCompatActivity {
         MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
 
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -167,15 +159,15 @@ public class SearchActivity extends AppCompatActivity {
 
                 SearchMoviesAPI service = retrofit.create(SearchMoviesAPI.class);
 
-                Call<QueryReturn> call = service.searchKeywords(query.replaceAll(" ", "+"));
+                Call<MovieQueryReturn> call = service.searchKeywords(query.replaceAll(" ", "+"));
 
-                call.enqueue(new Callback<QueryReturn>() {
+                call.enqueue(new Callback<MovieQueryReturn>() {
                     @Override
-                    public void onResponse(retrofit.Response<QueryReturn> response, Retrofit retrofit) {
+                    public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
                         Log.d("getMovie()", "Callback Success");
-                        List<Result> results = response.body().getResults();
+                        List<MovieResult> movieResults = response.body().getMovieResults();
 
-                        searchRecyclerView.setAdapter(new SearchAdapter(results, getApplicationContext()));
+                        searchRecyclerView.setAdapter(new SearchAdapter(movieResults, getApplicationContext()));
                         searchRecyclerView.setFocusable(false);
                     }
 

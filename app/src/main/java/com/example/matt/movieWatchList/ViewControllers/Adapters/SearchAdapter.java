@@ -1,6 +1,7 @@
 package com.example.matt.movieWatchList.viewControllers.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,24 +11,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.Result;
-import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.POJO.MovieResult;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import io.realm.RealmList;
 
 /**
  * Created by Matt on 6/11/2016.
  */
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> {
 
-    private List<Result> movies;
+    private List<MovieResult> movies;
     private Context context;
 
-    public SearchAdapter(List<Result> movies, Context context) {
+    public SearchAdapter(List<MovieResult> movies, Context context) {
         this.movies = movies;
         this.context = context;
     }
@@ -39,7 +38,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(SearchViewHolder searchViewHolder, int i) {
-        Result movie = movies.get(i);
+        MovieResult movie = movies.get(i);
         searchViewHolder.movieTitle.setText(movie.getTitle());
         Typeface type = Typeface.createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
         searchViewHolder.movieTitle.setTypeface(type);
@@ -48,9 +47,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         searchViewHolder.watchListLayout.setVisibility(View.GONE);
 
         Picasso.with(context)
-                .load("https://image.tmdb.org/t/p/w300//" + movie.getBackdropPath())
+                .load("https://image.tmdb.org/t/p/w400//" + movie.getBackdropPath())
                 //.placeholder(R.drawable.unkown_person)
-                .error(R.drawable.generic_movie_background)
+                //.error(R.drawable.generic_movie_background)
                 .into(searchViewHolder.movieImage);
     }
 
@@ -59,6 +58,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         View itemView = LayoutInflater.
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_card, viewGroup, false);
+
+
 
         return new SearchViewHolder(itemView);
     }
@@ -80,6 +81,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
             watchedLayout = (RelativeLayout)  v.findViewById(R.id.watched_layout);
             watchListLayout = (RelativeLayout)  v.findViewById(R.id.watch_list_layout);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    MovieResult movie = movies.get(getAdapterPosition());
+
+                    Intent intent = new Intent(context, TmdbActivity.class);
+                    intent.putExtra("movieId", movie.getId());
+                    context.startActivity(intent);
+                }
+            });;
         }
     }
 }

@@ -14,24 +14,65 @@
   ~ limitations under the License.
   -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/watch_list_menu_item"
-            android:icon="@drawable/ic_dvr_black_24dp"
-            android:tint="@color/button_grey"
-            android:title="Watch List" />
-        <item
-            android:id="@+id/browse_menu_item"
-            android:icon="@drawable/ic_whatshot_black_24dp"
-            android:tint="@color/button_grey"
-            android:title="Browse" />
 
-        <item
-            android:id="@+id/search_menu_item"
-            android:icon="@drawable/ic_search_black_24dp"
-            android:tint="@color/button_grey"
-            android:title="Search" />
+    <item
+        android:title="Movies"
+        android:id="@+id/movie_menu_item">
+        <menu>
+            <group
+                android:id="@+id/movies_group"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/movie_watch_list_menu_item"
+                    android:icon="@drawable/ic_dvr_black_24dp"
+                    android:tint="@color/button_grey"
+                    android:title="Watch List" />
+                <item
+                    android:id="@+id/movie_browse_menu_item"
+                    android:icon="@drawable/ic_whatshot_black_24dp"
+                    android:tint="@color/button_grey"
+                    android:title="Browse" />
 
+                <item
+                    android:id="@+id/movie_search_menu_item"
+                    android:icon="@drawable/ic_search_black_24dp"
+                    android:tint="@color/button_grey"
+                    android:title="Search" />
+            </group>
+        </menu>
+    </item>
+
+    <item
+        android:title="TV"
+        android:id="@+id/tv_menu_item">
+        <menu>
+            <group
+                android:id="@+id/tv_group"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/tv_watch_list_menu_item"
+                    android:icon="@drawable/ic_dvr_black_24dp"
+                    android:tint="@color/button_grey"
+                    android:title="Watch List"
+                    />
+                <item
+                    android:id="@+id/tv_browse_menu_item"
+                    android:icon="@drawable/ic_whatshot_black_24dp"
+                    android:tint="@color/button_grey"
+                    android:title="Browse" />
+
+                <item
+                    android:id="@+id/tv_search_menu_item"
+                    android:icon="@drawable/ic_search_black_24dp"
+                    android:tint="@color/button_grey"
+                    android:title="Search" />
+            </group>
+
+        </menu>
+    </item>
+
+    <group android:id="@+id/settings_group"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/settings_menu_item"
             android:icon="@drawable/ic_settings_black_24dp"
@@ -44,4 +85,5 @@
             android:tint="@color/button_grey"
             android:title="About" />
     </group>
+
 </menu>

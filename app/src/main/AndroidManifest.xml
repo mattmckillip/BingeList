@@ -23,16 +23,20 @@
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.BrowseActivity">
+            android:name=".viewControllers.activities.BrowseMoviesActivity">
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.BrowseTVShowsActivity">
         </activity>
 
         <activity
             android:name=".viewControllers.activities.TmdbActivity"
-            android:parentActivityName=".viewControllers.activities.BrowseActivity"
+            android:parentActivityName=".viewControllers.activities.BrowseMoviesActivity"
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.BrowseActivity" />
+                android:value=".viewControllers.activities.BrowseMoviesActivity" />
         </activity>
 
         <activity
