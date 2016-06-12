@@ -37,7 +37,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.fragments.BrowseMoviesFragment;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.viewControllers.fragments.BrowseTVShowsFragment;
 

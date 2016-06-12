@@ -38,8 +38,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
-import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.Crew;

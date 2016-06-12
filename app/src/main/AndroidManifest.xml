@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="MyApplication"
+        android:name="com.example.matt.movieWatchList.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <activity android:name=".viewControllers.activities.MainActivity">
+        <activity android:name="com.example.matt.movieWatchList.viewControllers.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,38 +23,38 @@
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.BrowseMoviesActivity">
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.BrowseMoviesActivity">
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.BrowseTVShowsActivity">
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.BrowseTVShowsActivity">
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.TmdbActivity"
-            android:parentActivityName=".viewControllers.activities.BrowseMoviesActivity"
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity"
+            android:parentActivityName="com.example.matt.movieWatchList.viewControllers.activities.BrowseMoviesActivity"
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.BrowseMoviesActivity" />
+                android:value="com.example.matt.movieWatchList.viewControllers.activities.BrowseMoviesActivity" />
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.WatchListDetailActivity"
-            android:parentActivityName=".viewControllers.activities.MainActivity"
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.WatchListDetailActivity"
+            android:parentActivityName="com.example.matt.movieWatchList.viewControllers.activities.MainActivity"
             android:theme="@style/Theme.Slidr.Slidable">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.MainActivity" />
+                android:value="com.example.matt.movieWatchList.viewControllers.activities.MainActivity" />
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.SearchActivity">
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.SearchActivity">
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.SettingsActivity">
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity">
         </activity>
 
 

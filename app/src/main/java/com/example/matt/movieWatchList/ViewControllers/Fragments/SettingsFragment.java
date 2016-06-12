@@ -2,8 +2,6 @@ package com.example.matt.movieWatchList.viewControllers.fragments;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.view.ViewGroup;
-import android.widget.Toolbar;
 
 import com.example.matt.movieWatchList.R;
 

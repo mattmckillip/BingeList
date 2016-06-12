@@ -1,11 +1,9 @@
 package com.example.matt.movieWatchList.viewControllers.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.fragments.SettingsFragment;

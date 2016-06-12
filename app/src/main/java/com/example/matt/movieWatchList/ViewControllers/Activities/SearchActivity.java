@@ -146,6 +146,8 @@ public class SearchActivity extends AppCompatActivity {
 
         MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setIconified(false);
+        searchView.clearFocus();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

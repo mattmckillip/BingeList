@@ -42,7 +42,6 @@ import com.example.matt.movieWatchList.viewControllers.activities.WatchListDetai
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
  * Provides UI for the view with Cards.

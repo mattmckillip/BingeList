@@ -127,16 +127,16 @@ public class BrowseMoviesFragment extends Fragment {
             call.enqueue(new Callback<MovieQueryReturn>() {
                 @Override
                 public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
-                    Log.d("BrowseMovies()", "Callback Success");
+                    Log.d("BrowseMovies()",response.body().getMovieResults().toString());
                     List<MovieResult> movieResults = response.body().getMovieResults();
-                    browseMoviesList = new RealmList<JSONMovie>();
+                    browseMoviesList = new RealmList<>();
                     for (MovieResult movie : movieResults){
                         JSONMovie jsonMove = new JSONMovie();
                         jsonMove.setTitle(movie.getTitle());
                         jsonMove.setId(movie.getId());
                         jsonMove.setOverview(movie.getOverview());
                         jsonMove.setBackdropURL("https://image.tmdb.org/t/p/w300" + movie.getBackdropPath());
-
+                        Log.d("browse movies", jsonMove.getTitle());
                         browseMoviesList.add(jsonMove);
                     }
                     Log.d("BrowseMovies()", Integer.toString(browseMoviesList.size()));
