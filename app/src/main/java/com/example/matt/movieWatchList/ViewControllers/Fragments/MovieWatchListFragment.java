@@ -164,7 +164,6 @@ public class MovieWatchListFragment extends Fragment {
                     this.activity = activity;
                     movieList = movies;
                 }
-
             }
 
             @Override

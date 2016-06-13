@@ -54,8 +54,8 @@ import io.realm.RealmMigration;
 /**
  * Provides UI for the main screen.
  */
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+public class WatchListActivity extends AppCompatActivity {
+    private static final String TAG = WatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
     private DrawerLayout mDrawerLayout;
 
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Movie Watch List");
         applyFontForToolbarTitle(this);
 
         // Setting ViewPager for each Tabs
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         } catch(NullPointerException npe) {
             //pass
         }
-
 
         // Create Navigation drawer and inlfate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                                 Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
                                         Snackbar.LENGTH_LONG).show();
 
-                                Intent i = new Intent(MainActivity.this, BrowseMoviesActivity.class);
+                                Intent i = new Intent(WatchListActivity.this, BrowseMoviesActivity.class);
                                 startActivity(i);
                                 return true;
 
@@ -145,17 +145,17 @@ public class MainActivity extends AppCompatActivity {
                                 Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
                                         Snackbar.LENGTH_LONG).show();
 
-                                Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
+                                Intent searchIntent = new Intent(WatchListActivity.this, SearchActivity.class);
                                 startActivity(searchIntent);
                                 return true;
 
                             case R.id.tv_browse_menu_item:
-                                Intent browseTVShowsIntent = new Intent(MainActivity.this, BrowseTVShowsActivity.class);
+                                Intent browseTVShowsIntent = new Intent(WatchListActivity.this, BrowseTVShowsActivity.class);
                                 startActivity(browseTVShowsIntent);
                                 return true;
 
                             case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                                Intent settingsIntent = new Intent(WatchListActivity.this, SettingsActivity.class);
                                 startActivity(settingsIntent);
                                 return true;
                         }
@@ -274,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-
 
         /*int id = item.getItemId();
         //noinspection SimplifiableIfStatement

@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <activity android:name="com.example.matt.movieWatchList.viewControllers.activities.MainActivity">
+        <activity android:name=".viewControllers.activities.WatchListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -41,12 +41,12 @@
 
         <activity
             android:name="com.example.matt.movieWatchList.viewControllers.activities.WatchListDetailActivity"
-            android:parentActivityName="com.example.matt.movieWatchList.viewControllers.activities.MainActivity"
+            android:parentActivityName=".viewControllers.activities.WatchListActivity"
             android:theme="@style/Theme.Slidr.Slidable">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.matt.movieWatchList.viewControllers.activities.MainActivity" />
+                android:value=".viewControllers.activities.WatchListActivity" />
         </activity>
 
         <activity

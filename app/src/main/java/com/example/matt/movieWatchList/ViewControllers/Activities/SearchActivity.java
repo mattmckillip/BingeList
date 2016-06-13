@@ -104,7 +104,7 @@ public class SearchActivity extends AppCompatActivity {
 
                             //Replacing the main content with ContentFragment
                             case R.id.movie_watch_list_menu_item:
-                                Intent watchListIntent = new Intent(SearchActivity.this, MainActivity.class);
+                                Intent watchListIntent = new Intent(SearchActivity.this, WatchListActivity.class);
                                 startActivity(watchListIntent);
                                 return true;
 

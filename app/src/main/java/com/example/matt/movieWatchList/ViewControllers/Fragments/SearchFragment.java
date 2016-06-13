@@ -44,7 +44,7 @@ import retrofit.Retrofit;
  */
 public class SearchFragment extends Fragment {
     private List<MovieResult> searchMovieResults;
-    private static RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private SearchAdapter adapter;
 
     @Override
@@ -54,15 +54,13 @@ public class SearchFragment extends Fragment {
 
         searchMovieResults = new ArrayList<>();
 
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
         adapter = new SearchAdapter(searchMovieResults, getActivity());
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager searchLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(searchLayoutManager);
-        this.recyclerView = recyclerView;
-
         searchMovies("fight club");
         //searchMovies(query);
 

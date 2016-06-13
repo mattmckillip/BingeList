@@ -51,7 +51,7 @@ import butterknife.ButterKnife;
  * Provides UI for the main screen.
  */
 public class BrowseTVShowsActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = WatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
 
     @BindView(R.id.toolbar)
@@ -124,7 +124,7 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
 
                             //Replacing the main content with ContentFragment
                             case R.id.movie_watch_list_menu_item:
-                                Intent watchListIntent = new Intent(BrowseTVShowsActivity.this, MainActivity.class);
+                                Intent watchListIntent = new Intent(BrowseTVShowsActivity.this, WatchListActivity.class);
                                 startActivity(watchListIntent);
                                 return true;
 

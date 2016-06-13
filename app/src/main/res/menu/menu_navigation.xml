@@ -26,24 +26,24 @@
                     android:id="@+id/movie_watch_list_menu_item"
                     android:icon="@drawable/ic_dvr_black_24dp"
                     android:tint="@color/button_grey"
-                    android:title="Watch List" />
+                    android:title="Movie Watch List" />
                 <item
                     android:id="@+id/movie_browse_menu_item"
                     android:icon="@drawable/ic_whatshot_black_24dp"
                     android:tint="@color/button_grey"
-                    android:title="Browse" />
+                    android:title="Browse Movies" />
 
                 <item
                     android:id="@+id/movie_search_menu_item"
                     android:icon="@drawable/ic_search_black_24dp"
                     android:tint="@color/button_grey"
-                    android:title="Search" />
+                    android:title="Search Movies" />
             </group>
         </menu>
     </item>
 
     <item
-        android:title="TV"
+        android:title="Shows"
         android:id="@+id/tv_menu_item">
         <menu>
             <group
@@ -53,19 +53,19 @@
                     android:id="@+id/tv_watch_list_menu_item"
                     android:icon="@drawable/ic_dvr_black_24dp"
                     android:tint="@color/button_grey"
-                    android:title="Watch List"
+                    android:title="Show Watch List"
                     />
                 <item
                     android:id="@+id/tv_browse_menu_item"
                     android:icon="@drawable/ic_whatshot_black_24dp"
                     android:tint="@color/button_grey"
-                    android:title="Browse" />
+                    android:title="Browse Shows" />
 
                 <item
                     android:id="@+id/tv_search_menu_item"
                     android:icon="@drawable/ic_search_black_24dp"
                     android:tint="@color/button_grey"
-                    android:title="Search" />
+                    android:title="Search Shows" />
             </group>
 
         </menu>
