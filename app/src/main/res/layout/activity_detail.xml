@@ -149,19 +149,6 @@
                 android:layout_marginBottom="@dimen/md_keylines"
                 android:paddingLeft="@dimen/md_keylines"
                 />
-            <TextView
-                android:text="Release Date"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/md_keylines"
-                />
-            <TextView
-                android:id="@+id/release_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/md_keylines"
-                />
 
             <TextView
                 android:id="@+id/plot_title"

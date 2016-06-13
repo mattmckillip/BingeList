@@ -8,12 +8,15 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,14 +24,13 @@ import android.widget.TextView;
 import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.Crew;
-import com.example.matt.movieWatchList.Models.POJO.Movie;
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
+import com.example.matt.movieWatchList.Models.POJO.movies.Movie;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.MovieAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity;
+import com.example.matt.movieWatchList.uitls.API.MovieAPI;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesDetailActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -64,7 +66,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_card, viewGroup, false);
 
-        return new  BrowseMoviesViewHolder(itemView);
+        return new  BrowseMoviesViewHolder(itemView, activity, movieList);
     }
 
     @Override
@@ -115,6 +117,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         if (watchListMovies.size() == 1) {
             holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
         }
+
+
     }
 
     @Override
@@ -122,7 +126,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         return movieList.size();
     }
 
-    public class BrowseMoviesViewHolder extends RecyclerView.ViewHolder {
+    public static class BrowseMoviesViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.card_title)
         TextView movieTitle;
@@ -139,7 +143,11 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         @BindView(R.id.watch_list_layout)
         RelativeLayout watchListLayout;
 
-        public BrowseMoviesViewHolder(View v) {
+        @BindView(R.id.more_button)
+        ImageButton moreOptionsButton;
+
+
+        public BrowseMoviesViewHolder(View v, final Activity activity, final List<JSONMovie> movieList) {
             super(v);
 
             ButterKnife.bind(this, v);
@@ -150,11 +158,32 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                     Context context = v.getContext();
                     JSONMovie movie = movieList.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, TmdbActivity.class);
+                    Intent intent = new Intent(context, BrowseMoviesDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }
             });
+
+            moreOptionsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Creating the instance of PopupMenu
+                    PopupMenu popup = new PopupMenu(activity, moreOptionsButton);
+                    //Inflating the Popup using xml file
+                    popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+
+                    //registering popup with OnMenuItemClickListener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Log.d("More options", "clicked");
+                            return true;
+                        }
+                    });
+
+                    popup.show();//showing popup menu
+                }
+            });//closing the setOnClickListener method
+
 
             Button button = (Button)itemView.findViewById(R.id.action_button);
             button.setOnClickListener(new View.OnClickListener(){

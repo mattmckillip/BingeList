@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.Models.POJO;
+package com.example.matt.movieWatchList.Models.POJO.shows;
 
 import java.util.ArrayList;
 import java.util.List;

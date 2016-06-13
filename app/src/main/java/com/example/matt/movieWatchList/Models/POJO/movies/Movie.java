@@ -1,6 +1,8 @@
 
-package com.example.matt.movieWatchList.Models.POJO;
+package com.example.matt.movieWatchList.Models.POJO.movies;
 
+import com.example.matt.movieWatchList.Models.POJO.Genre;
+import com.example.matt.movieWatchList.Models.POJO.SpokenLanguage;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

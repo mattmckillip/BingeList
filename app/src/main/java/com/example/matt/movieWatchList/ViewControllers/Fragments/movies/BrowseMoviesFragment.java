@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.fragments;
+package com.example.matt.movieWatchList.viewControllers.fragments.movies;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,26 +24,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
-import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.uitls.BrowseMoviesAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.WatchListDetailActivity;
+import com.example.matt.movieWatchList.uitls.API.BrowseMoviesAPI;
 import com.example.matt.movieWatchList.viewControllers.adapters.BrowseMoviesAdapter;
 
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;

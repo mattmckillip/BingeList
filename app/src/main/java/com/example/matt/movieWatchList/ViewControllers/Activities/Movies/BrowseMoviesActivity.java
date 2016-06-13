@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.activities;
+package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,7 +22,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,8 +41,9 @@ import android.widget.TextView;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.viewControllers.fragments.BrowseMoviesFragment;
-import com.example.matt.movieWatchList.viewControllers.fragments.MovieWatchListFragment;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
+import com.example.matt.movieWatchList.viewControllers.fragments.movies.BrowseMoviesFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ import io.realm.RealmMigration;
  * Provides UI for the main screen.
  */
 public class BrowseMoviesActivity extends AppCompatActivity {
-    private static final String TAG = WatchListActivity.class.getSimpleName();
+    private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
     private DrawerLayout mDrawerLayout;
 
@@ -127,7 +127,7 @@ public class BrowseMoviesActivity extends AppCompatActivity {
 
                             //Replacing the main content with ContentFragment
                             case R.id.movie_watch_list_menu_item:
-                                Intent i = new Intent(BrowseMoviesActivity.this, WatchListActivity.class);
+                                Intent i = new Intent(BrowseMoviesActivity.this, MovieWatchListActivity.class);
                                 startActivity(i);
                                 return true;
 
@@ -136,7 +136,7 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                                 return true;
 
                             case R.id.movie_search_menu_item:
-                                Intent searchIntent = new Intent(BrowseMoviesActivity.this, SearchActivity.class);
+                                Intent searchIntent = new Intent(BrowseMoviesActivity.this, SearchMoviesActivity.class);
                                 startActivity(searchIntent);
                                 return true;
 

@@ -14,58 +14,29 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.fragments;
+package com.example.matt.movieWatchList.viewControllers.fragments.shows;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.Cast;
-import com.example.matt.movieWatchList.Models.POJO.Credits;
-import com.example.matt.movieWatchList.Models.POJO.Crew;
-import com.example.matt.movieWatchList.Models.POJO.Movie;
-import com.example.matt.movieWatchList.Models.POJO.TVShowQueryReturn;
-import com.example.matt.movieWatchList.Models.POJO.TVShowResult;
-import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShowQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShowResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
-import com.example.matt.movieWatchList.MyApplication;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.BrowseTVShowsAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity;
+import com.example.matt.movieWatchList.uitls.API.BrowseTVShowsAPI;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.uitls.MovieAPI;
-import com.example.matt.movieWatchList.viewControllers.adapters.BrowseMoviesAdapter;
 import com.example.matt.movieWatchList.viewControllers.adapters.BrowseTVShowsAdapter;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -75,15 +46,15 @@ import retrofit.Retrofit;
  * Provides UI for the view with Cards.
  */
 public class BrowseTVShowsFragment extends Fragment {
-    private RealmList<JSONMovie> data;
+    private RealmList<JSONShow> data;
     private RecyclerView recyclerView;
     private BrowseTVShowsAdapter adapter;
-    private Integer movieType;
+    private Integer showType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        movieType = getArguments().getInt("movieType");
+        showType = getArguments().getInt("showType");
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         recyclerView.setAdapter(adapter);
@@ -104,11 +75,11 @@ public class BrowseTVShowsFragment extends Fragment {
         BrowseTVShowsAPI service = retrofit.create(BrowseTVShowsAPI.class);
 
         Call<TVShowQueryReturn> call;
-        if (movieType == BrowseMovieType.POPULAR) {
+        if (showType == BrowseMovieType.POPULAR) {
             call = service.getPopularTVShows();
-        } else if (movieType == BrowseMovieType.NOW_SHOWING) {
+        } else if (showType == BrowseMovieType.NOW_SHOWING) {
             call = service.getAiringTodayTVShows();
-        } else if (movieType == BrowseMovieType.TOP_RATED) {
+        } else if (showType == BrowseMovieType.TOP_RATED) {
             call = service.getTopRatedTVShows();
         } else {
             call = null;
@@ -120,14 +91,14 @@ public class BrowseTVShowsFragment extends Fragment {
                     Log.d("Browsetv()", response.raw().toString());
                     List<TVShowResult> movieResults = response.body().getResults();
                     data = new RealmList<>();
-                    for (TVShowResult movie : movieResults){
-                        JSONMovie jsonMove = new JSONMovie();
-                        jsonMove.setTitle(movie.getName());
-                        jsonMove.setId(movie.getId());
-                        jsonMove.setOverview(movie.getOverview());
-                        jsonMove.setBackdropURL("https://image.tmdb.org/t/p/w342" + movie.getBackdropPath());
+                    for (TVShowResult show : movieResults){
+                        JSONShow jsonShow = new JSONShow();
+                        jsonShow.setName(show.getName());
+                        jsonShow.setId(show.getId());
+                        jsonShow.setOverview(show.getOverview());
+                        jsonShow.setBackdropPath("https://image.tmdb.org/t/p/w342" + show.getBackdropPath());
 
-                        data.add(jsonMove);
+                        data.add(jsonShow);
                     }
                     Log.d("BrowseMovies()", Integer.toString(data.size()));
                     adapter = new BrowseTVShowsAdapter(data, getActivity());

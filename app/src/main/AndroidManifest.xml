@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <activity android:name=".viewControllers.activities.WatchListActivity">
+        <activity android:name=".viewControllers.activities.movies.MovieWatchListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -23,34 +23,43 @@
         </activity>
 
         <activity
-            android:name="com.example.matt.movieWatchList.viewControllers.activities.BrowseMoviesActivity">
+            android:name=".viewControllers.activities.movies.BrowseMoviesActivity">
         </activity>
 
         <activity
-            android:name="com.example.matt.movieWatchList.viewControllers.activities.BrowseTVShowsActivity">
+            android:name=".viewControllers.activities.shows.BrowseTVShowsActivity">
         </activity>
 
         <activity
-            android:name="com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity"
-            android:parentActivityName="com.example.matt.movieWatchList.viewControllers.activities.BrowseMoviesActivity"
+            android:name=".viewControllers.activities.movies.BrowseMoviesDetailActivity"
+            android:parentActivityName=".viewControllers.activities.movies.BrowseMoviesActivity"
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.matt.movieWatchList.viewControllers.activities.BrowseMoviesActivity" />
+                android:value=".viewControllers.activities.movies.BrowseMoviesActivity" />
         </activity>
 
         <activity
-            android:name="com.example.matt.movieWatchList.viewControllers.activities.WatchListDetailActivity"
-            android:parentActivityName=".viewControllers.activities.WatchListActivity"
+            android:name=".viewControllers.activities.shows.BrowseTVShowsDetailActivity"
+            android:parentActivityName=".viewControllers.activities.shows.BrowseTVShowsActivity"
+            android:theme="@style/Theme.Slidr.Slidable">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".viewControllers.activities.shows.BrowseTVShowsActivity" />
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.movies.MovieWatchListDetailActivity"
+            android:parentActivityName=".viewControllers.activities.movies.MovieWatchListActivity"
             android:theme="@style/Theme.Slidr.Slidable">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.WatchListActivity" />
+                android:value=".viewControllers.activities.movies.MovieWatchListActivity" />
         </activity>
 
         <activity
-            android:name="com.example.matt.movieWatchList.viewControllers.activities.SearchActivity">
+            android:name=".viewControllers.activities.movies.SearchMoviesActivity">
         </activity>
 
         <activity

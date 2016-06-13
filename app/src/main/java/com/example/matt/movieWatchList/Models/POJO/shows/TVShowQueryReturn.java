@@ -1,19 +1,19 @@
-package com.example.matt.movieWatchList.Models.POJO;
+package com.example.matt.movieWatchList.Models.POJO.shows;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-public class MovieQueryReturn {
+public class TVShowQueryReturn {
 
     @SerializedName("page")
     @Expose
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<MovieResult> movieResults = new ArrayList<MovieResult>();
+    private List<TVShowResult> results = new ArrayList<TVShowResult>();
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
@@ -42,19 +42,19 @@ public class MovieQueryReturn {
     /**
      * 
      * @return
-     *     The movieResults
+     *     The results
      */
-    public List<MovieResult> getMovieResults() {
-        return movieResults;
+    public List<TVShowResult> getResults() {
+        return results;
     }
 
     /**
      * 
-     * @param movieResults
-     *     The movieResults
+     * @param results
+     *     The results
      */
-    public void setMovieResults(List<MovieResult> movieResults) {
-        this.movieResults = movieResults;
+    public void setResults(List<TVShowResult> results) {
+        this.results = results;
     }
 
     /**

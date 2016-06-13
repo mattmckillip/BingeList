@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.activities;
+package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -30,13 +30,13 @@ import android.widget.TextView;
 import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.Crew;
-import com.example.matt.movieWatchList.Models.POJO.Movie;
+import com.example.matt.movieWatchList.Models.POJO.movies.Movie;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
-import com.example.matt.movieWatchList.uitls.MovieAPI;
+import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
@@ -60,7 +60,7 @@ import retrofit.Retrofit;
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
-public class TmdbActivity extends AppCompatActivity {
+public class BrowseMoviesDetailActivity extends AppCompatActivity {
     Integer movieID;
     Bitmap thisBitmap;
     private JSONMovie realmMovie;
@@ -113,9 +113,6 @@ public class TmdbActivity extends AppCompatActivity {
 
     @BindView(R.id.runtime)
     TextView runtime;
-
-    @BindView(R.id.release_date)
-    TextView releaseDate;
 
     @BindView(R.id.user_rating)
     TextView userRating;
@@ -300,7 +297,6 @@ public class TmdbActivity extends AppCompatActivity {
         plot.setText(realmMovie.getOverview());
         stars.setRating(realmMovie.getVote_average().floatValue());
         runtime.setText(Integer.toString(realmMovie.getRuntime()) + " min");
-        releaseDate.setText(realmMovie.getReleaseDate());
         userRating.setText(Double.toString(realmMovie.getVote_average())+ "/10");
 
 

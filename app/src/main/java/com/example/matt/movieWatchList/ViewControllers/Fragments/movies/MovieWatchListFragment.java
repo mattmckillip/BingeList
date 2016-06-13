@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.fragments;
+package com.example.matt.movieWatchList.viewControllers.fragments.movies;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,7 +37,7 @@ import android.widget.TextView;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.activities.WatchListDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListDetailActivity;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -82,7 +82,7 @@ public class MovieWatchListFragment extends Fragment {
                     public void onClick(View v) {
                         Context context = v.getContext();
                         JSONMovie movie = movieList.get(getAdapterPosition());
-                        Intent intent = new Intent(context, WatchListDetailActivity.class);
+                        Intent intent = new Intent(context, MovieWatchListDetailActivity.class);
                         intent.putExtra("movieId", movie.getId());
                         context.startActivity(intent);
                     }

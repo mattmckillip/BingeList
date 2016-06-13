@@ -1,10 +1,10 @@
-package com.example.matt.movieWatchList.uitls;
+package com.example.matt.movieWatchList.uitls.API;
 
 /**
  * Created by Matt on 6/7/2016.
  */
 
-import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 
 import retrofit.Call;
 import retrofit.http.GET;

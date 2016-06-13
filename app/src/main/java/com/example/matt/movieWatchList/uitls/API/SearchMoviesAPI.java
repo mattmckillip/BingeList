@@ -1,6 +1,6 @@
-package com.example.matt.movieWatchList.uitls;
+package com.example.matt.movieWatchList.uitls.API;
 
-import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 
 import retrofit.Call;
 import retrofit.http.GET;

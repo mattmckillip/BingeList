@@ -6,34 +6,22 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.Cast;
-import com.example.matt.movieWatchList.Models.POJO.Credits;
-import com.example.matt.movieWatchList.Models.POJO.Crew;
-import com.example.matt.movieWatchList.Models.POJO.Movie;
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
-import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.MovieAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsDetailActivity;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,20 +29,16 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
 
 /**
  * Created by Matt on 6/12/2016.
  */
 public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdapter.BrowseTVShowsViewHolder> {
-    private RealmList<JSONMovie> movieList;
+    private RealmList<JSONShow> showList;
     private Activity activity;
 
-    public BrowseTVShowsAdapter(RealmList<JSONMovie> movieList, Activity activity) {
-        this.movieList = movieList;
+    public BrowseTVShowsAdapter(RealmList<JSONShow> showList, Activity activity) {
+        this.showList = showList;
         this.activity = activity;
     }
 
@@ -76,7 +60,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.GONE);
         holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.GONE);
 
-        String path = movieList.get(position).getBackdropURL();
+        String path = showList.get(position).getBackdropPath();
 
         if (path != null) {
             Picasso.with(activity.getApplicationContext()).load(path).into(coverArt, new com.squareup.picasso.Callback() {
@@ -85,7 +69,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     Bitmap bitmap = ((BitmapDrawable) coverArt.getDrawable()).getBitmap(); // Ew!
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    movieList.get(position).setBackdropBitmap(stream.toByteArray());
+                    showList.get(position).setBackdropBitmap(stream.toByteArray());
                 }
 
                 @Override
@@ -95,22 +79,22 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
             title.setVisibility(View.VISIBLE);
         }
 
-        title.setText(movieList.get(position).getTitle());
+        title.setText(showList.get(position).getName());
         Typeface type = Typeface.createFromAsset(this.activity.getAssets(), "fonts/Lobster-Regular.ttf");
         title.setTypeface(type);
-        overview.setText(movieList.get(position).getOverview());
+        overview.setText(showList.get(position).getOverview());
 
         // Build the query looking at all users:
         Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
         RealmQuery<JSONMovie> watchedQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id",movieList.get(position).getId()).findAll();
+        RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id",showList.get(position).getId()).findAll();
         if (watchedMovies.size() == 1) {
             holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
         }
 
         RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id",movieList.get(position).getId()).findAll();
+        RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id",showList.get(position).getId()).findAll();
 
         if (watchListMovies.size() == 1) {
             holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
@@ -119,7 +103,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        return showList.size();
     }
 
     public class BrowseTVShowsViewHolder extends RecyclerView.ViewHolder {
@@ -144,17 +128,17 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
             ButterKnife.bind(this, v);
 
-            /*itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    JSONMovie movie = movieList.get(getAdapterPosition());
+                    JSONShow show = showList.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, TmdbActivity.class);
-                    intent.putExtra("movieId", movie.getId());
+                    Intent intent = new Intent(context, BrowseTVShowsDetailActivity.class);
+                    intent.putExtra("showID", show.getId());
                     context.startActivity(intent);
                 }
-            });*/
+            });
 
             /*Button button = (Button)itemView.findViewById(R.id.action_button);
             button.setOnClickListener(new View.OnClickListener(){

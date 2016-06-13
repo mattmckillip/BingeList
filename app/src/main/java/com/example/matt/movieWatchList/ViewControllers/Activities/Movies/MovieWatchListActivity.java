@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.activities;
+package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,78 +33,79 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.viewControllers.fragments.BrowseTVShowsFragment;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
+import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
 
 
 /**
  * Provides UI for the main screen.
  */
-public class BrowseTVShowsActivity extends AppCompatActivity {
-    private static final String TAG = WatchListActivity.class.getSimpleName();
+public class MovieWatchListActivity extends AppCompatActivity {
+    private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.viewpager)
-    ViewPager viewPager;
-
-    @BindView(R.id.tabs)
-    TabLayout tabs;
-
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-
-    @BindView(R.id.drawer)
-    DrawerLayout mDrawerLayout;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ButterKnife.bind(this);
+        // Instantiate realms
+        RealmConfiguration config1 = new RealmConfiguration.Builder(this)
+                .name("default")
+                .schemaVersion(6)
+                .migration(new RealmMigration() {
+                    @Override
+                    public long execute(Realm realm, long version) {
+                        return 6;
+                    }
+                })
+                .build();
+
+        Realm.setDefaultConfiguration(config1);
+        Realm uiRealm =  Realm.getInstance(getApplicationContext());
+
+        ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 
         // Adding Toolbar to Main screen
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        for(int i = 0; i < toolbar.getChildCount(); i++){
-            View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-                if(tv.getText().equals(this.getTitle())){
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
-        }
+        getSupportActionBar().setTitle("Movie Watch List");
+        applyFontForToolbarTitle(this);
 
         // Setting ViewPager for each Tabs
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         // Set Tabs inside Toolbar
+        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        tabs.getTabAt(0).setIcon(R.drawable.ic_trending_up_white_24dp);
-        tabs.getTabAt(1).setIcon(R.drawable.ic_theaters_white_24dp);
-        tabs.getTabAt(2).setIcon(R.drawable.ic_thumb_up_white_24dp);
+        try {
+            tabs.getTabAt(0).setIcon(R.drawable.ic_dvr_white_24dp);
+            tabs.getTabAt(1).setIcon(R.drawable.ic_playlist_add_check_white_24dp);
+        } catch(NullPointerException npe) {
+            //pass
+        }
+
+        // Create Navigation drawer and inlfate layout
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -118,30 +121,49 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         // Set item in checked state
                         menuItem.setChecked(true);
+                        Adapter adapter = new Adapter(getSupportFragmentManager());
+                        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+
 
                         //Check to see which item was being clicked and perform appropriate action
                         switch (menuItem.getItemId()) {
 
                             //Replacing the main content with ContentFragment
-                            case R.id.movie_watch_list_menu_item:
-                                Intent watchListIntent = new Intent(BrowseTVShowsActivity.this, WatchListActivity.class);
-                                startActivity(watchListIntent);
-                                return true;
 
-                            case R.id.movie_browse_menu_item:
+
+                            case R.id.movie_watch_list_menu_item:
                                 mDrawerLayout.closeDrawers();
                                 return true;
 
+                            case R.id.movie_browse_menu_item:
+                                Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
+                                        Snackbar.LENGTH_LONG).show();
+
+                                Intent i = new Intent(MovieWatchListActivity.this, BrowseMoviesActivity.class);
+                                startActivity(i);
+                                return true;
+
                             case R.id.movie_search_menu_item:
-                                Intent searchIntent = new Intent(BrowseTVShowsActivity.this, SearchActivity.class);
+                                Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
+                                        Snackbar.LENGTH_LONG).show();
+
+                                Intent searchIntent = new Intent(MovieWatchListActivity.this, SearchMoviesActivity.class);
                                 startActivity(searchIntent);
                                 return true;
 
+                            case R.id.tv_browse_menu_item:
+                                Intent browseTVShowsIntent = new Intent(MovieWatchListActivity.this, BrowseTVShowsActivity.class);
+                                startActivity(browseTVShowsIntent);
+                                return true;
+
                             case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(BrowseTVShowsActivity.this, SettingsActivity.class);
+                                Intent settingsIntent = new Intent(MovieWatchListActivity.this, SettingsActivity.class);
                                 startActivity(settingsIntent);
                                 return true;
                         }
+
+
+
 
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
@@ -150,8 +172,8 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
                 });
 
         // Adding Floating Action Button to bottom right of main view
-        fab.setImageResource(R.drawable.ic_search_white);
-        final Intent intent = new Intent(this, SearchActivity.class);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final Intent intent = new Intent(this, BrowseMoviesActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +182,7 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
             }
         });
 
-        /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
+        /*TextView navHeaderText = (TextView) mDrawerLayout.findViewById(R.id.nav_header_text);
         Typeface font = Typeface.
                 createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
         navHeaderText.setTypeface(font);*/
@@ -170,26 +192,18 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         adapterViewPager = new Adapter(getSupportFragmentManager());
 
+        Bundle watchedMoviesBundle = new Bundle();
+        watchedMoviesBundle.putInt("watched", 1);
+        MovieWatchListFragment watchedMovies = new MovieWatchListFragment();
+        watchedMovies.setArguments(watchedMoviesBundle);
 
-        Bundle nowShowingBundle = new Bundle();
-        nowShowingBundle.putInt("movieType", BrowseMovieType.NOW_SHOWING);
-        BrowseTVShowsFragment nowShowingMovies = new BrowseTVShowsFragment();
-        nowShowingMovies.setArguments(nowShowingBundle);
+        Bundle watchListMoviesBundle = new Bundle();
+        watchListMoviesBundle.putInt("watched", 0);
+        MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
+        watchListMovies.setArguments(watchListMoviesBundle);
 
-        Bundle popularBundle = new Bundle();
-        popularBundle.putInt("movieType", BrowseMovieType.POPULAR);
-        BrowseTVShowsFragment popularMovies = new BrowseTVShowsFragment();
-        popularMovies.setArguments(popularBundle);
-
-        Bundle topRatedBundle = new Bundle();
-        topRatedBundle.putInt("movieType", BrowseMovieType.TOP_RATED);
-        BrowseTVShowsFragment topRatedMovies = new BrowseTVShowsFragment();
-        topRatedMovies.setArguments(topRatedBundle);
-
-        adapterViewPager.addFragment(popularMovies, " Popular");
-        adapterViewPager.addFragment(nowShowingMovies, " Now Airing");
-        adapterViewPager.addFragment(topRatedMovies, " Top Rated");
-
+        adapterViewPager.addFragment(watchListMovies, " Watch List");
+        adapterViewPager.addFragment(watchedMovies, " Watched");
         viewPager.setAdapter(adapterViewPager);
     }
 
@@ -203,11 +217,7 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if(position <= mFragmentList.size())
-            {
-                return mFragmentList.get(position);
-            }
-            return null;
+            return mFragmentList.get(position);
         }
 
         @Override
@@ -226,41 +236,10 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
         }
     }
 
-    /*
-     * Drawer Functions
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        /*getMenuInflater().inflate(R.menu.menu_search, menu);
-
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
-        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.d("onQueryTextSubmit()", "HERE");
-
-                Bundle searchBundle = new Bundle();
-                searchBundle.putString("query", query);
-                SearchFragment searchMovies = new SearchFragment();
-                searchMovies.setArguments(searchBundle);
-
-                adapterViewPager.addFragment(searchMovies, " Search");
-                adapterViewPager.notifyDataSetChanged();
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String s) {
-                Log.d("onQueryTextChange()", "HERE");
-                return false;
-            }
-        });*/
-
         return true;
     }
 
@@ -269,14 +248,43 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                Log.d("onOptionsItemSelected()", "settings");
+
+                return true;
+
+            case R.id.action_sort:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                Log.d("onOptionsItemSelected()", "Sort");
+
+                return true;
+
+            case android.R.id.home:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                Log.d("onOptionsItemSelected()", "Sort");
+                mDrawerLayout.openDrawer(GravityCompat.START);
+
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+
+        /*int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);*/
     }
 
     @Override
@@ -287,5 +295,20 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-}
 
+    public static void applyFontForToolbarTitle(Activity context){
+        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
+        for(int i = 0; i < toolbar.getChildCount(); i++){
+            View view = toolbar.getChildAt(i);
+            if(view instanceof TextView){
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
+                if(tv.getText().equals(context.getTitle())){
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
+    }
+}

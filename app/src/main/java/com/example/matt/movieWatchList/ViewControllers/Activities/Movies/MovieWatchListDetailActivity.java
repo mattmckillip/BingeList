@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.activities;
+package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -41,7 +41,7 @@ import io.realm.RealmQuery;
 /**
  * Created by Matt on 6/3/2016.
  */
-public class WatchListDetailActivity extends AppCompatActivity {
+public class MovieWatchListDetailActivity extends AppCompatActivity {
     Integer movieID;
     Bitmap thisBitmap;
     private JSONMovie movie;
@@ -203,7 +203,6 @@ public class WatchListDetailActivity extends AppCompatActivity {
         ExpandableTextView plot = (ExpandableTextView) findViewById(R.id.expand_text_view);
         RatingBar stars = (RatingBar) layout.findViewById(R.id.rating);
         TextView runtime = (TextView) layout.findViewById(R.id.runtime);
-        TextView releaseDate = (TextView) layout.findViewById(R.id.release_date);
         TextView userRating = (TextView) layout.findViewById(R.id.user_rating);
 
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
@@ -215,7 +214,6 @@ public class WatchListDetailActivity extends AppCompatActivity {
         plot.setText(movie.getOverview());
         stars.setRating(movie.getVote_average().floatValue());
         runtime.setText(Integer.toString(movie.getRuntime()) + " min");
-        releaseDate.setText(movie.getReleaseDate());
         userRating.setText(Double.toString(movie.getVote_average())+ "/10");
 
         // Populate cast and crew recycler views

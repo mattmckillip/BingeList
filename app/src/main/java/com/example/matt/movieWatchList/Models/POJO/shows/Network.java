@@ -1,13 +1,13 @@
-package com.example.matt.movieWatchList.Models.POJO;
+package com.example.matt.movieWatchList.Models.POJO.shows;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ProductionCountry {
+public class Network {
 
-    @SerializedName("iso_3166_1")
+    @SerializedName("id")
     @Expose
-    private String iso31661;
+    private Integer id;
     @SerializedName("name")
     @Expose
     private String name;
@@ -15,19 +15,19 @@ public class ProductionCountry {
     /**
      * 
      * @return
-     *     The iso31661
+     *     The id
      */
-    public String getIso31661() {
-        return iso31661;
+    public Integer getId() {
+        return id;
     }
 
     /**
      * 
-     * @param iso31661
-     *     The iso_3166_1
+     * @param id
+     *     The id
      */
-    public void setIso31661(String iso31661) {
-        this.iso31661 = iso31661;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     /**

@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.activities.TmdbActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         searchViewHolder.watchListLayout.setVisibility(View.GONE);
 
         Picasso.with(context)
-                .load("https://image.tmdb.org/t/p/w400//" + movie.getBackdropPath())
+                .load("https://image.tmdb.org/t/p/w342/" + movie.getBackdropPath())
                 //.placeholder(R.drawable.unkown_person)
                 //.error(R.drawable.generic_movie_background)
                 .into(searchViewHolder.movieImage);
@@ -59,13 +59,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_card, viewGroup, false);
 
-
-
         return new SearchViewHolder(itemView);
     }
 
     public class SearchViewHolder extends RecyclerView.ViewHolder {
-
         protected TextView movieTitle;
         protected TextView movieDescription;
         protected ImageView movieImage;
@@ -88,7 +85,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     Context context = v.getContext();
                     MovieResult movie = movies.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, TmdbActivity.class);
+                    Intent intent = new Intent(context, BrowseMoviesDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }

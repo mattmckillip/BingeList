@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.fragments;
+package com.example.matt.movieWatchList.viewControllers.fragments.movies;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,10 +25,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.SearchMoviesAPI;
+import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
 
 import java.util.ArrayList;
@@ -46,11 +46,13 @@ public class SearchFragment extends Fragment {
     private List<MovieResult> searchMovieResults;
     private RecyclerView recyclerView;
     private SearchAdapter adapter;
+    private String query;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //String query = getArguments().getString("query");
+        query = getArguments().getString("query");
 
         searchMovieResults = new ArrayList<>();
 
@@ -61,8 +63,8 @@ public class SearchFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager searchLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(searchLayoutManager);
-        searchMovies("fight club");
-        //searchMovies(query);
+        //searchMovies("fight club");
+        searchMovies(query);
 
         return recyclerView;
     }

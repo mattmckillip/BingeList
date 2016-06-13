@@ -1,7 +1,7 @@
-package com.example.matt.movieWatchList.uitls;
+package com.example.matt.movieWatchList.uitls.API;
 
 import com.example.matt.movieWatchList.Models.POJO.Credits;
-import com.example.matt.movieWatchList.Models.POJO.Movie;
+import com.example.matt.movieWatchList.Models.POJO.movies.Movie;
 
 import retrofit.Call;
 import retrofit.http.GET;

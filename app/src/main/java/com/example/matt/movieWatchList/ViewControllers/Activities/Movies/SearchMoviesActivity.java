@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.activities;
+package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -19,10 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.MovieQueryReturn;
-import com.example.matt.movieWatchList.Models.POJO.MovieResult;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.SearchMoviesAPI;
+import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
+import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import retrofit.Retrofit;
 /**
  * Created by Matt on 6/7/2016.
  */
-public class SearchActivity extends AppCompatActivity {
+public class SearchMoviesActivity extends AppCompatActivity {
     private SearchAdapter searchAdapter;
     private List<MovieResult> searchMovieResults;
 
@@ -104,12 +105,12 @@ public class SearchActivity extends AppCompatActivity {
 
                             //Replacing the main content with ContentFragment
                             case R.id.movie_watch_list_menu_item:
-                                Intent watchListIntent = new Intent(SearchActivity.this, WatchListActivity.class);
+                                Intent watchListIntent = new Intent(SearchMoviesActivity.this, MovieWatchListActivity.class);
                                 startActivity(watchListIntent);
                                 return true;
 
                             case R.id.movie_browse_menu_item:
-                                Intent browseIntent = new Intent(SearchActivity.this, BrowseMoviesActivity.class);
+                                Intent browseIntent = new Intent(SearchMoviesActivity.this, BrowseMoviesActivity.class);
                                 startActivity(browseIntent);
                                 return true;
 
@@ -118,7 +119,7 @@ public class SearchActivity extends AppCompatActivity {
                                 return true;
 
                             case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(SearchActivity.this, SettingsActivity.class);
+                                Intent settingsIntent = new Intent(SearchMoviesActivity.this, SettingsActivity.class);
                                 startActivity(settingsIntent);
                                 return true;
                         }
