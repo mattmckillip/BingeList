@@ -59,6 +59,8 @@ public class SearchFragment extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+
         adapter = new SearchAdapter(searchMovieResults, getActivity());
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager searchLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());

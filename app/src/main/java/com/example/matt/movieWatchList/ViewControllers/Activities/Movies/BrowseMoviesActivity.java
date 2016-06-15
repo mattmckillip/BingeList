@@ -41,9 +41,11 @@ import android.widget.TextView;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
+import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.BrowseMoviesFragment;
+import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ import io.realm.RealmMigration;
 public class BrowseMoviesActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
-    private DrawerLayout mDrawerLayout;
+    Drawer navigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,9 +103,8 @@ public class BrowseMoviesActivity extends AppCompatActivity {
         tabs.getTabAt(2).setIcon(R.drawable.ic_thumb_up_white_24dp);
 
 
-        // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        // Create Navigation drawer
+        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -111,50 +112,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
-                        Adapter adapter = new Adapter(getSupportFragmentManager());
-                        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-
-                        //Check to see which item was being clicked and perform appropriate action
-                        switch (menuItem.getItemId()) {
-
-                            //Replacing the main content with ContentFragment
-                            case R.id.movie_watch_list_menu_item:
-                                Intent i = new Intent(BrowseMoviesActivity.this, MovieWatchListActivity.class);
-                                startActivity(i);
-                                return true;
-
-                            case R.id.movie_browse_menu_item:
-                                mDrawerLayout.closeDrawers();
-                                return true;
-
-                            case R.id.movie_search_menu_item:
-                                Intent searchIntent = new Intent(BrowseMoviesActivity.this, SearchMoviesActivity.class);
-                                startActivity(searchIntent);
-                                return true;
-
-                            case R.id.tv_browse_menu_item:
-                                Intent browseTVShowsIntent = new Intent(BrowseMoviesActivity.this, BrowseTVShowsActivity.class);
-                                startActivity(browseTVShowsIntent);
-                                return true;
-
-                            case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(BrowseMoviesActivity.this, SettingsActivity.class);
-                                startActivity(settingsIntent);
-                                return true;
-                        }
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -166,11 +123,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*TextView navHeaderText = (TextView) mDrawerLayout.findViewById(R.id.nav_header_text);
-        Typeface font = Typeface.
-                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);*/
     }
 
     // Add Fragments to Tabs
@@ -258,7 +210,7 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Log.d("onOptionsItemSelected()", "Sort");
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                navigationDrawer.openDrawer();
 
                 return true;
 
@@ -281,8 +233,8 @@ public class BrowseMoviesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (this.navigationDrawer.isDrawerOpen()) {
+            this.navigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

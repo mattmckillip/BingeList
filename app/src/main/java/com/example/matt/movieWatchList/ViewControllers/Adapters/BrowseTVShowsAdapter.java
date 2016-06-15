@@ -37,6 +37,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     private RealmList<JSONShow> showList;
     private Activity activity;
 
+
     public BrowseTVShowsAdapter(RealmList<JSONShow> showList, Activity activity) {
         this.showList = showList;
         this.activity = activity;
@@ -136,6 +137,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
                     Intent intent = new Intent(context, BrowseTVShowsDetailActivity.class);
                     intent.putExtra("showID", show.getId());
+                    intent.putExtra("showName", show.getName());
                     context.startActivity(intent);
                 }
             });

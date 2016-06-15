@@ -1,59 +1,36 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
-import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.BrowseMovieType;
-import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.SearchMoviesActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
-import com.example.matt.movieWatchList.viewControllers.fragments.DummyFragment;
-import com.example.matt.movieWatchList.viewControllers.fragments.movies.BrowseMoviesFragment;
-import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.SearchFragment;
-import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowSeasonFragment;
 import com.r0adkll.slidr.Slidr;
+import com.r0adkll.slidr.model.SlidrInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
-import io.realm.RealmMigration;
 
 
 /**
@@ -76,7 +53,7 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
 
     Adapter adapterViewPager;
     private DrawerLayout mDrawerLayout;
-
+    private SlidrInterface slidrInterface;
 
     @BindView(R.id.appBar)
     AppBarLayout appbar;
@@ -86,49 +63,6 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
-
-    /*@BindView(R.id.scroll_view)
-    NestedScrollView scroll_view;
-
-    @BindView(R.id.backdrop)
-    ImageView backdrop;
-
-    @BindView(R.id.loadingPanel)
-    RelativeLayout loadingPanel;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.rating)
-    RatingBar stars;
-
-    @BindView(R.id.plot_title)
-    TextView plotTitle;
-
-    @BindView(R.id.cast_title)
-    TextView castTitle;
-
-    @BindView(R.id.crew_title)
-    TextView crewTitle;
-
-    @BindView(R.id.overview_title)
-    TextView overviewTitle;
-
-    @BindView(R.id.runtime)
-    TextView runtime;
-
-    @BindView(R.id.user_rating)
-    TextView userRating;
-
-    @BindView(R.id.more_info)
-    LinearLayout layout;
-
-    @BindView(R.id.expand_text_view)
-    ExpandableTextView plot;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;*/
 
     @BindView(R.id.viewpager)
     ViewPager viewPager;
@@ -140,11 +74,27 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
+        showID = getIntent().getIntExtra("showID",0);
+        String ShowName = getIntent().getStringExtra("showName");
 
         ButterKnife.bind(this);
 
+        // Set title of Detail page
+        collapsing_toolbar.setTitle(ShowName);
+
         // Attach the Slidr Mechanism to this activity
         Slidr.attach(this);
+        slidrInterface = new SlidrInterface() {
+            @Override
+            public void lock() {
+
+            }
+
+            @Override
+            public void unlock() {
+
+            }
+        };
 
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Seasons"));
@@ -152,18 +102,19 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Setting ViewPager for each Tabs
         adapterViewPager = new Adapter(getSupportFragmentManager());
 
         Bundle fightClubSearchBundle = new Bundle();
-        fightClubSearchBundle.putString("query", "fight club");
-        SearchFragment fragment1 = new SearchFragment();
+        fightClubSearchBundle.putInt("tvShowID", showID);
+        TVShowOverviewFragment fragment1 = new TVShowOverviewFragment();
         fragment1.setArguments(fightClubSearchBundle);
 
         Bundle deadpoolSearchBundle = new Bundle();
         deadpoolSearchBundle.putString("query", "deadpool");
-        SearchFragment fragment2 = new SearchFragment();
+        TVShowSeasonFragment fragment2 = new TVShowSeasonFragment();
         fragment2.setArguments(deadpoolSearchBundle);
 
         adapterViewPager.addFragment(fragment1, "Fight Club");
@@ -175,6 +126,8 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                if (tab.getPosition() == 0) slidrInterface.unlock();
+                else slidrInterface.lock();
             }
 
             @Override

@@ -38,10 +38,12 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
+import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.SearchMoviesActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.BrowseTVShowsFragment;
+import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,11 +71,11 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
-    @BindView(R.id.drawer)
-    DrawerLayout mDrawerLayout;
-
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
+    Drawer navigationDrawer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,44 +115,10 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
 
-                        //Check to see which item was being clicked and perform appropriate action
-                        switch (menuItem.getItemId()) {
+        // Create Navigation drawer
+        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
-                            //Replacing the main content with ContentFragment
-                            case R.id.movie_watch_list_menu_item:
-                                Intent watchListIntent = new Intent(BrowseTVShowsActivity.this, MovieWatchListActivity.class);
-                                startActivity(watchListIntent);
-                                return true;
-
-                            case R.id.movie_browse_menu_item:
-                                mDrawerLayout.closeDrawers();
-                                return true;
-
-                            case R.id.movie_search_menu_item:
-                                Intent searchIntent = new Intent(BrowseTVShowsActivity.this, SearchMoviesActivity.class);
-                                startActivity(searchIntent);
-                                return true;
-
-                            case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(BrowseTVShowsActivity.this, SettingsActivity.class);
-                                startActivity(settingsIntent);
-                                return true;
-                        }
-
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
 
         // Adding Floating Action Button to bottom right of main view
         fab.setImageResource(R.drawable.ic_search_white);
@@ -162,11 +130,6 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
-        Typeface font = Typeface.
-                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);*/
     }
 
     // Add Fragments to Tabs
@@ -277,15 +240,15 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
+            navigationDrawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (this.navigationDrawer.isDrawerOpen()) {
+            this.navigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

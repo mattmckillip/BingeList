@@ -41,9 +41,11 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
+import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,7 @@ import io.realm.RealmMigration;
 public class TVShowWatchListActivity extends AppCompatActivity {
     private static final String TAG = TVShowWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
-    private DrawerLayout mDrawerLayout;
+    Drawer navigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +105,8 @@ public class TVShowWatchListActivity extends AppCompatActivity {
             //pass
         }
 
-        // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        // Create Navigation drawer
+        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -113,63 +114,6 @@ public class TVShowWatchListActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
-                        Adapter adapter = new Adapter(getSupportFragmentManager());
-                        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-
-
-                        //Check to see which item was being clicked and perform appropriate action
-                        switch (menuItem.getItemId()) {
-
-                            //Replacing the main content with ContentFragment
-
-
-                            case R.id.movie_watch_list_menu_item:
-                                mDrawerLayout.closeDrawers();
-                                return true;
-
-                            case R.id.movie_browse_menu_item:
-                                Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
-                                        Snackbar.LENGTH_LONG).show();
-
-                                Intent i = new Intent(TVShowWatchListActivity.this, BrowseMoviesActivity.class);
-                                startActivity(i);
-                                return true;
-
-                            case R.id.movie_search_menu_item:
-                                Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
-                                        Snackbar.LENGTH_LONG).show();
-
-                                Intent searchIntent = new Intent(TVShowWatchListActivity.this, SearchTVShowsActivity.class);
-                                startActivity(searchIntent);
-                                return true;
-
-                            case R.id.tv_browse_menu_item:
-                                Intent browseTVShowsIntent = new Intent(TVShowWatchListActivity.this, BrowseTVShowsActivity.class);
-                                startActivity(browseTVShowsIntent);
-                                return true;
-
-                            case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(TVShowWatchListActivity.this, SettingsActivity.class);
-                                startActivity(settingsIntent);
-                                return true;
-                        }
-
-
-
-
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -266,7 +210,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Log.d("onOptionsItemSelected()", "Sort");
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                navigationDrawer.openDrawer();
 
                 return true;
 
@@ -289,8 +233,8 @@ public class TVShowWatchListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (this.navigationDrawer.isDrawerOpen()) {
+            this.navigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

@@ -309,7 +309,7 @@ public class BrowseMoviesDetailActivity extends AppCompatActivity {
                 .build();
 
         MovieAPI service = retrofit.create(MovieAPI.class);
-        Call<Credits> call = service.getCredits(Integer.toString(movieID));
+        final Call<Credits> call = service.getCredits(Integer.toString(movieID));
 
         call.enqueue(new Callback<Credits>() {
             @Override
@@ -319,12 +319,16 @@ public class BrowseMoviesDetailActivity extends AppCompatActivity {
                 List<Crew> crew = response.body().getCrew();
 
                 RealmList<JSONCast> realmCast = new RealmList<>();
-                for( int i = 0; i <= 3; i++) {
+                Integer castSize = Math.min(3, cast.size());
+                Integer crewSize = Math.min(3, crew.size());
+
+                for( int i = 0; i < castSize; i++) {
                     realmCast.add(cast.get(i).convertToRealm());
                 }
 
                 RealmList<JSONCast> realmCrew = new RealmList<>();
-                for( int i = 0; i <= 3; i++) {
+                for( int i = 0; i < crewSize; i++) {
+                    Log.d("Crew", Integer.toString(i));
                     realmCrew.add(crew.get(i).convertToRealm());
                 }
 

@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.activities.shows;
+package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -19,13 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.matt.movieWatchList.Models.POJO.MultiSearchQueryReturn;
+import com.example.matt.movieWatchList.Models.POJO.MultiSearchResult;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.uitls.API.MultiSearchAPI;
 import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
-import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
+import com.example.matt.movieWatchList.viewControllers.adapters.MultiSearchAdapter;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
 import com.mikepenz.materialdrawer.Drawer;
 
@@ -40,9 +44,9 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
- * Created by Matt on 6/7/2016.
+ * Created by Matt on 6/15/2016.
  */
-public class SearchTVShowsActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
     private SearchAdapter searchAdapter;
     private List<MovieResult> searchMovieResults;
 
@@ -94,14 +98,9 @@ public class SearchTVShowsActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-
         // Create Navigation drawer
         navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
-        /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
-        Typeface font = Typeface.
-                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);*/
     }
 
     /*
@@ -123,21 +122,21 @@ public class SearchTVShowsActivity extends AppCompatActivity {
                 Log.d("SearchView", "onQueryTextSubmit");
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://api.themoviedb.org/3/search/movie/")
+                        .baseUrl("http://api.themoviedb.org/3/search/multi")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-                SearchMoviesAPI service = retrofit.create(SearchMoviesAPI.class);
+                MultiSearchAPI service = retrofit.create(MultiSearchAPI.class);
 
-                Call<MovieQueryReturn> call = service.searchKeywords(query.replaceAll(" ", "+"));
+                Call<MultiSearchQueryReturn> call = service.searchKeywords(query.replaceAll(" ", "+"));
 
-                call.enqueue(new Callback<MovieQueryReturn>() {
+                call.enqueue(new Callback<MultiSearchQueryReturn>() {
                     @Override
-                    public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
-                        Log.d("getMovie()", "Callback Success");
-                        List<MovieResult> movieResults = response.body().getMovieResults();
+                    public void onResponse(retrofit.Response<MultiSearchQueryReturn> response, Retrofit retrofit) {
+                        Log.d("getMovie()", response.raw().toString());
+                        List<MultiSearchResult> multiSearchResults = response.body().getResults();
 
-                        searchRecyclerView.setAdapter(new SearchAdapter(movieResults, getApplicationContext()));
+                        searchRecyclerView.setAdapter(new MultiSearchAdapter(multiSearchResults, getApplicationContext()));
                         searchRecyclerView.setFocusable(false);
                     }
 

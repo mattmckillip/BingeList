@@ -32,4 +32,18 @@
 
     <string name="important">Important</string>
     <string name="documents">Documents</string>
+
+    <!-- Drawer Items -->
+    <string name="drawer_item_show_header">TV Shows</string>
+    <string name="drawer_item_movie_header">Movies</string>
+
+    <string name="drawer_item_show_watchlist">WatchList</string>
+    <string name="drawer_item_show_browse">Browse</string>
+    <string name="drawer_item_movie_watchlist">WatchList</string>
+    <string name="drawer_item_movie_browse">Browse</string>
+
+    <string name="drawer_item_search">Search</string>
+    <string name="drawer_item_settings">Settings</string>
+    <string name="drawer_item_open_source">Open Source</string>
+    <string name="drawer_item_about">About</string>
 </resources>

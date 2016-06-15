@@ -22,7 +22,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,13 +36,35 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
+
+import com.example.matt.movieWatchList.uitls.DrawerHelper;
+import com.example.matt.movieWatchList.viewControllers.activities.SearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +80,8 @@ import io.realm.RealmMigration;
 public class MovieWatchListActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
-    private DrawerLayout mDrawerLayout;
+
+    Drawer navigationDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +101,7 @@ public class MovieWatchListActivity extends AppCompatActivity {
                 .build();
 
         Realm.setDefaultConfiguration(config1);
-        Realm uiRealm =  Realm.getInstance(getApplicationContext());
+        Realm uiRealm = Realm.getInstance(getApplicationContext());
 
         ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 
@@ -99,13 +121,12 @@ public class MovieWatchListActivity extends AppCompatActivity {
         try {
             tabs.getTabAt(0).setIcon(R.drawable.ic_dvr_white_24dp);
             tabs.getTabAt(1).setIcon(R.drawable.ic_playlist_add_check_white_24dp);
-        } catch(NullPointerException npe) {
+        } catch (NullPointerException npe) {
             //pass
         }
 
-        // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        // Create Navigation drawer
+        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -113,63 +134,6 @@ public class MovieWatchListActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
-                        Adapter adapter = new Adapter(getSupportFragmentManager());
-                        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
-
-
-                        //Check to see which item was being clicked and perform appropriate action
-                        switch (menuItem.getItemId()) {
-
-                            //Replacing the main content with ContentFragment
-
-
-                            case R.id.movie_watch_list_menu_item:
-                                mDrawerLayout.closeDrawers();
-                                return true;
-
-                            case R.id.movie_browse_menu_item:
-                                Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
-                                        Snackbar.LENGTH_LONG).show();
-
-                                Intent i = new Intent(MovieWatchListActivity.this, BrowseMoviesActivity.class);
-                                startActivity(i);
-                                return true;
-
-                            case R.id.movie_search_menu_item:
-                                Snackbar.make(getCurrentFocus(), "MovieQueryReturn",
-                                        Snackbar.LENGTH_LONG).show();
-
-                                Intent searchIntent = new Intent(MovieWatchListActivity.this, SearchMoviesActivity.class);
-                                startActivity(searchIntent);
-                                return true;
-
-                            case R.id.tv_browse_menu_item:
-                                Intent browseTVShowsIntent = new Intent(MovieWatchListActivity.this, BrowseTVShowsActivity.class);
-                                startActivity(browseTVShowsIntent);
-                                return true;
-
-                            case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(MovieWatchListActivity.this, SettingsActivity.class);
-                                startActivity(settingsIntent);
-                                return true;
-                        }
-
-
-
-
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -187,6 +151,17 @@ public class MovieWatchListActivity extends AppCompatActivity {
                 createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
         navHeaderText.setTypeface(font);*/
     }
+
+    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
+            if (drawerItem instanceof Nameable) {
+                Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
+            } else {
+                Log.i("material-drawer", "toggleChecked: " + isChecked);
+            }
+        }
+    };
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
@@ -266,7 +241,7 @@ public class MovieWatchListActivity extends AppCompatActivity {
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Log.d("onOptionsItemSelected()", "Sort");
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                navigationDrawer.openDrawer();
 
                 return true;
 
@@ -276,35 +251,26 @@ public class MovieWatchListActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-        return super.onOptionsItemSelected(item);*/
     }
 
     @Override
     public void onBackPressed() {
-        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            this.mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (this.navigationDrawer.isDrawerOpen()) {
+            this.navigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }
     }
 
-    public static void applyFontForToolbarTitle(Activity context){
+    public static void applyFontForToolbarTitle(Activity context) {
         Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface titleFont = Typeface.
                         createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-                if(tv.getText().equals(context.getTitle())){
+                if (tv.getText().equals(context.getTitle())) {
                     tv.setTypeface(titleFont);
                     break;
                 }
