@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.fragments.SettingsFragment;
+import com.r0adkll.slidr.Slidr;
 
 /**
  * Created by Matt on 6/10/2016.
@@ -16,10 +17,14 @@ public class SettingsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Attach the Slidr Mechanism to this activity
+         Slidr.attach(this);
+
         setContentView(R.layout.pref_with_actionbar);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Settings");
 
         getFragmentManager().beginTransaction().replace(R.id.content_frame, new SettingsFragment()).commit();
     }

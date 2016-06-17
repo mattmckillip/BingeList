@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
@@ -42,9 +43,9 @@ import io.realm.RealmQuery;
  * Created by Matt on 6/3/2016.
  */
 public class TVShowWatchListDetailActivity extends AppCompatActivity {
-    Integer movieID;
+    Integer showID;
     Bitmap thisBitmap;
-    private JSONMovie movie;
+    private JSONShow show;
     private RealmList<JSONCast> castList = new RealmList<>();
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
@@ -59,7 +60,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieID = getIntent().getIntExtra("movieId",0);
+        showID = getIntent().getIntExtra("showId",0);
 
         Slidr.attach(this);
 
@@ -91,10 +92,10 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
 
         // Build the query looking at all users:
-        RealmQuery<JSONMovie> query = uiRealm.where(JSONMovie.class);
+        RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
 
         // Execute the query:
-        this.movie = query.equalTo("id",movieID).findFirst();
+        this.show = query.equalTo("id", showID).findFirst();
 
 
         // Adding Floating Action Button to bottom right of main view
@@ -105,9 +106,9 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
                 uiRealm.beginTransaction();
-                //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                movie.setOnWatchList(true);
-                uiRealm.copyToRealm(movie);
+                //JSONMovie movieToAdd = uiRealm.createObject(show);
+                show.setOnWatchList(true);
+                uiRealm.copyToRealm(show);
 
                 uiRealm.commitTransaction();
 
@@ -125,7 +126,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
         // Set title of Detail page
-        collapsingToolbar.setTitle(movie.getTitle());
+        collapsingToolbar.setTitle(show.getName());
         final ImageView image = (ImageView) findViewById(R.id.backdrop);
         final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
         try {
@@ -144,8 +145,8 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
 
-        if (movie.getBackdropBitmap() != null){
-            thisBitmap = BitmapFactory.decodeByteArray(movie.getBackdropBitmap(), 0, movie.getBackdropBitmap().length, options);
+        if (show.getBackdropBitmap() != null){
+            thisBitmap = BitmapFactory.decodeByteArray(show.getBackdropBitmap(), 0, show.getBackdropBitmap().length, options);
             image.setImageBitmap(thisBitmap);
         }
         else {
@@ -211,14 +212,14 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
             }
         });
-        plot.setText(movie.getOverview());
-        stars.setRating(movie.getVote_average().floatValue());
-        runtime.setText(Integer.toString(movie.getRuntime()) + " min");
-        userRating.setText(Double.toString(movie.getVote_average())+ "/10");
+        plot.setText(show.getOverview());
+        stars.setRating(show.getVoteAverage().floatValue());
+        runtime.setText(Integer.toString(show.getNumberOfSeasons()) + " min");
+        userRating.setText(Double.toString(show.getVoteAverage())+ "/10");
 
         // Populate cast and crew recycler views
-        castRecyclerView.setAdapter( new CastAdapter(movie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
-        crewRecyclerView.setAdapter( new CastAdapter(movie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+        castRecyclerView.setAdapter( new CastAdapter(show.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+        crewRecyclerView.setAdapter( new CastAdapter(show.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
         castRecyclerView.setFocusable(false);
         crewRecyclerView.setFocusable(false);
     }

@@ -58,7 +58,7 @@ public class DrawerHelper {
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
                         new ExpandableDrawerItem().withName(R.string.drawer_item_show_header).withIcon(MaterialDesignIconic.Icon.gmi_tv_alt_play).withIdentifier(1).withSelectable(false).withSubItems(
-                                new SecondaryDrawerItem().withName(R.string.drawer_item_show_watchlist).withLevel(2).withIcon(MaterialDesignIconic.Icon.gmi_tv_list).withIdentifier(1000),
+                                new SecondaryDrawerItem().withName(R.string.drawer_item_show_watchlist).withLevel(2).withIcon(CommunityMaterial.Icon.cmd_television_guide).withIdentifier(1000),
                                 new SecondaryDrawerItem().withName(R.string.drawer_item_show_browse).withLevel(2).withIcon(GoogleMaterial.Icon.gmd_whatshot).withIdentifier(1001)
                         ),
                         new ExpandableDrawerItem().withName(R.string.drawer_item_movie_header).withIcon(CommunityMaterial.Icon.cmd_movie).withIdentifier(2).withSelectable(false).withSubItems(

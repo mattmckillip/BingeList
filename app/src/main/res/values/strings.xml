@@ -37,9 +37,9 @@
     <string name="drawer_item_show_header">TV Shows</string>
     <string name="drawer_item_movie_header">Movies</string>
 
-    <string name="drawer_item_show_watchlist">WatchList</string>
+    <string name="drawer_item_show_watchlist">Your Shows</string>
     <string name="drawer_item_show_browse">Browse</string>
-    <string name="drawer_item_movie_watchlist">WatchList</string>
+    <string name="drawer_item_movie_watchlist">Watchlist</string>
     <string name="drawer_item_movie_browse">Browse</string>
 
     <string name="drawer_item_search">Search</string>

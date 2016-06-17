@@ -6,22 +6,34 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.POJO.Cast;
+import com.example.matt.movieWatchList.Models.POJO.Credits;
+import com.example.matt.movieWatchList.Models.POJO.Crew;
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
+import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.uitls.API.MovieAPI;
+import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsDetailActivity;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +41,10 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
 /**
  * Created by Matt on 6/12/2016.
@@ -88,16 +104,16 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         // Build the query looking at all users:
         Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
-        RealmQuery<JSONMovie> watchedQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id",showList.get(position).getId()).findAll();
-        if (watchedMovies.size() == 1) {
+        RealmQuery<JSONShow> watchedQuery = uiRealm.where(JSONShow.class);
+        RealmResults<JSONShow> watchedShows = watchedQuery.equalTo("isWatched", true).equalTo("id",showList.get(position).getId()).findAll();
+        if (watchedShows.size() == 1) {
             holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
         }
 
-        RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id",showList.get(position).getId()).findAll();
+        RealmQuery<JSONShow> watchListQuery = uiRealm.where(JSONShow.class);
+        RealmResults<JSONShow> watchListShows = watchListQuery.equalTo("onWatchList", true).equalTo("id",showList.get(position).getId()).findAll();
 
-        if (watchListMovies.size() == 1) {
+        if (watchListShows.size() == 1) {
             holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
         }
     }
@@ -142,33 +158,33 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 }
             });
 
-            /*Button button = (Button)itemView.findViewById(R.id.action_button);
+            Button button = (Button)itemView.findViewById(R.id.action_button);
             button.setOnClickListener(new View.OnClickListener(){
 
                 @Override
                 public void onClick(final View v) {
-                    final int movieID = movieList.get(getAdapterPosition()).getId();
+                    final int showID = showList.get(getAdapterPosition()).getId();
 
                     watchListLayout.setVisibility(View.VISIBLE);
 
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://api.themoviedb.org/3/movie/")
+                            .baseUrl("http://api.themoviedb.org/3/tv/")
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
 
-                    MovieAPI service = retrofit.create(MovieAPI.class);
-                    Call<Movie> call = service.getMovie(Integer.toString(movieID));
+                    TVShowAPI service = retrofit.create(TVShowAPI.class);
+                    Call<TVShow> call = service.getTVShow(Integer.toString(showID));
 
-                    call.enqueue(new Callback<Movie>() {
+                    call.enqueue(new Callback<TVShow>() {
                         @Override
-                        public void onResponse(retrofit.Response<Movie> response, Retrofit retrofit) {
+                        public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
                             Log.d("getMovie()", "Callback Success");
-                            Movie movie = response.body();
-                            movie.setBackdropPath("https://image.tmdb.org/t/p/w780//" + movie.getBackdropPath());
-                            final JSONMovie realmMovie = movie.convertToRealm();
+                            TVShow show = response.body();
+                            show.setBackdropPath("https://image.tmdb.org/t/p/w780/" + show.getBackdropPath());
+                            final JSONShow realmShow = show.convertToRealm();
 
                             MovieAPI service = retrofit.create(MovieAPI.class);
-                            Call<Credits> call = service.getCredits(Integer.toString(movieID));
+                            Call<Credits> call = service.getCredits(Integer.toString(showID));
 
                             call.enqueue(new Callback<Credits>() {
                                 @Override
@@ -190,20 +206,32 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     Target target = new Target() {
                                         @Override
                                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                            Log.d("onBitmapLoaded()", "Here");
+                                            /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                            realmMovie.setBackdropBitmap(stream.toByteArray());
+                                            realmShow.setBackdropBitmap(stream.toByteArray());
 
                                             Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
                                             uiRealm.beginTransaction();
-                                            realmMovie.setOnWatchList(true);
-                                            //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                                            uiRealm.copyToRealm(realmMovie);
+                                            realmShow.setOnWatchList(true);
+                                            realmShow.setWatched(true);
+
+                                            uiRealm.copyToRealm(realmShow);
                                             uiRealm.commitTransaction();
+                                            RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
+                                            RealmResults<JSONShow> movies = query.equalTo("onWatchList", true).findAll();
+                                            Log.d("Watch List Size", Integer.toString(movies.size()));
+
+                                            RealmResults<JSONShow> watchedMovies = query.equalTo("isWatched", true).findAll();
+                                            Log.d("Watched List Size", Integer.toString(watchedMovies.size()));
+
+                                            Log.d("url", realmShow.getBackdropPath());*/
+
                                         }
 
                                         @Override
                                         public void onBitmapFailed(Drawable errorDrawable) {
+                                            Log.d("onBitmapFailed()", realmShow.getBackdropPath());
                                         }
 
                                         @Override
@@ -212,11 +240,27 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     };
 
                                     Picasso.with(activity.getApplicationContext())
-                                            .load(realmMovie.getBackdropURL())
+                                            .load(realmShow.getBackdropPath())
                                             .into(target);
 
-                                    realmMovie.setCrew(realmCrew);
-                                    realmMovie.setCast(realmCast);
+                                    realmShow.setCrew(realmCrew);
+                                    realmShow.setCast(realmCast);
+
+                                    Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
+
+                                    uiRealm.beginTransaction();
+                                    realmShow.setOnWatchList(true);
+
+                                    uiRealm.copyToRealm(realmShow);
+                                    uiRealm.commitTransaction();
+                                    RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
+                                    RealmResults<JSONShow> movies = query.equalTo("onWatchList", true).findAll();
+                                    Log.d("Watch List Size", Integer.toString(movies.size()));
+
+                                    RealmResults<JSONShow> watchedMovies = query.equalTo("isWatched", true).findAll();
+                                    Log.d("Watched List Size", Integer.toString(watchedMovies.size()));
+
+                                    Log.d("url", realmShow.getBackdropPath());
 
                                     Snackbar.make(v, "Added to watchlist!",
                                             Snackbar.LENGTH_LONG).show();
@@ -236,7 +280,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                         }
                     });
                 }
-            });*/
+            });
         }
     }
 }

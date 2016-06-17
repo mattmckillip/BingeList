@@ -45,6 +45,7 @@ import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowWatchListFragment;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Movie Watch List");
+        getSupportActionBar().setTitle(R.string.drawer_item_show_watchlist);
         applyFontForToolbarTitle(this);
 
         // Setting ViewPager for each Tabs
@@ -125,11 +126,6 @@ public class TVShowWatchListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*TextView navHeaderText = (TextView) mDrawerLayout.findViewById(R.id.nav_header_text);
-        Typeface font = Typeface.
-                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);*/
     }
 
     // Add Fragments to Tabs
@@ -138,16 +134,16 @@ public class TVShowWatchListActivity extends AppCompatActivity {
 
         Bundle watchedMoviesBundle = new Bundle();
         watchedMoviesBundle.putInt("watched", 1);
-        MovieWatchListFragment watchedMovies = new MovieWatchListFragment();
+        TVShowWatchListFragment watchedMovies = new TVShowWatchListFragment();
         watchedMovies.setArguments(watchedMoviesBundle);
 
         Bundle watchListMoviesBundle = new Bundle();
         watchListMoviesBundle.putInt("watched", 0);
-        MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
+        TVShowWatchListFragment watchListMovies = new TVShowWatchListFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
-        adapterViewPager.addFragment(watchListMovies, " Watch List");
-        adapterViewPager.addFragment(watchedMovies, " Watched");
+        adapterViewPager.addFragment(watchListMovies, " Unwatched Episodes");
+        adapterViewPager.addFragment(watchedMovies, " Up to Date");
         viewPager.setAdapter(adapterViewPager);
     }
 

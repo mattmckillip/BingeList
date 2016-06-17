@@ -80,10 +80,35 @@
             android:layout_toEndOf="@id/episode_progress"
             android:layout_below="@+id/number_of_episodes"
             android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp" />
+
+        <ImageButton
+            android:id="@+id/watch_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_above="@+id/indicator"
+            android:layout_toRightOf="@id/episode_progress"
+            android:layout_toEndOf="@id/episode_progress"
+            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            />
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_add_to_queue_black_24dp"
+            android:backgroundTint="@color/cardview_light_background"
+            android:tint="@color/button_grey"/>
 
-
+        <ImageButton
+            android:id="@+id/watched_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_above="@+id/indicator"
+            android:layout_toRightOf="@id/episode_progress"
+            android:layout_toEndOf="@id/episode_progress"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_bookmark_border_black_24dp"
+            android:backgroundTint="@color/cardview_light_background"
+            android:tint="@color/button_grey"/>
 
     </RelativeLayout>
 

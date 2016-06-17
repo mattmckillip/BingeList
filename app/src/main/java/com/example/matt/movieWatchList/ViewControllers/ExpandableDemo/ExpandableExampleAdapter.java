@@ -16,13 +16,22 @@
 
 package com.example.matt.movieWatchList.viewControllers.ExpandableDemo;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.Image;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.matt.movieWatchList.R;
@@ -50,6 +59,9 @@ class ExpandableExampleAdapter
         public ImageView mSeasonPoster;
         public TextView mEpisodeName;
         public ProgressBar mEpisodeProgress;
+        public ImageButton mWatchSeason;
+        public ImageButton mWatchedSeason;
+
 
         public MyBaseViewHolder(View v) {
             super(v);
@@ -59,6 +71,8 @@ class ExpandableExampleAdapter
             mSeasonPoster = (ImageView) v.findViewById(R.id.season_poster);
             mEpisodeName = (TextView) v.findViewById(R.id.episode_name);
             mEpisodeProgress = (ProgressBar) v.findViewById(R.id.episode_progress);
+            mWatchSeason = (ImageButton) v.findViewById(R.id.watch_button);
+            mWatchedSeason = (ImageButton) v.findViewById(R.id.watched_button);
 
         }
     }
@@ -131,7 +145,7 @@ class ExpandableExampleAdapter
     }
 
     @Override
-    public void onBindGroupViewHolder(MyGroupViewHolder holder, int groupPosition, int viewType) {
+    public void onBindGroupViewHolder(final MyGroupViewHolder holder, int groupPosition, int viewType) {
         // child item
         final AbstractExpandableDataProvider.BaseData item = mProvider.getGroupItem(groupPosition);
 
@@ -141,6 +155,28 @@ class ExpandableExampleAdapter
         Random r = new Random();
         int i = r.nextInt(100);
         holder.mEpisodeProgress.setProgress(i);
+        //holder.mWatchSeason.setFocusable(false);
+        holder.mWatchedSeason.setVisibility(View.GONE);
+
+        holder.mWatchSeason.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                //button functionalty   ...
+                Log.d("CLick","Wathc");
+                holder.mWatchSeason.setVisibility(View.GONE);
+                holder.mWatchedSeason.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        holder.mWatchedSeason.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                //button functionalty   ...
+                Log.d("CLick","UnWatch");
+                holder.mWatchedSeason.setVisibility(View.GONE);
+                holder.mWatchSeason.setVisibility(View.VISIBLE);
+
+            }
+        });
 
         // mark as clickable
         holder.itemView.setClickable(true);
@@ -149,6 +185,7 @@ class ExpandableExampleAdapter
         final int expandState = holder.getExpandStateFlags();
 
         if ((expandState & ExpandableItemConstants.STATE_FLAG_IS_UPDATED) != 0) {
+            Log.d("Expanding","Yeah");
             int bgResId;
             boolean isExpanded;
             boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);

@@ -34,10 +34,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListDetailActivity;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -73,7 +73,7 @@ public class TVShowWatchListFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONMovie> movieList, final Realm uiRealm,final ContentAdapter adapter, final boolean isWatched) {
+        public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONShow> movieList, final Realm uiRealm, final ContentAdapter adapter, final boolean isWatched) {
                 super(inflater.inflate(R.layout.watch_list_card, parent, false));
 
 
@@ -81,9 +81,9 @@ public class TVShowWatchListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
-                        JSONMovie movie = movieList.get(getAdapterPosition());
-                        Intent intent = new Intent(context, MovieWatchListDetailActivity.class);
-                        intent.putExtra("movieId", movie.getId());
+                        JSONShow movie = movieList.get(getAdapterPosition());
+                        Intent intent = new Intent(context, TVShowWatchListDetailActivity.class);
+                        intent.putExtra("showId", movie.getId());
                         context.startActivity(intent);
                     }
                 });
@@ -98,7 +98,7 @@ public class TVShowWatchListFragment extends Fragment {
                     watchButton.setOnClickListener(new View.OnClickListener(){
                         @Override
                         public void onClick(View v) {
-                            JSONMovie movie = movieList.get(getAdapterPosition());
+                            JSONShow movie = movieList.get(getAdapterPosition());
                             uiRealm.beginTransaction();
                             //JSONMovie movieToAdd = uiRealm.createObject(movie);
                             movie.setWatched(true);
@@ -119,12 +119,12 @@ public class TVShowWatchListFragment extends Fragment {
                 removeButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        JSONMovie movie = movieList.get(getAdapterPosition());
+                        JSONShow show = movieList.get(getAdapterPosition());
 
                         uiRealm.beginTransaction();
                         //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                        RealmResults<JSONMovie> result1 = uiRealm.where(JSONMovie.class)
-                                .equalTo("title", movie.getTitle())
+                        RealmResults<JSONShow> result1 = uiRealm.where(JSONShow.class)
+                                .equalTo("title", show.getName())
                                 .findAll();
                         result1.clear();
                         uiRealm.commitTransaction();
@@ -143,7 +143,7 @@ public class TVShowWatchListFragment extends Fragment {
         public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
             // Set numbers of Card in RecyclerView.
             private Realm uiRealm;
-            private RealmResults<JSONMovie> movieList;
+            private RealmResults<JSONShow> movieList;
             private Activity activity;
             private boolean isWatched;
 
@@ -152,15 +152,15 @@ public class TVShowWatchListFragment extends Fragment {
                 this.isWatched = isWatched;
 
                 // Build the query looking at all users:
-                RealmQuery<JSONMovie> query = uiRealm.where(JSONMovie.class);
+                RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
 
                 // Execute the query:
                 if (isWatched){
-                    RealmResults<JSONMovie> movies = query.equalTo("isWatched", true).findAll();
+                    RealmResults<JSONShow> movies = query.equalTo("isWatched", true).findAll();
                     this.activity = activity;
                     movieList = movies;
                 } else {
-                    RealmResults<JSONMovie> movies = query.equalTo("isWatched", false).findAll();
+                    RealmResults<JSONShow> movies = query.equalTo("isWatched", false).findAll();
                     this.activity = activity;
                     movieList = movies;
                 }
@@ -185,9 +185,9 @@ public class TVShowWatchListFragment extends Fragment {
                     coverArt.setImageBitmap(bmp);
                 }
 
-                title.setText(movieList.get(position).getTitle());
+                title.setText(movieList.get(position).getName());
 
-                title.setText(movieList.get(position).getTitle());
+                title.setText(movieList.get(position).getName());
             Typeface type = Typeface.createFromAsset(this.activity.getAssets(),"fonts/Lobster-Regular.ttf");
             title.setTypeface(type);
 

@@ -81,7 +81,7 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 .build();
 
         Realm.setDefaultConfiguration(config1);
-        Realm uiRealm =  Realm.getInstance(getApplicationContext());
+        Realm uiRealm = Realm.getInstance(getApplicationContext());
 
         ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 

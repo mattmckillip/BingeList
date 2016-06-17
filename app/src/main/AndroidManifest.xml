@@ -16,10 +16,7 @@
         tools:replace="android:icon">
 
         <activity android:name=".viewControllers.activities.movies.MovieWatchListActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity
@@ -72,10 +69,18 @@
 
         <activity
         android:name="com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
     </activity>
 
         <activity
             android:name=".viewControllers.ExpandableDemo.ExpandableExampleActivity">
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.shows.TVShowWatchListDetailActivity">
         </activity>
 
     </application>
