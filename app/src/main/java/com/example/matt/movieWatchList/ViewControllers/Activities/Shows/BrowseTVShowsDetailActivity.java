@@ -13,13 +13,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.viewControllers.ExpandableDemo.ExampleExpandableDataProviderFragment;
+import com.example.matt.movieWatchList.viewControllers.ExpandableDemo.ExpandableExampleFragment;
+import com.example.matt.movieWatchList.viewControllers.adapters.AbstractExpandableDataProvider;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
-import com.example.matt.movieWatchList.viewControllers.fragments.movies.SearchFragment;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowSeasonFragment;
 import com.r0adkll.slidr.Slidr;
@@ -55,6 +58,9 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private SlidrInterface slidrInterface;
 
+    private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
+    private static final String FRAGMENT_LIST_VIEW = "list view";
+
     @BindView(R.id.appBar)
     AppBarLayout appbar;
 
@@ -74,7 +80,7 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
-        showID = getIntent().getIntExtra("showID",0);
+        showID = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
 
         ButterKnife.bind(this);
@@ -83,18 +89,7 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
         collapsing_toolbar.setTitle(ShowName);
 
         // Attach the Slidr Mechanism to this activity
-        Slidr.attach(this);
-        slidrInterface = new SlidrInterface() {
-            @Override
-            public void lock() {
-
-            }
-
-            @Override
-            public void unlock() {
-
-            }
-        };
+        slidrInterface = Slidr.attach(this);
 
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Seasons"));
@@ -117,14 +112,21 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
         TVShowSeasonFragment fragment2 = new TVShowSeasonFragment();
         fragment2.setArguments(deadpoolSearchBundle);
 
+        getSupportFragmentManager().beginTransaction()
+                .add(new ExampleExpandableDataProviderFragment(), FRAGMENT_TAG_DATA_PROVIDER)
+                .commit();
+        ExpandableExampleFragment testSeasons = new ExpandableExampleFragment();
+
+
         adapterViewPager.addFragment(fragment1, "Fight Club");
-        adapterViewPager.addFragment(fragment2, "Deadpool");
+        adapterViewPager.addFragment(testSeasons, "Deadpool");
         viewPager.setAdapter(adapterViewPager);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                Log.d("Tab Selected", Integer.toString(tab.getPosition()));
                 viewPager.setCurrentItem(tab.getPosition());
                 if (tab.getPosition() == 0) slidrInterface.unlock();
                 else slidrInterface.lock();
@@ -140,6 +142,11 @@ public class BrowseTVShowsDetailActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public AbstractExpandableDataProvider getDataProvider() {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
+        return ((ExampleExpandableDataProviderFragment) fragment).getDataProvider();
     }
 
     static class Adapter extends FragmentPagerAdapter {

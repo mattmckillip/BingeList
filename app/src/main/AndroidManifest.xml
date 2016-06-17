@@ -71,7 +71,11 @@
         </activity>
 
         <activity
-            android:name="com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity">
+        android:name="com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity">
+    </activity>
+
+        <activity
+            android:name=".viewControllers.ExpandableDemo.ExpandableExampleActivity">
         </activity>
 
     </application>

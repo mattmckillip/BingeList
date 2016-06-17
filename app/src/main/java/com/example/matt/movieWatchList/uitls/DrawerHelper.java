@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.matt.movieWatchList.R;
+import com.example.matt.movieWatchList.viewControllers.ExpandableDemo.ExpandableExampleActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
@@ -92,6 +93,7 @@ public class DrawerHelper {
                                 intent = new Intent(currentActivity, SearchActivity.class);
                             } else if (drawerItem.getIdentifier() == 4000) {
                                 intent = null;
+                                //intent = new Intent(currentActivity, ExpandableExampleActivity.class);
                             } else if (drawerItem.getIdentifier() == 4001) {
                                 intent = new Intent(currentActivity, SettingsActivity.class);
                             }

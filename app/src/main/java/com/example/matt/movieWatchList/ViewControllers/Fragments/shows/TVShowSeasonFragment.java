@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -19,8 +18,6 @@ import com.example.matt.movieWatchList.viewControllers.adapters.CustomExpandable
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by Matt on 6/15/2016.
