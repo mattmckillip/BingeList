@@ -1,12 +1,10 @@
-package com.example.matt.movieWatchList.viewControllers.ExpandableDemo;
+package com.example.matt.movieWatchList.uitls;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;

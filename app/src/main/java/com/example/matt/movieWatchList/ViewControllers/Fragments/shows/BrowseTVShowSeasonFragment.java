@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.ExpandableDemo;
+package com.example.matt.movieWatchList.viewControllers.fragments.shows;
 
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
@@ -23,7 +23,6 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,16 +31,17 @@ import android.view.ViewGroup;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListDetailActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.AbstractExpandableDataProvider;
+import com.example.matt.movieWatchList.viewControllers.adapters.SeasonAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
-import com.mikepenz.iconics.context.IconicsLayoutInflater;
 
-public class ExpandableExampleFragment
+public class BrowseTVShowSeasonFragment
         extends Fragment
         implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
         RecyclerViewExpandableItemManager.OnGroupExpandListener {
@@ -52,7 +52,7 @@ public class ExpandableExampleFragment
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
 
-    public ExpandableExampleFragment() {
+    public BrowseTVShowSeasonFragment() {
         super();
     }
 
@@ -75,7 +75,7 @@ public class ExpandableExampleFragment
         mRecyclerViewExpandableItemManager.setOnGroupCollapseListener(this);
 
         //adapter
-        final ExpandableExampleAdapter myItemAdapter = new ExpandableExampleAdapter(getDataProvider());
+        final SeasonAdapter myItemAdapter = new SeasonAdapter(getDataProvider());
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
 

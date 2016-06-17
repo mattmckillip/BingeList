@@ -192,7 +192,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                 public void onClick(final View v) {
                     final int movieID = movieList.get(getAdapterPosition()).getId();
 
-                    watchListLayout.setVisibility(View.VISIBLE);
 
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://api.themoviedb.org/3/movie/")
@@ -243,6 +242,11 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                             //JSONMovie movieToAdd = uiRealm.createObject(movie);
                                             uiRealm.copyToRealm(realmMovie);
                                             uiRealm.commitTransaction();
+
+                                            watchListLayout.setVisibility(View.VISIBLE);
+
+                                            Snackbar.make(v, "Added to watchlist!",
+                                                    Snackbar.LENGTH_LONG).show();
                                         }
 
                                         @Override
@@ -261,8 +265,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                     realmMovie.setCrew(realmCrew);
                                     realmMovie.setCast(realmCast);
 
-                                    Snackbar.make(v, "Added to watchlist!",
-                                            Snackbar.LENGTH_LONG).show();
+
                                 }
 
                                 @Override

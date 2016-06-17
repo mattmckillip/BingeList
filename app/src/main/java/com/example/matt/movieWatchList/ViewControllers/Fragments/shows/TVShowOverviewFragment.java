@@ -2,10 +2,14 @@ package com.example.matt.movieWatchList.viewControllers.fragments.shows;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,15 +21,23 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
+import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
+import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+import com.squareup.picasso.Picasso;
+
+import java.io.ByteArrayOutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -38,6 +50,7 @@ public class TVShowOverviewFragment extends Fragment {
     //ThingsAdapter adapter;
     FragmentActivity listener;
     int showID;
+    private Realm uiRealm;
     private JSONShow realmShow;
     private TVShow show;
     private RealmList<JSONCast> castList = new RealmList<>();
@@ -99,8 +112,7 @@ public class TVShowOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showID = getArguments().getInt("tvShowID",0);
-
+        showID = getArguments().getInt("showID",0);
 
         /*ArrayList<Thing> things = new ArrayList<Thing>();
         adapter = new ThingsAdapter(getActivity(), things);*/
@@ -128,67 +140,57 @@ public class TVShowOverviewFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.d("ShowID", Integer.toString(showID));
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/tv/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
 
-        TVShowAPI service = retrofit.create(TVShowAPI.class);
-        Log.d("Intent", Integer.toString(showID));
+        // Build the query looking at all users:
+        RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
 
-        Call<TVShow> call = service.getTVShow(Integer.toString(showID));
+        // Execute the query:
+        realmShow = query.equalTo("id",showID).findFirst();
 
-        call.enqueue(new Callback<TVShow>() {
-            @Override
-            public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
-                Log.d("getMovie()", "Callback Success");
-                show = response.body();
-                //show.setBackdropPath("https://image.tmdb.org/t/p/w500//" + show.getBackdropPath());
-                realmShow = show.convertToRealm();
+        if (realmShow == null){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org/3/tv/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-                updateUI();
-            }
+            TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-            @Override
-            public void onFailure(Throwable t) {
-                Log.d("getMovie()", "Callback Failure");
-            }
-        });
+            Call<TVShow> call = service.getTVShow(Integer.toString(showID));
+
+            call.enqueue(new Callback<TVShow>() {
+                @Override
+                public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
+                    Log.d("getMovie()", "Callback Success");
+                    Log.d("getMovie()", response.raw().toString());
+                    Log.d("getMovie()", response.body().toString());
+
+                    show = response.body();
+                    //show.setBackdropPath("https://image.tmdb.org/t/p/w500//" + show.getBackdropPath());
+                    if (show != null) {
+                        realmShow = show.convertToRealm();
+
+                        updateUI();
+                    } else {
+                        Snackbar.make(getView(), "Error loading data", Snackbar.LENGTH_SHORT);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("getMovie()", "Callback Failure");
+                }
+            });
+        } else {
+            updateUI();
+        }
     }
 
     private void updateUI(){
-        /*Picasso.with(getContext())
-                .load(show.getBackdropPath())
-                .fit().centerCrop()
-                .transform(PaletteTransformation.instance())
-                .into(backdrop, new PaletteTransformation.PaletteCallback(backdrop) {
-                    @Override public void onSuccess(Palette palette) {
-                        Bitmap bitmap = ((BitmapDrawable) backdrop.getDrawable()).getBitmap(); // Ew!
 
-                        int defaultColor = 0x000000;
-                        int vibrantColor = palette.getVibrantColor(defaultColor);
-
-                        if (vibrantColor != 0){
-                            plotTitle.setTextColor(vibrantColor);
-                            castTitle.setTextColor(vibrantColor);
-                            crewTitle.setTextColor(vibrantColor);
-                            overviewTitle.setTextColor(vibrantColor);
-                        } else {
-                            Log.d("Palette", "Could not gather vibrant color");
-                        }
-
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                        addByteArray(stream.toByteArray());
-                    }
-
-                    @Override
-                    public void onError() {
-                        //TODO
-                    }
-                });*/
 
 
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
@@ -198,10 +200,10 @@ public class TVShowOverviewFragment extends Fragment {
             }
         });
 
-        plot.setText(show.getOverview());
-        stars.setRating(show.getVoteAverage().floatValue());
-        //runtime.setText(Integer.toString(show.getNumberOfSeasons()) + " seasons");
-        userRating.setText(Double.toString(show.getVoteAverage())+ "/10");
+        plot.setText(realmShow.getOverview());
+        stars.setRating(realmShow.getVoteAverage().floatValue());
+        runtime.setText(Integer.toString(realmShow.getNumberOfSeasons()) + " seasons");
+        userRating.setText(Double.toString(realmShow.getVoteAverage())+ "/10");
         
         /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/tv/")

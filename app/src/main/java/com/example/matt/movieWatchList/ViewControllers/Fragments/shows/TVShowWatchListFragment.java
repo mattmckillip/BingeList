@@ -27,6 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,14 +77,16 @@ public class TVShowWatchListFragment extends Fragment {
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONShow> movieList, final Realm uiRealm, final ContentAdapter adapter, final boolean isWatched) {
                 super(inflater.inflate(R.layout.watch_list_card, parent, false));
 
-
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Context context = v.getContext();
                         JSONShow movie = movieList.get(getAdapterPosition());
                         Intent intent = new Intent(context, TVShowWatchListDetailActivity.class);
-                        intent.putExtra("showId", movie.getId());
+                        Log.d("ViewHodler()",movie.getName());
+                        Log.d("ViewHodler()",Integer.toString(movie.getId()));
+
+                        intent.putExtra("showID", movie.getId());
                         context.startActivity(intent);
                     }
                 });
@@ -124,13 +127,13 @@ public class TVShowWatchListFragment extends Fragment {
                         uiRealm.beginTransaction();
                         //JSONMovie movieToAdd = uiRealm.createObject(movie);
                         RealmResults<JSONShow> result1 = uiRealm.where(JSONShow.class)
-                                .equalTo("title", show.getName())
+                                .equalTo("name", show.getName())
                                 .findAll();
                         result1.clear();
                         uiRealm.commitTransaction();
                         adapter.notifyDataSetChanged();
 
-                        Snackbar.make(v, "Removed from watch list",
+                        Snackbar.make(v, "Removed from your shows",
                                 Snackbar.LENGTH_LONG).show();
                     }
                 });
@@ -143,7 +146,7 @@ public class TVShowWatchListFragment extends Fragment {
         public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
             // Set numbers of Card in RecyclerView.
             private Realm uiRealm;
-            private RealmResults<JSONShow> movieList;
+            private RealmResults<JSONShow> showList;
             private Activity activity;
             private boolean isWatched;
 
@@ -156,19 +159,19 @@ public class TVShowWatchListFragment extends Fragment {
 
                 // Execute the query:
                 if (isWatched){
-                    RealmResults<JSONShow> movies = query.equalTo("isWatched", true).findAll();
+                    RealmResults<JSONShow> shows = query.equalTo("isWatched", true).findAll();
                     this.activity = activity;
-                    movieList = movies;
+                    showList = shows;
                 } else {
-                    RealmResults<JSONShow> movies = query.equalTo("isWatched", false).findAll();
+                    RealmResults<JSONShow> shows = query.findAll();
                     this.activity = activity;
-                    movieList = movies;
+                    showList = shows;
                 }
             }
 
             @Override
             public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, movieList, uiRealm, this, isWatched);
+                return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, showList, uiRealm, this, isWatched);
             }
 
             @Override
@@ -180,23 +183,23 @@ public class TVShowWatchListFragment extends Fragment {
                 Bitmap bmp;
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inMutable = true;
-                if (movieList.get(position).getBackdropBitmap() != null) {
-                    bmp = BitmapFactory.decodeByteArray(movieList.get(position).getBackdropBitmap(), 0, movieList.get(position).getBackdropBitmap().length, options);
+                if (showList.get(position).getBackdropBitmap() != null) {
+                    bmp = BitmapFactory.decodeByteArray(showList.get(position).getBackdropBitmap(), 0, showList.get(position).getBackdropBitmap().length, options);
                     coverArt.setImageBitmap(bmp);
                 }
 
-                title.setText(movieList.get(position).getName());
+                title.setText(showList.get(position).getName());
 
-                title.setText(movieList.get(position).getName());
+                title.setText(showList.get(position).getName());
             Typeface type = Typeface.createFromAsset(this.activity.getAssets(),"fonts/Lobster-Regular.ttf");
             title.setTypeface(type);
 
-            genre.setText(movieList.get(position).getOverview());
+            genre.setText(showList.get(position).getOverview());
         }
 
         @Override
         public int getItemCount() {
-            return movieList.size();
+            return showList.size();
         }
     }
 }

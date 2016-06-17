@@ -142,8 +142,8 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         TVShowWatchListFragment watchListMovies = new TVShowWatchListFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
-        adapterViewPager.addFragment(watchListMovies, " Unwatched Episodes");
-        adapterViewPager.addFragment(watchedMovies, " Up to Date");
+        adapterViewPager.addFragment(watchListMovies, "Your Shows");
+        adapterViewPager.addFragment(watchedMovies, "New Episodes");
         viewPager.setAdapter(adapterViewPager);
     }
 

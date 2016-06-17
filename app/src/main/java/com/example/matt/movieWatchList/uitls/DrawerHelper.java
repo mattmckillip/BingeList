@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.ExpandableDemo.ExpandableExampleActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;

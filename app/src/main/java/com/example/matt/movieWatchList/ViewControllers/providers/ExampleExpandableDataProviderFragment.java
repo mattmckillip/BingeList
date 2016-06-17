@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.ExpandableDemo;
+package com.example.matt.movieWatchList.viewControllers.providers;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

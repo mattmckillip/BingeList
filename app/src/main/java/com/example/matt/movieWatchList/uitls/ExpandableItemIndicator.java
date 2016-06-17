@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.ExpandableDemo;
+package com.example.matt.movieWatchList.uitls;
 
 import android.content.Context;
 import android.os.Build;

@@ -140,9 +140,9 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
         BrowseTVShowsFragment topRatedMovies = new BrowseTVShowsFragment();
         topRatedMovies.setArguments(topRatedBundle);
 
-        adapterViewPager.addFragment(popularMovies, " Popular");
-        adapterViewPager.addFragment(nowShowingMovies, " Now Airing");
-        adapterViewPager.addFragment(topRatedMovies, " Top Rated");
+        adapterViewPager.addFragment(popularMovies, "Popular");
+        adapterViewPager.addFragment(nowShowingMovies, "Now Airing");
+        adapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
     }

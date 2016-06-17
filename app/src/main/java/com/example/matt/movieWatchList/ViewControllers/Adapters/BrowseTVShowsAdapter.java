@@ -29,6 +29,7 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListDetailActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -165,7 +166,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 public void onClick(final View v) {
                     final int showID = showList.get(getAdapterPosition()).getId();
 
-                    watchListLayout.setVisibility(View.VISIBLE);
 
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://api.themoviedb.org/3/tv/")
@@ -206,27 +206,21 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     Target target = new Target() {
                                         @Override
                                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                            Log.d("onBitmapLoaded()", "Here");
-                                            /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                                             realmShow.setBackdropBitmap(stream.toByteArray());
 
                                             Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
                                             uiRealm.beginTransaction();
                                             realmShow.setOnWatchList(true);
-                                            realmShow.setWatched(true);
 
                                             uiRealm.copyToRealm(realmShow);
                                             uiRealm.commitTransaction();
-                                            RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
-                                            RealmResults<JSONShow> movies = query.equalTo("onWatchList", true).findAll();
-                                            Log.d("Watch List Size", Integer.toString(movies.size()));
 
-                                            RealmResults<JSONShow> watchedMovies = query.equalTo("isWatched", true).findAll();
-                                            Log.d("Watched List Size", Integer.toString(watchedMovies.size()));
+                                            watchListLayout.setVisibility(View.VISIBLE);
 
-                                            Log.d("url", realmShow.getBackdropPath());*/
-
+                                            Snackbar.make(v, "Added to your shows!",
+                                                    Snackbar.LENGTH_LONG).show();
                                         }
 
                                         @Override
@@ -238,15 +232,16 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                         public void onPrepareLoad(Drawable placeHolderDrawable) {
                                         }
                                     };
+                                    realmShow.setCrew(realmCrew);
+                                    realmShow.setCast(realmCast);
 
                                     Picasso.with(activity.getApplicationContext())
                                             .load(realmShow.getBackdropPath())
                                             .into(target);
 
-                                    realmShow.setCrew(realmCrew);
-                                    realmShow.setCast(realmCast);
 
-                                    Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
+
+                                    /*Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
                                     uiRealm.beginTransaction();
                                     realmShow.setOnWatchList(true);
@@ -260,10 +255,9 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     RealmResults<JSONShow> watchedMovies = query.equalTo("isWatched", true).findAll();
                                     Log.d("Watched List Size", Integer.toString(watchedMovies.size()));
 
-                                    Log.d("url", realmShow.getBackdropPath());
+                                    Log.d("url", realmShow.getBackdropPath());*/
 
-                                    Snackbar.make(v, "Added to watchlist!",
-                                            Snackbar.LENGTH_LONG).show();
+
                                 }
 
                                 @Override

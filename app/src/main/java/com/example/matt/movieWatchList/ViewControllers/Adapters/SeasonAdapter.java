@@ -14,13 +14,8 @@
  *    limitations under the License.
  */
 
-package com.example.matt.movieWatchList.viewControllers.ExpandableDemo;
+package com.example.matt.movieWatchList.viewControllers.adapters;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,19 +26,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.adapters.AbstractExpandableDataProvider;
+import com.example.matt.movieWatchList.uitls.ExpandableItemIndicator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 
 import java.util.Random;
 
-class ExpandableExampleAdapter
-        extends AbstractExpandableItemAdapter<ExpandableExampleAdapter.MyGroupViewHolder, ExpandableExampleAdapter.MyChildViewHolder> {
+public class SeasonAdapter
+        extends AbstractExpandableItemAdapter<SeasonAdapter.MyGroupViewHolder, SeasonAdapter.MyChildViewHolder> {
     private static final String TAG = "MyExpandableItemAdapter";
 
     // NOTE: Make accessible with short name
@@ -92,7 +86,7 @@ class ExpandableExampleAdapter
         }
     }
 
-    public ExpandableExampleAdapter(AbstractExpandableDataProvider dataProvider) {
+    public SeasonAdapter(AbstractExpandableDataProvider dataProvider) {
         mProvider = dataProvider;
 
         // ExpandableItemAdapter requires stable ID, and also
