@@ -76,12 +76,12 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         public SearchViewHolder(View v) {
             super(v);
 
-            movieTitle =  (TextView) v.findViewById(R.id.card_title);
-            movieDescription = (TextView)  v.findViewById(R.id.card_text);
-            movieImage = (ImageView)  v.findViewById(R.id.card_image);
+            movieTitle = (TextView) v.findViewById(R.id.card_title);
+            movieDescription = (TextView) v.findViewById(R.id.card_text);
+            movieImage = (ImageView) v.findViewById(R.id.card_image);
 
-            watchedLayout = (RelativeLayout)  v.findViewById(R.id.watched_layout);
-            watchListLayout = (RelativeLayout)  v.findViewById(R.id.watch_list_layout);
+            watchedLayout = (RelativeLayout) v.findViewById(R.id.watched_layout);
+            watchListLayout = (RelativeLayout) v.findViewById(R.id.watch_list_layout);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -97,12 +97,12 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                         Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
                         intent.putExtra("tvShowID", result.getId());
                         context.startActivity(intent);
-                    }
-                    else {
+                    } else {
                         Log.d("CLICK", "ERROR");
                     }
                 }
-            });;
+            });
+            ;
         }
     }
 }

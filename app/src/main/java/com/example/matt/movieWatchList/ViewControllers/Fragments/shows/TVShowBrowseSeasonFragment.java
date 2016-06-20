@@ -31,9 +31,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.matt.movieWatchList.Models.POJO.movies.Movie;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
-import com.example.matt.movieWatchList.Models.POJO.shows.TVShowResult;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
@@ -114,12 +112,9 @@ public class TVShowBrowseSeasonFragment
                 Log.d("getMovie()", "Callback Failure");
             }
         });
-
-
-
     }
 
-    public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons){
+    public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons) {
         final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons);
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
@@ -143,7 +138,6 @@ public class TVShowBrowseSeasonFragment
             mRecyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z1)));
         }
         mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
-
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
     }
 
@@ -205,7 +199,7 @@ public class TVShowBrowseSeasonFragment
     }
 
     private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
-        protected  ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
+        protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
             Integer showID = params[0];
             Integer numberOfSeasons = params[1];
 
@@ -221,7 +215,7 @@ public class TVShowBrowseSeasonFragment
 
             final TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-            for (int i = 1; i <= numberOfSeasons; i++){
+            for (int i = 1; i <= numberOfSeasons; i++) {
                 Call<TVShowSeasonResult> call = service.getSeasons(Integer.toString(showID), Integer.toString(i));
                 try {
                     seasons.add(call.execute().body());

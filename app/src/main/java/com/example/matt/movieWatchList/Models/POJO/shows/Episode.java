@@ -1,9 +1,10 @@
 package com.example.matt.movieWatchList.Models.POJO.shows;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Episode {
 
@@ -45,216 +46,168 @@ public class Episode {
     private Integer voteCount;
 
     /**
-     * 
-     * @return
-     *     The airDate
+     * @return The airDate
      */
     public String getAirDate() {
         return airDate;
     }
 
     /**
-     * 
-     * @param airDate
-     *     The air_date
+     * @param airDate The air_date
      */
     public void setAirDate(String airDate) {
         this.airDate = airDate;
     }
 
     /**
-     * 
-     * @return
-     *     The crew
+     * @return The crew
      */
     public List<Object> getCrew() {
         return crew;
     }
 
     /**
-     * 
-     * @param crew
-     *     The crew
+     * @param crew The crew
      */
     public void setCrew(List<Object> crew) {
         this.crew = crew;
     }
 
     /**
-     * 
-     * @return
-     *     The episodeNumber
+     * @return The episodeNumber
      */
     public Integer getEpisodeNumber() {
         return episodeNumber;
     }
 
     /**
-     * 
-     * @param episodeNumber
-     *     The episode_number
+     * @param episodeNumber The episode_number
      */
     public void setEpisodeNumber(Integer episodeNumber) {
         this.episodeNumber = episodeNumber;
     }
 
     /**
-     * 
-     * @return
-     *     The guestStars
+     * @return The guestStars
      */
     public List<Object> getGuestStars() {
         return guestStars;
     }
 
     /**
-     * 
-     * @param guestStars
-     *     The guest_stars
+     * @param guestStars The guest_stars
      */
     public void setGuestStars(List<Object> guestStars) {
         this.guestStars = guestStars;
     }
 
     /**
-     * 
-     * @return
-     *     The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 
-     * @param name
-     *     The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 
-     * @return
-     *     The overview
+     * @return The overview
      */
     public String getOverview() {
         return overview;
     }
 
     /**
-     * 
-     * @param overview
-     *     The overview
+     * @param overview The overview
      */
     public void setOverview(String overview) {
         this.overview = overview;
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The productionCode
+     * @return The productionCode
      */
     public Object getProductionCode() {
         return productionCode;
     }
 
     /**
-     * 
-     * @param productionCode
-     *     The production_code
+     * @param productionCode The production_code
      */
     public void setProductionCode(Object productionCode) {
         this.productionCode = productionCode;
     }
 
     /**
-     * 
-     * @return
-     *     The seasonNumber
+     * @return The seasonNumber
      */
     public Integer getSeasonNumber() {
         return seasonNumber;
     }
 
     /**
-     * 
-     * @param seasonNumber
-     *     The season_number
+     * @param seasonNumber The season_number
      */
     public void setSeasonNumber(Integer seasonNumber) {
         this.seasonNumber = seasonNumber;
     }
 
     /**
-     * 
-     * @return
-     *     The stillPath
+     * @return The stillPath
      */
     public Object getStillPath() {
         return stillPath;
     }
 
     /**
-     * 
-     * @param stillPath
-     *     The still_path
+     * @param stillPath The still_path
      */
     public void setStillPath(Object stillPath) {
         this.stillPath = stillPath;
     }
 
     /**
-     * 
-     * @return
-     *     The voteAverage
+     * @return The voteAverage
      */
     public Double getVoteAverage() {
         return voteAverage;
     }
 
     /**
-     * 
-     * @param voteAverage
-     *     The vote_average
+     * @param voteAverage The vote_average
      */
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
     /**
-     * 
-     * @return
-     *     The voteCount
+     * @return The voteCount
      */
     public Integer getVoteCount() {
         return voteCount;
     }
 
     /**
-     * 
-     * @param voteCount
-     *     The vote_count
+     * @param voteCount The vote_count
      */
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;

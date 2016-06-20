@@ -35,9 +35,9 @@ import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.PaletteTransformation;
+import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
@@ -56,84 +56,65 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 
-
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
 public class MovieBrowseDetailActivity extends AppCompatActivity {
+    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     Integer movieID;
     Bitmap thisBitmap;
+    @BindView(R.id.appbar)
+    AppBarLayout appbar;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsing_toolbar;
+    @BindView(R.id.scroll_view)
+    NestedScrollView scroll_view;
+    @BindView(R.id.backdrop)
+    ImageView backdrop;
+    @BindView(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.rating)
+    RatingBar stars;
+    @BindView(R.id.plot_title)
+    TextView plotTitle;
+
+    /*@BindView(R.id.fab)
+    FloatingActionButton fab;*/
+    @BindView(R.id.cast_title)
+    TextView castTitle;
+    @BindView(R.id.crew_title)
+    TextView crewTitle;
+    @BindView(R.id.overview_title)
+    TextView overviewTitle;
+    @BindView(R.id.runtime)
+    TextView runtime;
+    @BindView(R.id.user_rating)
+    TextView userRating;
+    @BindView(R.id.more_info)
+    LinearLayout layout;
+    @BindView(R.id.expand_text_view)
+    ExpandableTextView plot;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
     private JSONMovie realmMovie;
     private Movie movie;
     private RealmList<JSONCast> castList = new RealmList<>();
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
-
     private RealmList<JSONCast> crewList = new RealmList<>();
     private RecyclerView crewRecyclerView;
     private CastAdapter crewAdapter;
 
-    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
-
-    /*@BindView(R.id.fab)
-    FloatingActionButton fab;*/
-
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
-
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsing_toolbar;
-
-    @BindView(R.id.scroll_view)
-    NestedScrollView scroll_view;
-
-    @BindView(R.id.backdrop)
-    ImageView backdrop;
-
-    @BindView(R.id.loadingPanel)
-    RelativeLayout loadingPanel;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.rating)
-    RatingBar stars;
-
-    @BindView(R.id.plot_title)
-    TextView plotTitle;
-
-    @BindView(R.id.cast_title)
-    TextView castTitle;
-
-    @BindView(R.id.crew_title)
-    TextView crewTitle;
-
-    @BindView(R.id.overview_title)
-    TextView overviewTitle;
-
-    @BindView(R.id.runtime)
-    TextView runtime;
-
-    @BindView(R.id.user_rating)
-    TextView userRating;
-
-    @BindView(R.id.more_info)
-    LinearLayout layout;
-
-    @BindView(R.id.expand_text_view)
-    ExpandableTextView plot;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.movie_detail_activity);
 
         ButterKnife.bind(this);
 
-        movieID = getIntent().getIntExtra("movieId",0);
+        movieID = getIntent().getIntExtra("movieId", 0);
 
         // Attach the Slidr Mechanism to this activity
         Slidr.attach(this);
@@ -188,21 +169,21 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
         Call<Movie> call = service.getMovie(Integer.toString(movieID));
 
         call.enqueue(new Callback<Movie>() {
-                @Override
-                public void onResponse(retrofit.Response<Movie> response, Retrofit retrofit) {
-                    Log.d("getMovie()", "Callback Success");
-                    movie = response.body();
-                    movie.setBackdropPath("https://image.tmdb.org/t/p/w500//" + movie.getBackdropPath());
-                    realmMovie = movie.convertToRealm();
+            @Override
+            public void onResponse(retrofit.Response<Movie> response, Retrofit retrofit) {
+                Log.d("getMovie()", "Callback Success");
+                movie = response.body();
+                movie.setBackdropPath("https://image.tmdb.org/t/p/w500//" + movie.getBackdropPath());
+                realmMovie = movie.convertToRealm();
 
-                    updateUI();
-                }
+                updateUI();
+            }
 
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.d("getMovie()", "Callback Failure");
-                }
-            });
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("getMovie()", "Callback Failure");
+            }
+        });
 
     }
 
@@ -211,7 +192,7 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
         realmMovie.setBackdropBitmap(image);
     }
 
-    private void updateUI(){
+    private void updateUI() {
         //this.movie = movie;
         // Set Collapsing Toolbar layout to the screen
         final CollapsingToolbarLayout collapsingToolbar =
@@ -240,7 +221,8 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
                 .fit().centerCrop()
                 .transform(PaletteTransformation.instance())
                 .into(image, new PaletteTransformation.PaletteCallback(image) {
-                    @Override public void onSuccess(Palette palette) {
+                    @Override
+                    public void onSuccess(Palette palette) {
                         Bitmap bitmap = ((BitmapDrawable) image.getDrawable()).getBitmap(); // Ew!
 
                         appbar.setVisibility(View.VISIBLE);
@@ -253,7 +235,7 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
                         int defaultColor = 0x000000;
                         int vibrantColor = palette.getVibrantColor(defaultColor);
 
-                        if (vibrantColor != 0){
+                        if (vibrantColor != 0) {
                             plotTitle.setTextColor(vibrantColor);
                             castTitle.setTextColor(vibrantColor);
                             crewTitle.setTextColor(vibrantColor);
@@ -295,7 +277,7 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
         plot.setText(realmMovie.getOverview());
         stars.setRating(realmMovie.getVote_average().floatValue());
         runtime.setText(Integer.toString(realmMovie.getRuntime()) + " min");
-        userRating.setText(Double.toString(realmMovie.getVote_average())+ "/10");
+        userRating.setText(Double.toString(realmMovie.getVote_average()) + "/10");
 
         collapsing_toolbar.setVisibility(View.VISIBLE);
 
@@ -318,12 +300,12 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
                 Integer castSize = Math.min(3, cast.size());
                 Integer crewSize = Math.min(3, crew.size());
 
-                for( int i = 0; i < castSize; i++) {
+                for (int i = 0; i < castSize; i++) {
                     realmCast.add(cast.get(i).convertToRealm());
                 }
 
                 RealmList<JSONCast> realmCrew = new RealmList<>();
-                for( int i = 0; i < crewSize; i++) {
+                for (int i = 0; i < crewSize; i++) {
                     Log.d("Crew", Integer.toString(i));
                     realmCrew.add(crew.get(i).convertToRealm());
                 }
@@ -332,8 +314,8 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
                 realmMovie.setCast(realmCast);
 
                 // Populate cast and crew recycler views
-                castRecyclerView.setAdapter( new CastAdapter(realmMovie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
-                crewRecyclerView.setAdapter( new CastAdapter(realmMovie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+                castRecyclerView.setAdapter(new CastAdapter(realmMovie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+                crewRecyclerView.setAdapter(new CastAdapter(realmMovie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
                 castRecyclerView.setFocusable(false);
                 crewRecyclerView.setFocusable(false);
 

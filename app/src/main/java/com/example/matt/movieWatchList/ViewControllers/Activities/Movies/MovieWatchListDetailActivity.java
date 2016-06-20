@@ -42,28 +42,25 @@ import io.realm.RealmQuery;
  * Created by Matt on 6/3/2016.
  */
 public class MovieWatchListDetailActivity extends AppCompatActivity {
+    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     Integer movieID;
     Bitmap thisBitmap;
     private JSONMovie movie;
     private RealmList<JSONCast> castList = new RealmList<>();
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
-
     private RealmList<JSONCast> crewList = new RealmList<>();
     private RecyclerView crewRecyclerView;
     private CastAdapter crewAdapter;
 
-    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        movieID = getIntent().getIntExtra("movieId",0);
+        movieID = getIntent().getIntExtra("movieId", 0);
 
         Slidr.attach(this);
 
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.movie_detail_activity);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -94,7 +91,7 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
         RealmQuery<JSONMovie> query = uiRealm.where(JSONMovie.class);
 
         // Execute the query:
-        this.movie = query.equalTo("id",movieID).findFirst();
+        this.movie = query.equalTo("id", movieID).findFirst();
 
 
         // Adding Floating Action Button to bottom right of main view
@@ -119,7 +116,7 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
         updateUI();
     }
 
-    private void updateUI(){
+    private void updateUI() {
         // Set Collapsing Toolbar layout to the screen
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -144,11 +141,10 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
 
-        if (movie.getBackdropBitmap() != null){
+        if (movie.getBackdropBitmap() != null) {
             thisBitmap = BitmapFactory.decodeByteArray(movie.getBackdropBitmap(), 0, movie.getBackdropBitmap().length, options);
             image.setImageBitmap(thisBitmap);
-        }
-        else {
+        } else {
             thisBitmap = null;
         }
 
@@ -168,7 +164,7 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
             int vibrantColor = palette.getVibrantColor(defaultColor);
             Log.d("vibrant color", Integer.toString(vibrantColor));
 
-            if (vibrantColor != 0){
+            if (vibrantColor != 0) {
                 plotTitle.setTextColor(vibrantColor);
                 castTitle.setTextColor(vibrantColor);
                 crewTitle.setTextColor(vibrantColor);
@@ -194,8 +190,7 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
             findViewById(R.id.scroll_view).setVisibility(View.VISIBLE);
             findViewById(R.id.fab).setVisibility(View.VISIBLE);
             findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-        }
-        else {
+        } else {
             Log.d("Pallete", "Bitmap Null");
         }
 
@@ -214,11 +209,11 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
         plot.setText(movie.getOverview());
         stars.setRating(movie.getVote_average().floatValue());
         runtime.setText(Integer.toString(movie.getRuntime()) + " min");
-        userRating.setText(Double.toString(movie.getVote_average())+ "/10");
+        userRating.setText(Double.toString(movie.getVote_average()) + "/10");
 
         // Populate cast and crew recycler views
-        castRecyclerView.setAdapter( new CastAdapter(movie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
-        crewRecyclerView.setAdapter( new CastAdapter(movie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+        castRecyclerView.setAdapter(new CastAdapter(movie.getCast(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
+        crewRecyclerView.setAdapter(new CastAdapter(movie.getCrew(), getApplicationContext(), NUMBER_OF_CREW_TO_DISPLAY));
         castRecyclerView.setFocusable(false);
         crewRecyclerView.setFocusable(false);
     }

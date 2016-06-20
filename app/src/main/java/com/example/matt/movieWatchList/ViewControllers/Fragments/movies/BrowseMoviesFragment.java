@@ -29,8 +29,8 @@ import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.API.BrowseMoviesAPI;
+import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.viewControllers.adapters.BrowseMoviesAdapter;
 
 import java.util.List;
@@ -45,69 +45,68 @@ import retrofit.Retrofit;
  * Provides UI for the view with Cards.
  */
 public class BrowseMoviesFragment extends Fragment {
-        private RealmList<JSONMovie> data;
-        private RecyclerView recyclerView;
-        private BrowseMoviesAdapter adapter;
-        private Integer movieType;
+    private RealmList<JSONMovie> data;
+    private RecyclerView recyclerView;
+    private BrowseMoviesAdapter adapter;
+    private Integer movieType;
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            movieType = getArguments().getInt("movieType");
-            recyclerView = (RecyclerView) inflater.inflate(
-                    R.layout.recycler_view, container, false);
-            recyclerView.setAdapter(adapter);
-            RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-            recyclerView.setLayoutManager(castLayoutManager);
-            loadData();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        movieType = getArguments().getInt("movieType");
+        recyclerView = (RecyclerView) inflater.inflate(
+                R.layout.recycler_view, container, false);
+        recyclerView.setAdapter(adapter);
+        RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(castLayoutManager);
+        loadData();
 
-            return recyclerView;
+        return recyclerView;
+    }
+
+    public void loadData() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        BrowseMoviesAPI service = retrofit.create(BrowseMoviesAPI.class);
+
+        Call<MovieQueryReturn> call;
+        if (movieType == BrowseMovieType.POPULAR) {
+            call = service.getPopularMovies();
+        } else if (movieType == BrowseMovieType.NOW_SHOWING) {
+            call = service.getInTheatersMovies();
+        } else if (movieType == BrowseMovieType.TOP_RATED) {
+            call = service.getTopRatedMovies();
+        } else {
+            call = null;
         }
-
-        public void loadData() {
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org/3/movie/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            BrowseMoviesAPI service = retrofit.create(BrowseMoviesAPI.class);
-
-            Call<MovieQueryReturn> call;
-            if (movieType == BrowseMovieType.POPULAR) {
-                call = service.getPopularMovies();
-            } else if (movieType == BrowseMovieType.NOW_SHOWING) {
-                call = service.getInTheatersMovies();
-            } else if (movieType == BrowseMovieType.TOP_RATED) {
-                call = service.getTopRatedMovies();
-            } else {
-                call = null;
-            }
-            if (call != null) {
-                call.enqueue(new Callback<MovieQueryReturn>() {
-                    @Override
-                    public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
-                        List<MovieResult> movieResults = response.body().getMovieResults();
-                        data = new RealmList<>();
-                        for (MovieResult movie : movieResults){
-                            JSONMovie jsonMove = new JSONMovie();
-                            jsonMove.setTitle(movie.getTitle());
-                            jsonMove.setId(movie.getId());
-                            jsonMove.setOverview(movie.getOverview());
-                            jsonMove.setBackdropURL("https://image.tmdb.org/t/p/w342" + movie.getBackdropPath());
-                            data.add(jsonMove);
-                        }
-                        adapter = new BrowseMoviesAdapter(data, getActivity());
-                        recyclerView.setAdapter(adapter);
+        if (call != null) {
+            call.enqueue(new Callback<MovieQueryReturn>() {
+                @Override
+                public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
+                    List<MovieResult> movieResults = response.body().getMovieResults();
+                    data = new RealmList<>();
+                    for (MovieResult movie : movieResults) {
+                        JSONMovie jsonMove = new JSONMovie();
+                        jsonMove.setTitle(movie.getTitle());
+                        jsonMove.setId(movie.getId());
+                        jsonMove.setOverview(movie.getOverview());
+                        jsonMove.setBackdropURL("https://image.tmdb.org/t/p/w342" + movie.getBackdropPath());
+                        data.add(jsonMove);
                     }
+                    adapter = new BrowseMoviesAdapter(data, getActivity());
+                    recyclerView.setAdapter(adapter);
+                }
 
-                    @Override
-                    public void onFailure(Throwable t) {
-                        Log.d("BrowseMovies()", "Callback Failure");
-                    }
-                });
-            }
-            else {
-                Log.d("call", "null");
-            }
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("BrowseMovies()", "Callback Failure");
+                }
+            });
+        } else {
+            Log.d("call", "null");
         }
+    }
 }

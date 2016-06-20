@@ -72,12 +72,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         public SearchViewHolder(View v) {
             super(v);
 
-            movieTitle =  (TextView) v.findViewById(R.id.card_title);
-            movieDescription = (TextView)  v.findViewById(R.id.card_text);
-            movieImage = (ImageView)  v.findViewById(R.id.card_image);
+            movieTitle = (TextView) v.findViewById(R.id.card_title);
+            movieDescription = (TextView) v.findViewById(R.id.card_text);
+            movieImage = (ImageView) v.findViewById(R.id.card_image);
 
-            watchedLayout = (RelativeLayout)  v.findViewById(R.id.watched_layout);
-            watchListLayout = (RelativeLayout)  v.findViewById(R.id.watch_list_layout);
+            watchedLayout = (RelativeLayout) v.findViewById(R.id.watched_layout);
+            watchListLayout = (RelativeLayout) v.findViewById(R.id.watch_list_layout);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,7 +89,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }
-            });;
+            });
+            ;
         }
     }
 }

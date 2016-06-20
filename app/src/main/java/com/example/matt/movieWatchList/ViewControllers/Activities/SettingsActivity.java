@@ -18,7 +18,7 @@ public class SettingsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         // Attach the Slidr Mechanism to this activity
-         Slidr.attach(this);
+        Slidr.attach(this);
 
         setContentView(R.layout.pref_with_actionbar);
 

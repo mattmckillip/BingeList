@@ -16,24 +16,27 @@
 
 package com.example.matt.movieWatchList.viewControllers.adapters;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
+import com.example.matt.movieWatchList.Models.POJO.shows.Episode;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.ExpandableItemIndicator;
+import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Random;
@@ -42,61 +45,17 @@ public class SeasonAdapter
         extends AbstractExpandableItemAdapter<SeasonAdapter.MyGroupViewHolder, SeasonAdapter.MyChildViewHolder> {
     private static final String TAG = "MyExpandableItemAdapter";
     private List<TVShowSeasonResult> seasons;
-
-    // NOTE: Make accessible with short name
-    private interface Expandable extends ExpandableItemConstants {
-    }
-
-    //private AbstractExpandableDataProvider mProvider;
-
-    public static abstract class MyBaseViewHolder extends AbstractExpandableItemViewHolder {
-        public FrameLayout mContainer;
-        public TextView mSeasonName;
-        public TextView mNumberOfEpisodes;
-        public ImageView mSeasonPoster;
-        public TextView mEpisodeName;
-        public ProgressBar mEpisodeProgress;
-        public ImageButton mWatchSeason;
-        public ImageButton mWatchedSeason;
-
-
-        public MyBaseViewHolder(View v) {
-            super(v);
-            mContainer = (FrameLayout) v.findViewById(R.id.container);
-            mSeasonName = (TextView) v.findViewById(R.id.season_name);
-            mNumberOfEpisodes = (TextView) v.findViewById(R.id.number_of_episodes);
-            mSeasonPoster = (ImageView) v.findViewById(R.id.season_poster);
-            mEpisodeName = (TextView) v.findViewById(R.id.episode_name);
-            mEpisodeProgress = (ProgressBar) v.findViewById(R.id.episode_progress);
-            mWatchSeason = (ImageButton) v.findViewById(R.id.watch_button);
-            mWatchedSeason = (ImageButton) v.findViewById(R.id.watched_button);
-
-        }
-    }
-
-    public static class MyGroupViewHolder extends MyBaseViewHolder {
-        public ExpandableItemIndicator mIndicator;
-
-        public MyGroupViewHolder(View v) {
-            super(v);
-            mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
-        }
-    }
-
-    public static class MyChildViewHolder extends MyBaseViewHolder {
-        public MyChildViewHolder(View v) {
-            super(v);
-        }
-    }
+    private Context context;
 
     public SeasonAdapter(List<TVShowSeasonResult> seasons) {
         this.seasons = seasons;
-
 
         // ExpandableItemAdapter requires stable ID, and also
         // have to implement the getGroupItemId()/getChildItemId() methods appropriately.
         setHasStableIds(true);
     }
+
+    //private AbstractExpandableDataProvider mProvider;
 
     @Override
     public int getGroupCount() {
@@ -130,21 +89,21 @@ public class SeasonAdapter
 
     @Override
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.list_group_item, parent, false);
+        final View v = inflater.inflate(R.layout.season_group_item, parent, false);
         return new MyGroupViewHolder(v);
     }
 
     @Override
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.list_item, parent, false);
+        final View v = inflater.inflate(R.layout.season_episode_item, parent, false);
         return new MyChildViewHolder(v);
     }
 
     @Override
     public void onBindGroupViewHolder(final MyGroupViewHolder holder, int groupPosition, int viewType) {
-
         TVShowSeasonResult curSeason = seasons.get(groupPosition);
 
         // set text
@@ -155,11 +114,16 @@ public class SeasonAdapter
         holder.mEpisodeProgress.setProgress(i);
         //holder.mWatchSeason.setFocusable(false);
         holder.mWatchedSeason.setVisibility(View.GONE);
+        Picasso.with(context)
+                .load("https://image.tmdb.org/t/p/w92/" + curSeason.getPosterPath()) // w92, w154, w185
+                .fit().centerCrop()
+                .transform(PaletteTransformation.instance())
+                .into(holder.mSeasonPoster);
 
         holder.mWatchSeason.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 //button functionalty   ...
-                Log.d("CLick","Wathc");
+                Log.d("CLick", "Wathc");
                 holder.mWatchSeason.setVisibility(View.GONE);
                 holder.mWatchedSeason.setVisibility(View.VISIBLE);
 
@@ -169,7 +133,7 @@ public class SeasonAdapter
         holder.mWatchedSeason.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 //button functionalty   ...
-                Log.d("CLick","UnWatch");
+                Log.d("CLick", "UnWatch");
                 holder.mWatchedSeason.setVisibility(View.GONE);
                 holder.mWatchSeason.setVisibility(View.VISIBLE);
 
@@ -183,7 +147,7 @@ public class SeasonAdapter
         final int expandState = holder.getExpandStateFlags();
 
         if ((expandState & ExpandableItemConstants.STATE_FLAG_IS_UPDATED) != 0) {
-            Log.d("Expanding","Yeah");
+            Log.d("Expanding", "Yeah");
             int bgResId;
             boolean isExpanded;
             boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
@@ -203,8 +167,11 @@ public class SeasonAdapter
 
     @Override
     public void onBindChildViewHolder(MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
-               // set text
-        holder.mEpisodeName.setText(seasons.get(groupPosition).getEpisodes().get(childPosition).getName());
+        // set text
+        Episode curEpisode = seasons.get(groupPosition).getEpisodes().get(childPosition);
+        holder.mEpisodeName.setText(curEpisode.getName());
+        holder.mEpisodeDescription.setText(curEpisode.getOverview());
+        holder.mEpisodeNumber.setText("S" + curEpisode.getEpisodeNumber() + "E" + curEpisode.getEpisodeNumber());
 
         // set background resource (target view ID: container)
         int bgResId;
@@ -215,5 +182,51 @@ public class SeasonAdapter
     @Override
     public boolean onCheckCanExpandOrCollapseGroup(MyGroupViewHolder holder, int groupPosition, int x, int y, boolean expand) {
         return true;
+    }
+
+    // NOTE: Make accessible with short name
+    private interface Expandable extends ExpandableItemConstants {
+    }
+
+    public static abstract class MyBaseViewHolder extends AbstractExpandableItemViewHolder {
+        public RelativeLayout mContainer;
+        public TextView mSeasonName;
+        public TextView mNumberOfEpisodes;
+        public ImageView mSeasonPoster;
+        public TextView mEpisodeName;
+        public ProgressBar mEpisodeProgress;
+        public ImageButton mWatchSeason;
+        public ImageButton mWatchedSeason;
+        public TextView mEpisodeDescription;
+        public TextView mEpisodeNumber;
+
+        public MyBaseViewHolder(View v) {
+            super(v);
+            mContainer = (RelativeLayout) v.findViewById(R.id.container);
+            mSeasonName = (TextView) v.findViewById(R.id.season_name);
+            mNumberOfEpisodes = (TextView) v.findViewById(R.id.number_of_episodes);
+            mSeasonPoster = (ImageView) v.findViewById(R.id.season_poster);
+            mEpisodeName = (TextView) v.findViewById(R.id.episode_name);
+            mEpisodeProgress = (ProgressBar) v.findViewById(R.id.episode_progress);
+            mWatchSeason = (ImageButton) v.findViewById(R.id.watch_button);
+            mWatchedSeason = (ImageButton) v.findViewById(R.id.watched_button);
+            mEpisodeDescription = (TextView) v.findViewById(R.id.episode_description);
+            mEpisodeNumber = (TextView) v.findViewById(R.id.episode_number);
+        }
+    }
+
+    public static class MyGroupViewHolder extends MyBaseViewHolder {
+        public ExpandableItemIndicator mIndicator;
+
+        public MyGroupViewHolder(View v) {
+            super(v);
+            mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
+        }
+    }
+
+    public static class MyChildViewHolder extends MyBaseViewHolder {
+        public MyChildViewHolder(View v) {
+            super(v);
+        }
     }
 }

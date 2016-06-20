@@ -8,9 +8,9 @@ import com.example.matt.movieWatchList.R;
 /**
  * Created by Matt on 6/10/2016.
  */
-public class SettingsFragment extends PreferenceFragment{
+public class SettingsFragment extends PreferenceFragment {
     @Override
-    public void onCreate(final Bundle savedInstanceState){
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
     }

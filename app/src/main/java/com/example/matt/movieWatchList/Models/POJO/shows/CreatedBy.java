@@ -16,54 +16,42 @@ public class CreatedBy {
     private String profilePath;
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 
-     * @param name
-     *     The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 
-     * @return
-     *     The profilePath
+     * @return The profilePath
      */
     public String getProfilePath() {
         return profilePath;
     }
 
     /**
-     * 
-     * @param profilePath
-     *     The profile_path
+     * @param profilePath The profile_path
      */
     public void setProfilePath(String profilePath) {
         this.profilePath = profilePath;

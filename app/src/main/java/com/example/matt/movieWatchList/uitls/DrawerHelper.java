@@ -112,17 +112,17 @@ public class DrawerHelper {
         result.getAdapter().expand(1);
         result.getAdapter().expand(4);
 
-        if (currentActivity.getClass().equals(TVShowWatchListActivity.class)){
+        if (currentActivity.getClass().equals(TVShowWatchListActivity.class)) {
             result.setSelection(1000, false);
-        } else if (currentActivity.getClass().equals(TVShowBrowseActivity.class)){
+        } else if (currentActivity.getClass().equals(TVShowBrowseActivity.class)) {
             result.setSelection(1001, false);
-        } else if (currentActivity.getClass().equals(MovieWatchListActivity.class)){
+        } else if (currentActivity.getClass().equals(MovieWatchListActivity.class)) {
             result.setSelection(2000, false);
-        } else if (currentActivity.getClass().equals(MovieBrowseActivity.class)){
+        } else if (currentActivity.getClass().equals(MovieBrowseActivity.class)) {
             result.setSelection(2001, false);
-        } else if (currentActivity.getClass().equals(SearchActivity.class)){
+        } else if (currentActivity.getClass().equals(SearchActivity.class)) {
             result.setSelection(3000, false);
-        } else if (currentActivity.getClass().equals(SettingsActivity.class)){
+        } else if (currentActivity.getClass().equals(SettingsActivity.class)) {
             result.setSelection(4001, false);
         }
 

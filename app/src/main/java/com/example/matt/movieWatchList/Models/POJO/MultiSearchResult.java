@@ -1,9 +1,10 @@
 package com.example.matt.movieWatchList.Models.POJO;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MultiSearchResult {
 
@@ -66,342 +67,266 @@ public class MultiSearchResult {
     private Boolean video;
 
     /**
-     * 
-     * @return
-     *     The backdropPath
+     * @return The backdropPath
      */
     public Object getBackdropPath() {
         return backdropPath;
     }
 
     /**
-     * 
-     * @param backdropPath
-     *     The backdrop_path
+     * @param backdropPath The backdrop_path
      */
     public void setBackdropPath(Object backdropPath) {
         this.backdropPath = backdropPath;
     }
 
     /**
-     * 
-     * @return
-     *     The firstAirDate
+     * @return The firstAirDate
      */
     public Object getFirstAirDate() {
         return firstAirDate;
     }
 
     /**
-     * 
-     * @param firstAirDate
-     *     The first_air_date
+     * @param firstAirDate The first_air_date
      */
     public void setFirstAirDate(Object firstAirDate) {
         this.firstAirDate = firstAirDate;
     }
 
     /**
-     * 
-     * @return
-     *     The genreIds
+     * @return The genreIds
      */
     public List<Object> getGenreIds() {
         return genreIds;
     }
 
     /**
-     * 
-     * @param genreIds
-     *     The genre_ids
+     * @param genreIds The genre_ids
      */
     public void setGenreIds(List<Object> genreIds) {
         this.genreIds = genreIds;
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The originalLanguage
+     * @return The originalLanguage
      */
     public String getOriginalLanguage() {
         return originalLanguage;
     }
 
     /**
-     * 
-     * @param originalLanguage
-     *     The original_language
+     * @param originalLanguage The original_language
      */
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
 
     /**
-     * 
-     * @return
-     *     The originalName
+     * @return The originalName
      */
     public String getOriginalName() {
         return originalName;
     }
 
     /**
-     * 
-     * @param originalName
-     *     The original_name
+     * @param originalName The original_name
      */
     public void setOriginalName(String originalName) {
         this.originalName = originalName;
     }
 
     /**
-     * 
-     * @return
-     *     The overview
+     * @return The overview
      */
     public Object getOverview() {
         return overview;
     }
 
     /**
-     * 
-     * @param overview
-     *     The overview
+     * @param overview The overview
      */
     public void setOverview(Object overview) {
         this.overview = overview;
     }
 
     /**
-     * 
-     * @return
-     *     The originCountry
+     * @return The originCountry
      */
     public List<Object> getOriginCountry() {
         return originCountry;
     }
 
     /**
-     * 
-     * @param originCountry
-     *     The origin_country
+     * @param originCountry The origin_country
      */
     public void setOriginCountry(List<Object> originCountry) {
         this.originCountry = originCountry;
     }
 
     /**
-     * 
-     * @return
-     *     The posterPath
+     * @return The posterPath
      */
     public String getPosterPath() {
         return posterPath;
     }
 
     /**
-     * 
-     * @param posterPath
-     *     The poster_path
+     * @param posterPath The poster_path
      */
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
 
     /**
-     * 
-     * @return
-     *     The popularity
+     * @return The popularity
      */
     public Double getPopularity() {
         return popularity;
     }
 
     /**
-     * 
-     * @param popularity
-     *     The popularity
+     * @param popularity The popularity
      */
     public void setPopularity(Double popularity) {
         this.popularity = popularity;
     }
 
     /**
-     * 
-     * @return
-     *     The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 
-     * @param name
-     *     The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 
-     * @return
-     *     The voteAverage
+     * @return The voteAverage
      */
     public Double getVoteAverage() {
         return voteAverage;
     }
 
     /**
-     * 
-     * @param voteAverage
-     *     The vote_average
+     * @param voteAverage The vote_average
      */
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
     /**
-     * 
-     * @return
-     *     The voteCount
+     * @return The voteCount
      */
     public Integer getVoteCount() {
         return voteCount;
     }
 
     /**
-     * 
-     * @param voteCount
-     *     The vote_count
+     * @param voteCount The vote_count
      */
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
     }
 
     /**
-     * 
-     * @return
-     *     The mediaType
+     * @return The mediaType
      */
     public String getMediaType() {
         return mediaType;
     }
 
     /**
-     * 
-     * @param mediaType
-     *     The media_type
+     * @param mediaType The media_type
      */
     public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
     }
 
     /**
-     * 
-     * @return
-     *     The adult
+     * @return The adult
      */
     public Boolean getAdult() {
         return adult;
     }
 
     /**
-     * 
-     * @param adult
-     *     The adult
+     * @param adult The adult
      */
     public void setAdult(Boolean adult) {
         this.adult = adult;
     }
 
     /**
-     * 
-     * @return
-     *     The originalTitle
+     * @return The originalTitle
      */
     public String getOriginalTitle() {
         return originalTitle;
     }
 
     /**
-     * 
-     * @param originalTitle
-     *     The original_title
+     * @param originalTitle The original_title
      */
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
 
     /**
-     * 
-     * @return
-     *     The releaseDate
+     * @return The releaseDate
      */
     public String getReleaseDate() {
         return releaseDate;
     }
 
     /**
-     * 
-     * @param releaseDate
-     *     The release_date
+     * @param releaseDate The release_date
      */
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
     /**
-     * 
-     * @return
-     *     The title
+     * @return The title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * 
-     * @param title
-     *     The title
+     * @param title The title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * 
-     * @return
-     *     The video
+     * @return The video
      */
     public Boolean getVideo() {
         return video;
     }
 
     /**
-     * 
-     * @param video
-     *     The video
+     * @param video The video
      */
     public void setVideo(Boolean video) {
         this.video = video;

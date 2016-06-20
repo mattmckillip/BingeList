@@ -65,7 +65,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_card, viewGroup, false);
 
-        return new  BrowseTVShowsViewHolder(itemView);
+        return new BrowseTVShowsViewHolder(itemView);
     }
 
     @Override
@@ -105,13 +105,13 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
         RealmQuery<JSONShow> watchedQuery = uiRealm.where(JSONShow.class);
-        RealmResults<JSONShow> watchedShows = watchedQuery.equalTo("isWatched", true).equalTo("id",showList.get(position).getId()).findAll();
+        RealmResults<JSONShow> watchedShows = watchedQuery.equalTo("isWatched", true).equalTo("id", showList.get(position).getId()).findAll();
         if (watchedShows.size() == 1) {
             holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
         }
 
         RealmQuery<JSONShow> watchListQuery = uiRealm.where(JSONShow.class);
-        RealmResults<JSONShow> watchListShows = watchListQuery.equalTo("onWatchList", true).equalTo("id",showList.get(position).getId()).findAll();
+        RealmResults<JSONShow> watchListShows = watchListQuery.equalTo("onWatchList", true).equalTo("id", showList.get(position).getId()).findAll();
 
         if (watchListShows.size() == 1) {
             holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
@@ -158,8 +158,8 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 }
             });
 
-            Button button = (Button)itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener(){
+            Button button = (Button) itemView.findViewById(R.id.action_button);
+            button.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(final View v) {
@@ -193,12 +193,12 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     List<Crew> crew = response.body().getCrew();
 
                                     RealmList<JSONCast> realmCast = new RealmList<>();
-                                    for( Cast castMember : cast) {
+                                    for (Cast castMember : cast) {
                                         realmCast.add(castMember.convertToRealm());
                                     }
 
                                     RealmList<JSONCast> realmCrew = new RealmList<>();
-                                    for( Crew crewMember : crew) {
+                                    for (Crew crewMember : crew) {
                                         realmCrew.add(crewMember.convertToRealm());
                                     }
 

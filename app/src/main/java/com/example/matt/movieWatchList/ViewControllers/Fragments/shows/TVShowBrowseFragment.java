@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowResult;
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.BrowseTVShowsAPI;
@@ -90,7 +89,7 @@ public class TVShowBrowseFragment extends Fragment {
                 public void onResponse(retrofit.Response<TVShowQueryReturn> response, Retrofit retrofit) {
                     List<TVShowResult> movieResults = response.body().getResults();
                     data = new RealmList<>();
-                    for (TVShowResult show : movieResults){
+                    for (TVShowResult show : movieResults) {
                         JSONShow jsonShow = new JSONShow();
                         jsonShow.setName(show.getName());
                         jsonShow.setId(show.getId());
@@ -108,8 +107,7 @@ public class TVShowBrowseFragment extends Fragment {
                     Log.d("BrowseMovies()", "Callback Failure");
                 }
             });
-        }
-        else {
+        } else {
             Log.d("call", "null");
         }
     }

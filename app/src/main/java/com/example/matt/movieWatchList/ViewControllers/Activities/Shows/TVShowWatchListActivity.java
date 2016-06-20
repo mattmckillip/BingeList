@@ -58,10 +58,26 @@ public class TVShowWatchListActivity extends AppCompatActivity {
     Adapter adapterViewPager;
     Drawer navigationDrawer;
 
+    public static void applyFontForToolbarTitle(Activity context) {
+        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View view = toolbar.getChildAt(i);
+            if (view instanceof TextView) {
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
+                if (tv.getText().equals(context.getTitle())) {
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.browse_activity);
 
         // Instantiate realms
         RealmConfiguration config1 = new RealmConfiguration.Builder(this)
@@ -76,7 +92,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
                 .build();
 
         Realm.setDefaultConfiguration(config1);
-        Realm uiRealm =  Realm.getInstance(getApplicationContext());
+        Realm uiRealm = Realm.getInstance(getApplicationContext());
 
         ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
 
@@ -96,7 +112,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         try {
             tabs.getTabAt(0).setIcon(R.drawable.ic_dvr_white_24dp);
             tabs.getTabAt(1).setIcon(R.drawable.ic_playlist_add_check_white_24dp);
-        } catch(NullPointerException npe) {
+        } catch (NullPointerException npe) {
             //pass
         }
 
@@ -139,35 +155,6 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         adapterViewPager.addFragment(watchListMovies, "Your Shows");
         adapterViewPager.addFragment(watchedMovies, "New Episodes");
         viewPager.setAdapter(adapterViewPager);
-    }
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 
     @Override
@@ -230,19 +217,32 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         }
     }
 
-    public static void applyFontForToolbarTitle(Activity context){
-        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-        for(int i = 0; i < toolbar.getChildCount(); i++){
-            View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-                if(tv.getText().equals(context.getTitle())){
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 }

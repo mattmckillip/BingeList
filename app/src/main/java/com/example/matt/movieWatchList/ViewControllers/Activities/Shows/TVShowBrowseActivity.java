@@ -17,6 +17,7 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -38,6 +39,8 @@ import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieSearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseFragment;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -63,9 +66,6 @@ public class TVShowBrowseActivity extends AppCompatActivity {
     @BindView(R.id.tabs)
     TabLayout tabs;
 
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
@@ -75,7 +75,7 @@ public class TVShowBrowseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.browse_activity);
 
         ButterKnife.bind(this);
 
@@ -88,9 +88,9 @@ public class TVShowBrowseActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         tabs.setupWithViewPager(viewPager);
-        tabs.getTabAt(0).setIcon(R.drawable.ic_trending_up_white_24dp);
-        tabs.getTabAt(1).setIcon(R.drawable.ic_theaters_white_24dp);
-        tabs.getTabAt(2).setIcon(R.drawable.ic_thumb_up_white_24dp);
+        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
+        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_new_box).color(Color.WHITE));
+        tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -140,39 +140,6 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         adapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
-    }
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if(position <= mFragmentList.size())
-            {
-                return mFragmentList.get(position);
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 
     /*
@@ -234,6 +201,38 @@ public class TVShowBrowseActivity extends AppCompatActivity {
             this.navigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position <= mFragmentList.size()) {
+                return mFragmentList.get(position);
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 }

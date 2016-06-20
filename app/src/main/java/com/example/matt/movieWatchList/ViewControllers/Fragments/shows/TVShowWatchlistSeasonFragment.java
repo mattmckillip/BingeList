@@ -62,6 +62,7 @@ public class TVShowWatchlistSeasonFragment
         Log.d("SHOW ID", Integer.toString(showID));
         return inflater.inflate(R.layout.fragment_recycler_list_view, container, false);
     }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         showID = 1399;
@@ -102,7 +103,7 @@ public class TVShowWatchlistSeasonFragment
         });
     }
 
-    public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons){
+    public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons) {
         final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons);
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
@@ -188,7 +189,7 @@ public class TVShowWatchlistSeasonFragment
     }
 
     private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
-        protected  ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
+        protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
             Integer showID = params[0];
             Integer numberOfSeasons = params[1];
 
@@ -204,7 +205,7 @@ public class TVShowWatchlistSeasonFragment
 
             final TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-            for (int i = 1; i <= numberOfSeasons; i++){
+            for (int i = 1; i <= numberOfSeasons; i++) {
                 Call<TVShowSeasonResult> call = service.getSeasons(Integer.toString(showID), Integer.toString(i));
                 try {
                     seasons.add(call.execute().body());

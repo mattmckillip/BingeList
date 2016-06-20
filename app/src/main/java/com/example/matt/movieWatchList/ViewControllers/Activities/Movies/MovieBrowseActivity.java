@@ -18,6 +18,7 @@ package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +41,8 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.BrowseMoviesFragment;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -58,10 +61,26 @@ public class MovieBrowseActivity extends AppCompatActivity {
     Adapter adapterViewPager;
     Drawer navigationDrawer;
 
+    public static void applyFontForToolbarTitle(Activity context) {
+        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View view = toolbar.getChildAt(i);
+            if (view instanceof TextView) {
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
+                if (tv.getText().equals(context.getTitle())) {
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.browse_activity);
 
         // Instantiate realms
         RealmConfiguration config1 = new RealmConfiguration.Builder(this)
@@ -93,9 +112,9 @@ public class MovieBrowseActivity extends AppCompatActivity {
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        tabs.getTabAt(0).setIcon(R.drawable.ic_trending_up_white_24dp);
-        tabs.getTabAt(1).setIcon(R.drawable.ic_theaters_white_24dp);
-        tabs.getTabAt(2).setIcon(R.drawable.ic_thumb_up_white_24dp);
+        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
+        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_theater).color(Color.WHITE));
+        tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
 
 
         // Create Navigation drawer
@@ -144,35 +163,6 @@ public class MovieBrowseActivity extends AppCompatActivity {
         adapterViewPager.addFragment(topRatedMovies, " Top Rated");
 
         viewPager.setAdapter(adapterViewPager);
-    }
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 
     @Override
@@ -235,19 +225,32 @@ public class MovieBrowseActivity extends AppCompatActivity {
         }
     }
 
-    public static void applyFontForToolbarTitle(Activity context){
-        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-        for(int i = 0; i < toolbar.getChildCount(); i++){
-            View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-                if(tv.getText().equals(context.getTitle())){
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 }

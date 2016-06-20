@@ -2,16 +2,13 @@ package com.example.matt.movieWatchList.viewControllers.fragments.shows;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,17 +20,12 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
-import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
-import com.squareup.picasso.Picasso;
-
-import java.io.ByteArrayOutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,9 +41,30 @@ import retrofit.Retrofit;
  * Created by Matt on 6/14/2016.
  */
 public class TVShowOverviewFragment extends Fragment {
+    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     //ThingsAdapter adapter;
     FragmentActivity listener;
     int showID;
+    @BindView(R.id.scroll_view)
+    NestedScrollView scroll_view;
+    @BindView(R.id.rating)
+    RatingBar stars;
+    @BindView(R.id.plot_title)
+    TextView plotTitle;
+    @BindView(R.id.cast_title)
+    TextView castTitle;
+    @BindView(R.id.crew_title)
+    TextView crewTitle;
+    @BindView(R.id.overview_title)
+    TextView overviewTitle;
+    @BindView(R.id.runtime)
+    TextView runtime;
+    @BindView(R.id.user_rating)
+    TextView userRating;
+    @BindView(R.id.more_info)
+    LinearLayout layout;
+    @BindView(R.id.expand_text_view)
+    ExpandableTextView plot;
     private int vibrantColor;
     private int mutedColor;
     private Realm uiRealm;
@@ -60,43 +73,9 @@ public class TVShowOverviewFragment extends Fragment {
     private RealmList<JSONCast> castList = new RealmList<>();
     private RecyclerView castRecyclerView;
     private CastAdapter castAdapter;
-
     private RealmList<JSONCast> crewList = new RealmList<>();
     private RecyclerView crewRecyclerView;
     private CastAdapter crewAdapter;
-
-    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
-
-    @BindView(R.id.scroll_view)
-    NestedScrollView scroll_view;
-
-    @BindView(R.id.rating)
-    RatingBar stars;
-
-    @BindView(R.id.plot_title)
-    TextView plotTitle;
-
-    @BindView(R.id.cast_title)
-    TextView castTitle;
-
-    @BindView(R.id.crew_title)
-    TextView crewTitle;
-
-    @BindView(R.id.overview_title)
-    TextView overviewTitle;
-
-    @BindView(R.id.runtime)
-    TextView runtime;
-
-    @BindView(R.id.user_rating)
-    TextView userRating;
-
-    @BindView(R.id.more_info)
-    LinearLayout layout;
-
-    @BindView(R.id.expand_text_view)
-    ExpandableTextView plot;
-
 
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
@@ -105,7 +84,7 @@ public class TVShowOverviewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof Activity){
+        if (context instanceof Activity) {
             this.listener = (FragmentActivity) context;
         }
     }
@@ -116,10 +95,10 @@ public class TVShowOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showID = getArguments().getInt("showID",0);
-        vibrantColor = getArguments().getInt("vibrantColor",0);
+        showID = getArguments().getInt("showID", 0);
+        vibrantColor = getArguments().getInt("vibrantColor", 0);
         Log.d("Vibrant Color", Integer.toString(vibrantColor));
-        mutedColor = getArguments().getInt("mutedColor",0);
+        mutedColor = getArguments().getInt("mutedColor", 0);
 
         /*ArrayList<Thing> things = new ArrayList<Thing>();
         adapter = new ThingsAdapter(getActivity(), things);*/
@@ -154,9 +133,9 @@ public class TVShowOverviewFragment extends Fragment {
         RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
 
         // Execute the query:
-        realmShow = query.equalTo("id",showID).findFirst();
+        realmShow = query.equalTo("id", showID).findFirst();
 
-        if (realmShow == null){
+        if (realmShow == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://api.themoviedb.org/3/tv/")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -189,7 +168,7 @@ public class TVShowOverviewFragment extends Fragment {
         }
     }
 
-    private void updateUI(){
+    private void updateUI() {
         plot.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
             @Override
             public void onExpandStateChanged(TextView textView, boolean isExpanded) {
@@ -210,7 +189,7 @@ public class TVShowOverviewFragment extends Fragment {
         plot.setText(realmShow.getOverview());
         stars.setRating(realmShow.getVoteAverage().floatValue());
         runtime.setText(Integer.toString(realmShow.getNumberOfSeasons()) + " seasons");
-        userRating.setText(Double.toString(realmShow.getVoteAverage())+ "/10");
+        userRating.setText(Double.toString(realmShow.getVoteAverage()) + "/10");
 
         /*Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/tv/")

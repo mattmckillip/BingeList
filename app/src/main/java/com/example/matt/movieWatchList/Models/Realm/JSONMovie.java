@@ -33,59 +33,199 @@ public class JSONMovie extends RealmObject {
     private boolean onWatchList;
 
 
-    public JSONMovie() { }
+    public JSONMovie() {
+    }
 
     public String getTitle() {
         return title;
     }
-    public String getBackdropURL() { return backdropURL; }
-    public Integer getBudget() {  return budget; }
-    public RealmList<JSONGenre> getGenres() { return genres; }
-    public String getOfficialURL() { return officialURL; }
-    public Integer getId() { return id; }
-    public String getImdbID() { return imdbID; }
-    public String getOriginalLanguage() { return originalLanguage; }
-    public String getOverview() { return overview; }
-    public Double getPopularity() { return popularity; }
-    public String getPosterURL() { return posterURL; }
-    public RealmList<JSONCompany> getCompanies() { return companies; }
-    public RealmList<JSONCountry> getCountries() { return countries; }
-    public String getReleaseDate() { return releaseDate; }
-    public Integer getRevenue() { return revenue; }
-    public Integer getRuntime() { return runtime; }
-    public String getStatus() { return status; }
-    public String getTagline() { return tagline; }
-    public Double getVote_average() { return vote_average; }
-    public RealmList<JSONCast> getCast() { return cast; }
-    public byte[] getBackdropBitmap() {return backdropBitmap; }
-    public RealmList<JSONCast> getCrew() {return  crew; }
-    public boolean getOnWatchList() { return onWatchList; }
-    public boolean getIsWatched() { return isWatched; }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public void setTitle(String title) {this.title = title; }
-    public void setBackdropURL(String backdropURL) { this.backdropURL = backdropURL; }
-    public void setBudget(Integer budget) { this.budget = budget; }
-    public void setGenres(RealmList<JSONGenre> genres) { this.genres = genres; }
-    public void setOfficialURL(String officialURL) { this.officialURL = officialURL; }
-    public void setId(Integer id) {this.id = id; }
-    public void setImdbID(String imdbID) { this.imdbID = imdbID; }
-    public void setOriginalLanguage(String originalLanguage) { this.originalLanguage = originalLanguage; }
-    public void setOverview(String overview) { this.overview = overview; }
-    public void setPopularity(Double popularity) { this.popularity = popularity; }
-    public void setPosterURL(String posterURL) { this.posterURL = posterURL; }
-    public void setCompanies(RealmList<JSONCompany> companies) { this.companies = companies; }
-    public void setCountries(RealmList<JSONCountry> countries) { this.countries = countries; }
-    public void setReleaseDate(String releaseDate) { this.releaseDate = releaseDate; }
-    public void setRevenue(Integer revenue) { this.revenue = revenue; }
-    public void setRuntime(Integer runtime) { this.runtime = runtime; }
-    public void setStatus(String status) { this.status = status; }
-    public void setTagline(String tagline) {this.tagline = tagline; }
-    public void setVote_average(Double vote_average) { this.vote_average = vote_average; }
-    public void setCast(RealmList<JSONCast> cast) { this.cast = cast; }
-    public void setBackdropBitmap(byte[] backdropBitmap) { this.backdropBitmap = backdropBitmap; }
-    public void setCrew(RealmList<JSONCast> crew) { this.crew = crew; }
-    public void setOnWatchList(boolean onWatchList) { this.onWatchList = onWatchList; }
-    public void setWatched(boolean isWatched) { this.isWatched = isWatched; }
+    public String getBackdropURL() {
+        return backdropURL;
+    }
+
+    public void setBackdropURL(String backdropURL) {
+        this.backdropURL = backdropURL;
+    }
+
+    public Integer getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Integer budget) {
+        this.budget = budget;
+    }
+
+    public RealmList<JSONGenre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(RealmList<JSONGenre> genres) {
+        this.genres = genres;
+    }
+
+    public String getOfficialURL() {
+        return officialURL;
+    }
+
+    public void setOfficialURL(String officialURL) {
+        this.officialURL = officialURL;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getImdbID() {
+        return imdbID;
+    }
+
+    public void setImdbID(String imdbID) {
+        this.imdbID = imdbID;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
+
+    public void setOriginalLanguage(String originalLanguage) {
+        this.originalLanguage = originalLanguage;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
+    }
+
+    public String getPosterURL() {
+        return posterURL;
+    }
+
+    public void setPosterURL(String posterURL) {
+        this.posterURL = posterURL;
+    }
+
+    public RealmList<JSONCompany> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(RealmList<JSONCompany> companies) {
+        this.companies = companies;
+    }
+
+    public RealmList<JSONCountry> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(RealmList<JSONCountry> countries) {
+        this.countries = countries;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public Integer getRevenue() {
+        return revenue;
+    }
+
+    public void setRevenue(Integer revenue) {
+        this.revenue = revenue;
+    }
+
+    public Integer getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(Integer runtime) {
+        this.runtime = runtime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public void setTagline(String tagline) {
+        this.tagline = tagline;
+    }
+
+    public Double getVote_average() {
+        return vote_average;
+    }
+
+    public void setVote_average(Double vote_average) {
+        this.vote_average = vote_average;
+    }
+
+    public RealmList<JSONCast> getCast() {
+        return cast;
+    }
+
+    public void setCast(RealmList<JSONCast> cast) {
+        this.cast = cast;
+    }
+
+    public byte[] getBackdropBitmap() {
+        return backdropBitmap;
+    }
+
+    public void setBackdropBitmap(byte[] backdropBitmap) {
+        this.backdropBitmap = backdropBitmap;
+    }
+
+    public RealmList<JSONCast> getCrew() {
+        return crew;
+    }
+
+    public void setCrew(RealmList<JSONCast> crew) {
+        this.crew = crew;
+    }
+
+    public boolean getOnWatchList() {
+        return onWatchList;
+    }
+
+    public void setOnWatchList(boolean onWatchList) {
+        this.onWatchList = onWatchList;
+    }
+
+    public boolean getIsWatched() {
+        return isWatched;
+    }
+
+    public void setWatched(boolean isWatched) {
+        this.isWatched = isWatched;
+    }
 
 }

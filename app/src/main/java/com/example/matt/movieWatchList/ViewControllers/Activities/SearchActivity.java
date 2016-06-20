@@ -37,8 +37,6 @@ import retrofit.Retrofit;
  * Created by Matt on 6/15/2016.
  */
 public class SearchActivity extends AppCompatActivity {
-    private SearchAdapter searchAdapter;
-    private List<MovieResult> searchMovieResults;
 
     @BindView(R.id.search_recycler_view)
     RecyclerView searchRecyclerView;
@@ -46,16 +44,15 @@ public class SearchActivity extends AppCompatActivity {
     @BindView(R.id.search_toolber)
     Toolbar toolbar;
 
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-
     Drawer navigationDrawer;
 
+    private SearchAdapter searchAdapter;
+    private List<MovieResult> searchMovieResults;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.search_activity);
 
         ButterKnife.bind(this);
 
@@ -89,7 +86,7 @@ public class SearchActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setIconified(false);
         searchView.clearFocus();
@@ -126,6 +123,7 @@ public class SearchActivity extends AppCompatActivity {
 
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);

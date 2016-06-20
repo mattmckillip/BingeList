@@ -22,90 +22,70 @@ public class Season {
     private Integer seasonNumber;
 
     /**
-     * 
-     * @return
-     *     The airDate
+     * @return The airDate
      */
     public String getAirDate() {
         return airDate;
     }
 
     /**
-     * 
-     * @param airDate
-     *     The air_date
+     * @param airDate The air_date
      */
     public void setAirDate(String airDate) {
         this.airDate = airDate;
     }
 
     /**
-     * 
-     * @return
-     *     The episodeCount
+     * @return The episodeCount
      */
     public Integer getEpisodeCount() {
         return episodeCount;
     }
 
     /**
-     * 
-     * @param episodeCount
-     *     The episode_count
+     * @param episodeCount The episode_count
      */
     public void setEpisodeCount(Integer episodeCount) {
         this.episodeCount = episodeCount;
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The posterPath
+     * @return The posterPath
      */
     public String getPosterPath() {
         return posterPath;
     }
 
     /**
-     * 
-     * @param posterPath
-     *     The poster_path
+     * @param posterPath The poster_path
      */
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
 
     /**
-     * 
-     * @return
-     *     The seasonNumber
+     * @return The seasonNumber
      */
     public Integer getSeasonNumber() {
         return seasonNumber;
     }
 
     /**
-     * 
-     * @param seasonNumber
-     *     The season_number
+     * @param seasonNumber The season_number
      */
     public void setSeasonNumber(Integer seasonNumber) {
         this.seasonNumber = seasonNumber;

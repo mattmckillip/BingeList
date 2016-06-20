@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
 import com.mikepenz.materialdrawer.Drawer;
@@ -62,11 +61,37 @@ public class MovieWatchListActivity extends AppCompatActivity {
     Adapter adapterViewPager;
 
     Drawer navigationDrawer;
+    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
+            if (drawerItem instanceof Nameable) {
+                Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
+            } else {
+                Log.i("material-drawer", "toggleChecked: " + isChecked);
+            }
+        }
+    };
+
+    public static void applyFontForToolbarTitle(Activity context) {
+        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View view = toolbar.getChildAt(i);
+            if (view instanceof TextView) {
+                TextView tv = (TextView) view;
+                Typeface titleFont = Typeface.
+                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
+                if (tv.getText().equals(context.getTitle())) {
+                    tv.setTypeface(titleFont);
+                    break;
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.browse_activity);
 
         // Instantiate realms
         RealmConfiguration config1 = new RealmConfiguration.Builder(this)
@@ -132,17 +157,6 @@ public class MovieWatchListActivity extends AppCompatActivity {
         navHeaderText.setTypeface(font);*/
     }
 
-    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
-            if (drawerItem instanceof Nameable) {
-                Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
-            } else {
-                Log.i("material-drawer", "toggleChecked: " + isChecked);
-            }
-        }
-    };
-
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         adapterViewPager = new Adapter(getSupportFragmentManager());
@@ -160,35 +174,6 @@ public class MovieWatchListActivity extends AppCompatActivity {
         adapterViewPager.addFragment(watchListMovies, " Watch List");
         adapterViewPager.addFragment(watchedMovies, " Watched");
         viewPager.setAdapter(adapterViewPager);
-    }
-
-    static class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 
     @Override
@@ -242,19 +227,32 @@ public class MovieWatchListActivity extends AppCompatActivity {
         }
     }
 
-    public static void applyFontForToolbarTitle(Activity context) {
-        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            if (view instanceof TextView) {
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-                if (tv.getText().equals(context.getTitle())) {
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
+    static class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
         }
     }
 }

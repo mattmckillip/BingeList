@@ -1,9 +1,10 @@
 package com.example.matt.movieWatchList.Models.POJO.shows;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TVShowSeasonResult {
 
@@ -33,144 +34,112 @@ public class TVShowSeasonResult {
     private Integer seasonNumber;
 
     /**
-     * 
-     * @return
-     *     The Id
+     * @return The Id
      */
     public String getTId() {
         return Id;
     }
 
     /**
-     * 
-     * @param Id
-     *     The _id
+     * @param Id The _id
      */
     public void setTId(String Id) {
         this.Id = Id;
     }
 
     /**
-     * 
-     * @return
-     *     The airDate
+     * @return The airDate
      */
     public Object getAirDate() {
         return airDate;
     }
 
     /**
-     * 
-     * @param airDate
-     *     The air_date
+     * @param airDate The air_date
      */
     public void setAirDate(Object airDate) {
         this.airDate = airDate;
     }
 
     /**
-     * 
-     * @return
-     *     The episodes
+     * @return The episodes
      */
     public List<Episode> getEpisodes() {
         return episodes;
     }
 
     /**
-     * 
-     * @param episodes
-     *     The episodes
+     * @param episodes The episodes
      */
     public void setEpisodes(List<Episode> episodes) {
         this.episodes = episodes;
     }
 
     /**
-     * 
-     * @return
-     *     The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 
-     * @param name
-     *     The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 
-     * @return
-     *     The overview
+     * @return The overview
      */
     public String getOverview() {
         return overview;
     }
 
     /**
-     * 
-     * @param overview
-     *     The overview
+     * @param overview The overview
      */
     public void setOverview(String overview) {
         this.overview = overview;
     }
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The posterPath
+     * @return The posterPath
      */
     public Object getPosterPath() {
         return posterPath;
     }
 
     /**
-     * 
-     * @param posterPath
-     *     The poster_path
+     * @param posterPath The poster_path
      */
     public void setPosterPath(Object posterPath) {
         this.posterPath = posterPath;
     }
 
     /**
-     * 
-     * @return
-     *     The seasonNumber
+     * @return The seasonNumber
      */
     public Integer getSeasonNumber() {
         return seasonNumber;
     }
 
     /**
-     * 
-     * @param seasonNumber
-     *     The season_number
+     * @param seasonNumber The season_number
      */
     public void setSeasonNumber(Integer seasonNumber) {
         this.seasonNumber = seasonNumber;

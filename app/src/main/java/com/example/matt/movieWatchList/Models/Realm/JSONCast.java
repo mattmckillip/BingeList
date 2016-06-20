@@ -12,20 +12,44 @@ public class JSONCast extends RealmObject {
     private Integer id;
     private byte[] imageArray;
 
-    public void setCharacterName(String characterName) { this.characterName = characterName;}
-    public void setActorName(String actorName) { this.actorName = actorName; }
-    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
-    public void setId(Integer id){
-        this.id = id;
+    public String getCharacterName() {
+        return characterName;
     }
-    public void setImageArray(byte[] imageArray) { this.imageArray = imageArray; }
 
-    public String getCharacterName() { return characterName; }
-    public String getActorName() { return actorName; }
-    public String getImagePath() { return imagePath; }
+    public void setCharacterName(String characterName) {
+        this.characterName = characterName;
+    }
+
+    public String getActorName() {
+        return actorName;
+    }
+
+    public void setActorName(String actorName) {
+        this.actorName = actorName;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public Integer getId() {
         return id;
     }
-    public byte[] getImageArray() { return imageArray; }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public byte[] getImageArray() {
+        return imageArray;
+    }
+
+    public void setImageArray(byte[] imageArray) {
+        this.imageArray = imageArray;
+    }
 
 }

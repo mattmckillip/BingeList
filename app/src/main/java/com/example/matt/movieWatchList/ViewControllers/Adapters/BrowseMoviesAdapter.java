@@ -66,7 +66,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                 from(viewGroup.getContext()).
                 inflate(R.layout.item_card, viewGroup, false);
 
-        return new  BrowseMoviesViewHolder(itemView, activity, movieList);
+        return new BrowseMoviesViewHolder(itemView, activity, movieList);
     }
 
     @Override
@@ -106,13 +106,13 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
         RealmQuery<JSONMovie> watchedQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id",movieList.get(position).getId()).findAll();
+        RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id", movieList.get(position).getId()).findAll();
         if (watchedMovies.size() == 1) {
             holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
         }
 
         RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id",movieList.get(position).getId()).findAll();
+        RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id", movieList.get(position).getId()).findAll();
 
         if (watchListMovies.size() == 1) {
             holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
@@ -185,8 +185,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             });//closing the setOnClickListener method
 
 
-            Button button = (Button)itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener(){
+            Button button = (Button) itemView.findViewById(R.id.action_button);
+            button.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(final View v) {
@@ -220,12 +220,12 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                     List<Crew> crew = response.body().getCrew();
 
                                     RealmList<JSONCast> realmCast = new RealmList<>();
-                                    for( Cast castMember : cast) {
+                                    for (Cast castMember : cast) {
                                         realmCast.add(castMember.convertToRealm());
                                     }
 
                                     RealmList<JSONCast> realmCrew = new RealmList<>();
-                                    for( Crew crewMember : crew) {
+                                    for (Crew crewMember : crew) {
                                         realmCrew.add(crewMember.convertToRealm());
                                     }
 

@@ -5,16 +5,27 @@ import io.realm.RealmObject;
 /**
  * Created by Matt on 6/13/2016.
  */
-public class JSONNetwork extends RealmObject{
+public class JSONNetwork extends RealmObject {
 
     private Integer id;
     private String name;
 
-    public JSONNetwork(){}
+    public JSONNetwork() {
+    }
 
-    public Integer getId() {return id;}
-    public String getName() {return name;}
+    public Integer getId() {
+        return id;
+    }
 
-    public void setId(Integer id) { this.id = id; }
-    public void setName(String name) { this.name = name; }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

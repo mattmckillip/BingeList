@@ -60,8 +60,7 @@ public class TVShowWatchListFragment extends Fragment {
 
         if (getArguments().getInt("watched") == 1) {
             isWatched = true;
-        }
-        else {
+        } else {
             isWatched = false;
         }
 
@@ -69,129 +68,128 @@ public class TVShowWatchListFragment extends Fragment {
         recyclerView.setAdapter(cardAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return  recyclerView;
+        return recyclerView;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONShow> movieList, final Realm uiRealm, final ContentAdapter adapter, final boolean isWatched) {
-                super(inflater.inflate(R.layout.watch_list_card, parent, false));
+            super(inflater.inflate(R.layout.watch_list_card, parent, false));
 
-                itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    JSONShow movie = movieList.get(getAdapterPosition());
+                    Intent intent = new Intent(context, TVShowWatchListDetailActivity.class);
+                    Log.d("ViewHodler()", movie.getName());
+                    Log.d("ViewHodler()", Integer.toString(movie.getId()));
+
+                    intent.putExtra("showID", movie.getId());
+                    context.startActivity(intent);
+                }
+            });
+
+            // Adding Snackbar to Action Button inside card
+
+            Button watchButton = (Button) itemView.findViewById(R.id.watch_button);
+            if (isWatched) {
+                watchButton.setVisibility(View.GONE);
+            } else {
+                watchButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Context context = v.getContext();
                         JSONShow movie = movieList.get(getAdapterPosition());
-                        Intent intent = new Intent(context, TVShowWatchListDetailActivity.class);
-                        Log.d("ViewHodler()",movie.getName());
-                        Log.d("ViewHodler()",Integer.toString(movie.getId()));
-
-                        intent.putExtra("showID", movie.getId());
-                        context.startActivity(intent);
-                    }
-                });
-
-                // Adding Snackbar to Action Button inside card
-
-                Button watchButton = (Button)itemView.findViewById(R.id.watch_button);
-                if (isWatched) {
-                    watchButton.setVisibility(View.GONE);
-                }
-                else {
-                    watchButton.setOnClickListener(new View.OnClickListener(){
-                        @Override
-                        public void onClick(View v) {
-                            JSONShow movie = movieList.get(getAdapterPosition());
-                            uiRealm.beginTransaction();
-                            //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                            movie.setWatched(true);
-                            movie.setOnWatchList(false);
-                            uiRealm.commitTransaction();
-
-                            adapter.notifyDataSetChanged();
-
-                            Snackbar.make(v, "Watched!",
-                                    Snackbar.LENGTH_LONG).show();
-                        }
-                    });
-                }
-
-
-                // Adding Snackbar to Action Button inside card
-                Button removeButton = (Button)itemView.findViewById(R.id.remove_button);
-                removeButton.setOnClickListener(new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        JSONShow show = movieList.get(getAdapterPosition());
-
                         uiRealm.beginTransaction();
                         //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                        RealmResults<JSONShow> result1 = uiRealm.where(JSONShow.class)
-                                .equalTo("name", show.getName())
-                                .findAll();
-                        result1.clear();
+                        movie.setWatched(true);
+                        movie.setOnWatchList(false);
                         uiRealm.commitTransaction();
+
                         adapter.notifyDataSetChanged();
 
-                        Snackbar.make(v, "Removed from your shows",
+                        Snackbar.make(v, "Watched!",
                                 Snackbar.LENGTH_LONG).show();
                     }
                 });
             }
+
+
+            // Adding Snackbar to Action Button inside card
+            Button removeButton = (Button) itemView.findViewById(R.id.remove_button);
+            removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JSONShow show = movieList.get(getAdapterPosition());
+
+                    uiRealm.beginTransaction();
+                    //JSONMovie movieToAdd = uiRealm.createObject(movie);
+                    RealmResults<JSONShow> result1 = uiRealm.where(JSONShow.class)
+                            .equalTo("name", show.getName())
+                            .findAll();
+                    result1.clear();
+                    uiRealm.commitTransaction();
+                    adapter.notifyDataSetChanged();
+
+                    Snackbar.make(v, "Removed from your shows",
+                            Snackbar.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * Adapter to display recycler view.
+     */
+    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
+        // Set numbers of Card in RecyclerView.
+        private Realm uiRealm;
+        private RealmResults<JSONShow> showList;
+        private Activity activity;
+        private boolean isWatched;
+
+        public ContentAdapter(MyApplication app, Activity activity, boolean isWatched) {
+            uiRealm = app.getUiRealm();
+            this.isWatched = isWatched;
+
+            // Build the query looking at all users:
+            RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
+
+            // Execute the query:
+            if (isWatched) {
+                RealmResults<JSONShow> shows = query.equalTo("isWatched", true).findAll();
+                this.activity = activity;
+                showList = shows;
+            } else {
+                RealmResults<JSONShow> shows = query.findAll();
+                this.activity = activity;
+                showList = shows;
+            }
         }
 
-        /**
-         * Adapter to display recycler view.
-         */
-        public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-            // Set numbers of Card in RecyclerView.
-            private Realm uiRealm;
-            private RealmResults<JSONShow> showList;
-            private Activity activity;
-            private boolean isWatched;
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, showList, uiRealm, this, isWatched);
+        }
 
-            public ContentAdapter(MyApplication app, Activity activity, boolean isWatched) {
-                uiRealm = app.getUiRealm();
-                this.isWatched = isWatched;
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
+            TextView genre = (TextView) holder.itemView.findViewById(R.id.card_text);
+            ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
 
-                // Build the query looking at all users:
-                RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
-
-                // Execute the query:
-                if (isWatched){
-                    RealmResults<JSONShow> shows = query.equalTo("isWatched", true).findAll();
-                    this.activity = activity;
-                    showList = shows;
-                } else {
-                    RealmResults<JSONShow> shows = query.findAll();
-                    this.activity = activity;
-                    showList = shows;
-                }
+            Bitmap bmp;
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inMutable = true;
+            if (showList.get(position).getBackdropBitmap() != null) {
+                bmp = BitmapFactory.decodeByteArray(showList.get(position).getBackdropBitmap(), 0, showList.get(position).getBackdropBitmap().length, options);
+                coverArt.setImageBitmap(bmp);
             }
 
-            @Override
-            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new ViewHolder(LayoutInflater.from(parent.getContext()), parent, showList, uiRealm, this, isWatched);
-            }
+            title.setText(showList.get(position).getName());
 
-            @Override
-            public void onBindViewHolder(ViewHolder holder, int position) {
-                TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
-                TextView genre = (TextView) holder.itemView.findViewById(R.id.card_text);
-                ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
-
-                Bitmap bmp;
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inMutable = true;
-                if (showList.get(position).getBackdropBitmap() != null) {
-                    bmp = BitmapFactory.decodeByteArray(showList.get(position).getBackdropBitmap(), 0, showList.get(position).getBackdropBitmap().length, options);
-                    coverArt.setImageBitmap(bmp);
-                }
-
-                title.setText(showList.get(position).getName());
-
-                title.setText(showList.get(position).getName());
-            Typeface type = Typeface.createFromAsset(this.activity.getAssets(),"fonts/Lobster-Regular.ttf");
+            title.setText(showList.get(position).getName());
+            Typeface type = Typeface.createFromAsset(this.activity.getAssets(), "fonts/Lobster-Regular.ttf");
             title.setTypeface(type);
 
             genre.setText(showList.get(position).getOverview());

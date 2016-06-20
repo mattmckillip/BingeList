@@ -40,8 +40,6 @@ import retrofit.Retrofit;
  * Created by Matt on 6/7/2016.
  */
 public class MovieSearchActivity extends AppCompatActivity {
-    private SearchAdapter searchAdapter;
-    private List<MovieResult> searchMovieResults;
 
     @BindView(R.id.search_recycler_view)
     RecyclerView searchRecyclerView;
@@ -49,16 +47,13 @@ public class MovieSearchActivity extends AppCompatActivity {
     @BindView(R.id.search_toolber)
     Toolbar toolbar;
 
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-
-    @BindView(R.id.drawer)
-    DrawerLayout mDrawerLayout;
+    private SearchAdapter searchAdapter;
+    private List<MovieResult> searchMovieResults;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.search_activity);
 
         ButterKnife.bind(this);
 
@@ -72,13 +67,13 @@ public class MovieSearchActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
 
-        for(int i = 0; i < toolbar.getChildCount(); i++){
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
             View view = toolbar.getChildAt(i);
-            if(view instanceof TextView){
+            if (view instanceof TextView) {
                 TextView tv = (TextView) view;
                 Typeface titleFont = Typeface.
                         createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-                if(tv.getText().equals(this.getTitle())){
+                if (tv.getText().equals(this.getTitle())) {
                     tv.setTypeface(titleFont);
                     break;
                 }
@@ -91,50 +86,6 @@ public class MovieSearchActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
-                        menuItem.setChecked(true);
-
-                        //Check to see which item was being clicked and perform appropriate action
-                        switch (menuItem.getItemId()) {
-
-                            //Replacing the main content with ContentFragment
-                            case R.id.movie_watch_list_menu_item:
-                                Intent watchListIntent = new Intent(MovieSearchActivity.this, MovieWatchListActivity.class);
-                                startActivity(watchListIntent);
-                                return true;
-
-                            case R.id.movie_browse_menu_item:
-                                Intent browseIntent = new Intent(MovieSearchActivity.this, MovieBrowseActivity.class);
-                                startActivity(browseIntent);
-                                return true;
-
-                            case R.id.movie_search_menu_item:
-                                mDrawerLayout.closeDrawers();
-                                return true;
-
-                            case R.id.settings_menu_item:
-                                Intent settingsIntent = new Intent(MovieSearchActivity.this, SettingsActivity.class);
-                                startActivity(settingsIntent);
-                                return true;
-                        }
-
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
-
-
-        /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
-        Typeface font = Typeface.
-                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);*/
     }
 
     /*
@@ -145,7 +96,7 @@ public class MovieSearchActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
         searchView.setIconified(false);
         searchView.clearFocus();
@@ -182,6 +133,7 @@ public class MovieSearchActivity extends AppCompatActivity {
 
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 // UserFeedback.show( "SearchOnQueryTextChanged: " + s);
@@ -191,7 +143,7 @@ public class MovieSearchActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -213,5 +165,5 @@ public class MovieSearchActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
+    }*/
 }

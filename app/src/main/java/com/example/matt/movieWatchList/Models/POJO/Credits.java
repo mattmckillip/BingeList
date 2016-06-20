@@ -19,54 +19,42 @@ public class Credits {
     private List<Crew> crew = new ArrayList<Crew>();
 
     /**
-     * 
-     * @return
-     *     The id
+     * @return The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
-     * @param id
-     *     The id
+     * @param id The id
      */
     public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 
-     * @return
-     *     The cast
+     * @return The cast
      */
     public List<Cast> getCast() {
         return cast;
     }
 
     /**
-     * 
-     * @param cast
-     *     The cast
+     * @param cast The cast
      */
     public void setCast(List<Cast> cast) {
         this.cast = cast;
     }
 
     /**
-     * 
-     * @return
-     *     The crew
+     * @return The crew
      */
     public List<Crew> getCrew() {
         return crew;
     }
 
     /**
-     * 
-     * @param crew
-     *     The crew
+     * @param crew The crew
      */
     public void setCrew(List<Crew> crew) {
         this.crew = crew;
