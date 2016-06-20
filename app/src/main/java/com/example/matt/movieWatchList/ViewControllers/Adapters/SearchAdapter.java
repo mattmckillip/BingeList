@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -85,7 +85,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     Context context = v.getContext();
                     MovieResult movie = movies.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, BrowseMoviesDetailActivity.class);
+                    Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }

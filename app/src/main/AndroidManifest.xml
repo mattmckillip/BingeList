@@ -20,29 +20,29 @@
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.movies.BrowseMoviesActivity">
+            android:name=".viewControllers.activities.movies.MovieBrowseActivity">
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.shows.BrowseTVShowsActivity">
+            android:name=".viewControllers.activities.shows.TVShowBrowseActivity">
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.movies.BrowseMoviesDetailActivity"
-            android:parentActivityName=".viewControllers.activities.movies.BrowseMoviesActivity"
+            android:name=".viewControllers.activities.movies.MovieBrowseDetailActivity"
+            android:parentActivityName=".viewControllers.activities.movies.MovieBrowseActivity"
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.movies.BrowseMoviesActivity" />
+                android:value=".viewControllers.activities.movies.MovieBrowseActivity" />
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.shows.BrowseTVShowsDetailActivity"
-            android:parentActivityName=".viewControllers.activities.shows.BrowseTVShowsActivity"
+            android:name=".viewControllers.activities.shows.TVShowBrowseDetailActivity"
+            android:parentActivityName=".viewControllers.activities.shows.TVShowBrowseActivity"
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.shows.BrowseTVShowsActivity" />
+                android:value=".viewControllers.activities.shows.TVShowBrowseActivity" />
         </activity>
 
         <activity
@@ -56,7 +56,7 @@
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.movies.SearchMoviesActivity">
+            android:name=".viewControllers.activities.movies.MovieSearchActivity">
         </activity>
 
         <activity

@@ -3,6 +3,7 @@ package com.example.matt.movieWatchList.uitls.API;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.movies.Movie;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -17,4 +18,7 @@ public interface TVShowAPI  {
 
         @GET("{showID}/credits?api_key=788bf2d4d9f5db03979efed58cbf6713")
         Call<Credits> getCredits(@Path("showID") String showID);
+
+        @GET("{showID}/season/{seasonNumber}?api_key=788bf2d4d9f5db03979efed58cbf6713")
+        Call<TVShowSeasonResult> getSeasons(@Path("showID") String showID, @Path("seasonNumber") String seasonNumber);
     }

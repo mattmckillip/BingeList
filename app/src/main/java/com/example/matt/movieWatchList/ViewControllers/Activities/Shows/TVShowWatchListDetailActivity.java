@@ -1,7 +1,5 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -12,29 +10,22 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.PaletteTransformation;
-import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
-import com.example.matt.movieWatchList.viewControllers.providers.ExampleExpandableDataProviderFragment;
-import com.example.matt.movieWatchList.viewControllers.fragments.shows.BrowseTVShowSeasonFragment;
-import com.example.matt.movieWatchList.viewControllers.adapters.AbstractExpandableDataProvider;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrInterface;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,23 +114,19 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         // Setting ViewPager for each Tabs
         adapterViewPager = new Adapter(getSupportFragmentManager());
 
-        Bundle fightClubSearchBundle = new Bundle();
-        fightClubSearchBundle.putInt("showID", showID);
-        TVShowOverviewFragment fragment1 = new TVShowOverviewFragment();
-        fragment1.setArguments(fightClubSearchBundle);
+        Bundle overviewBundle = new Bundle();
+        overviewBundle.putInt("showID", showID);
+        TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
+        overviewFragment.setArguments(overviewBundle);
 
-        Bundle deadpoolSearchBundle = new Bundle();
-        deadpoolSearchBundle.putString("query", "deadpool");
-        TVShowWatchlistSeasonFragment fragment2 = new TVShowWatchlistSeasonFragment();
-        fragment2.setArguments(deadpoolSearchBundle);
+        Bundle seasonsBundle = new Bundle();
+        seasonsBundle.putInt("showID", showID);
+        TVShowBrowseSeasonFragment seasonsFragment = new TVShowBrowseSeasonFragment();
+        seasonsFragment.setArguments(seasonsBundle);
 
-        getSupportFragmentManager().beginTransaction()
-                .add(new ExampleExpandableDataProviderFragment(), FRAGMENT_TAG_DATA_PROVIDER)
-                .commit();
-        TVShowWatchlistSeasonFragment testSeasons = new TVShowWatchlistSeasonFragment();
+        TVShowBrowseSeasonFragment testSeasons = new TVShowBrowseSeasonFragment();
 
-
-        adapterViewPager.addFragment(fragment1, "");
+        adapterViewPager.addFragment(overviewFragment, "");
         adapterViewPager.addFragment(testSeasons, "");
         viewPager.setAdapter(adapterViewPager);
 
@@ -163,11 +150,6 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    public AbstractExpandableDataProvider getDataProvider() {
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
-        return ((ExampleExpandableDataProviderFragment) fragment).getDataProvider();
     }
 
     static class Adapter extends FragmentPagerAdapter {

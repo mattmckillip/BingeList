@@ -30,7 +30,7 @@ import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseDetailActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -158,7 +158,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                     Context context = v.getContext();
                     JSONMovie movie = movieList.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, BrowseMoviesDetailActivity.class);
+                    Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     context.startActivity(intent);
                 }
@@ -206,7 +206,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                         public void onResponse(retrofit.Response<Movie> response, Retrofit retrofit) {
                             Log.d("getMovie()", "Callback Success");
                             Movie movie = response.body();
-                            movie.setBackdropPath("https://image.tmdb.org/t/p/w780//" + movie.getBackdropPath());
+                            movie.setBackdropPath("https://image.tmdb.org/t/p/w780/" + movie.getBackdropPath());
                             final JSONMovie realmMovie = movie.convertToRealm();
 
                             MovieAPI service = retrofit.create(MovieAPI.class);

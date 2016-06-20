@@ -45,7 +45,7 @@ import retrofit.Retrofit;
 /**
  * Provides UI for the view with Cards.
  */
-public class BrowseTVShowsFragment extends Fragment {
+public class TVShowBrowseFragment extends Fragment {
     private RealmList<JSONShow> data;
     private RecyclerView recyclerView;
     private BrowseTVShowsAdapter adapter;
@@ -88,7 +88,6 @@ public class BrowseTVShowsFragment extends Fragment {
             call.enqueue(new Callback<TVShowQueryReturn>() {
                 @Override
                 public void onResponse(retrofit.Response<TVShowQueryReturn> response, Retrofit retrofit) {
-                    Log.d("Browsetv()", response.raw().toString());
                     List<TVShowResult> movieResults = response.body().getResults();
                     data = new RealmList<>();
                     for (TVShowResult show : movieResults){
@@ -100,7 +99,6 @@ public class BrowseTVShowsFragment extends Fragment {
 
                         data.add(jsonShow);
                     }
-                    Log.d("BrowseMovies()", Integer.toString(data.size()));
                     adapter = new BrowseTVShowsAdapter(data, getActivity());
                     recyclerView.setAdapter(adapter);
                 }

@@ -28,8 +28,7 @@ import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsDetailActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -152,7 +151,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     Context context = v.getContext();
                     JSONShow show = showList.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, BrowseTVShowsDetailActivity.class);
+                    Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
                     intent.putExtra("showID", show.getId());
                     intent.putExtra("showName", show.getName());
                     context.startActivity(intent);

@@ -28,23 +28,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.ExpandableItemIndicator;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
 
+import java.util.List;
 import java.util.Random;
 
 public class SeasonAdapter
         extends AbstractExpandableItemAdapter<SeasonAdapter.MyGroupViewHolder, SeasonAdapter.MyChildViewHolder> {
     private static final String TAG = "MyExpandableItemAdapter";
+    private List<TVShowSeasonResult> seasons;
 
     // NOTE: Make accessible with short name
     private interface Expandable extends ExpandableItemConstants {
     }
 
-    private AbstractExpandableDataProvider mProvider;
+    //private AbstractExpandableDataProvider mProvider;
 
     public static abstract class MyBaseViewHolder extends AbstractExpandableItemViewHolder {
         public FrameLayout mContainer;
@@ -86,8 +89,9 @@ public class SeasonAdapter
         }
     }
 
-    public SeasonAdapter(AbstractExpandableDataProvider dataProvider) {
-        mProvider = dataProvider;
+    public SeasonAdapter(List<TVShowSeasonResult> seasons) {
+        this.seasons = seasons;
+
 
         // ExpandableItemAdapter requires stable ID, and also
         // have to implement the getGroupItemId()/getChildItemId() methods appropriately.
@@ -96,22 +100,22 @@ public class SeasonAdapter
 
     @Override
     public int getGroupCount() {
-        return mProvider.getGroupCount();
+        return seasons.size();
     }
 
     @Override
     public int getChildCount(int groupPosition) {
-        return mProvider.getChildCount(groupPosition);
+        return seasons.get(groupPosition).getEpisodes().size();
     }
 
     @Override
     public long getGroupId(int groupPosition) {
-        return mProvider.getGroupItem(groupPosition).getGroupId();
+        return seasons.get(groupPosition).getSeasonNumber();
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return mProvider.getChildItem(groupPosition, childPosition).getChildId();
+        return seasons.get(groupPosition).getEpisodes().get(childPosition).getEpisodeNumber();
     }
 
     @Override
@@ -140,12 +144,12 @@ public class SeasonAdapter
 
     @Override
     public void onBindGroupViewHolder(final MyGroupViewHolder holder, int groupPosition, int viewType) {
-        // child item
-        final AbstractExpandableDataProvider.BaseData item = mProvider.getGroupItem(groupPosition);
+
+        TVShowSeasonResult curSeason = seasons.get(groupPosition);
 
         // set text
-        holder.mSeasonName.setText(item.getText());
-        holder.mNumberOfEpisodes.setText("20 Episodes");
+        holder.mSeasonName.setText("Season" + curSeason.getSeasonNumber());
+        holder.mNumberOfEpisodes.setText(curSeason.getEpisodes().size() + " Episodes");
         Random r = new Random();
         int i = r.nextInt(100);
         holder.mEpisodeProgress.setProgress(i);
@@ -199,11 +203,8 @@ public class SeasonAdapter
 
     @Override
     public void onBindChildViewHolder(MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
-        // group item
-        final AbstractExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
-
-        // set text
-        holder.mEpisodeName.setText(item.getText());
+               // set text
+        holder.mEpisodeName.setText(seasons.get(groupPosition).getEpisodes().get(childPosition).getName());
 
         // set background resource (target view ID: container)
         int bgResId;
@@ -213,17 +214,6 @@ public class SeasonAdapter
 
     @Override
     public boolean onCheckCanExpandOrCollapseGroup(MyGroupViewHolder holder, int groupPosition, int x, int y, boolean expand) {
-        // check the item is *not* pinned
-        if (mProvider.getGroupItem(groupPosition).isPinned()) {
-            // return false to raise View.OnClickListener#onClick() event
-            return false;
-        }
-
-        // check is enabled
-        if (!(holder.itemView.isEnabled() && holder.itemView.isClickable())) {
-            return false;
-        }
-
         return true;
     }
 }

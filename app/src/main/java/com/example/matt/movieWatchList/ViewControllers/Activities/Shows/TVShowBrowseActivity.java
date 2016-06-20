@@ -17,7 +17,6 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -25,24 +24,20 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.SearchMoviesActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieSearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
-import com.example.matt.movieWatchList.viewControllers.fragments.shows.BrowseTVShowsFragment;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseFragment;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -55,7 +50,7 @@ import butterknife.ButterKnife;
 /**
  * Provides UI for the main screen.
  */
-public class BrowseTVShowsActivity extends AppCompatActivity {
+public class TVShowBrowseActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
 
@@ -110,7 +105,7 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         fab.setImageResource(R.drawable.ic_search_white);
-        final Intent intent = new Intent(this, SearchMoviesActivity.class);
+        final Intent intent = new Intent(this, MovieSearchActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,17 +122,17 @@ public class BrowseTVShowsActivity extends AppCompatActivity {
 
         Bundle nowShowingBundle = new Bundle();
         nowShowingBundle.putInt("showType", BrowseMovieType.NOW_SHOWING);
-        BrowseTVShowsFragment nowShowingMovies = new BrowseTVShowsFragment();
+        TVShowBrowseFragment nowShowingMovies = new TVShowBrowseFragment();
         nowShowingMovies.setArguments(nowShowingBundle);
 
         Bundle popularBundle = new Bundle();
         popularBundle.putInt("showType", BrowseMovieType.POPULAR);
-        BrowseTVShowsFragment popularMovies = new BrowseTVShowsFragment();
+        TVShowBrowseFragment popularMovies = new TVShowBrowseFragment();
         popularMovies.setArguments(popularBundle);
 
         Bundle topRatedBundle = new Bundle();
         topRatedBundle.putInt("showType", BrowseMovieType.TOP_RATED);
-        BrowseTVShowsFragment topRatedMovies = new BrowseTVShowsFragment();
+        TVShowBrowseFragment topRatedMovies = new TVShowBrowseFragment();
         topRatedMovies.setArguments(topRatedBundle);
 
         adapterViewPager.addFragment(popularMovies, "Popular");

@@ -21,14 +21,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -42,8 +39,6 @@ import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.BrowseMoviesFragment;
 import com.mikepenz.materialdrawer.Drawer;
 
@@ -58,7 +53,7 @@ import io.realm.RealmMigration;
 /**
  * Provides UI for the main screen.
  */
-public class BrowseMoviesActivity extends AppCompatActivity {
+public class MovieBrowseActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
     Drawer navigationDrawer;
@@ -115,7 +110,7 @@ public class BrowseMoviesActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final Intent intent = new Intent(this, BrowseMoviesActivity.class);
+        final Intent intent = new Intent(this, MovieBrowseActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

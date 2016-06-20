@@ -1,4 +1,4 @@
-package com.example.matt.movieWatchList.viewControllers.activities.shows;
+package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -23,11 +23,8 @@ import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
-import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
-import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +39,7 @@ import retrofit.Retrofit;
 /**
  * Created by Matt on 6/7/2016.
  */
-public class SearchTVShowsActivity extends AppCompatActivity {
+public class MovieSearchActivity extends AppCompatActivity {
     private SearchAdapter searchAdapter;
     private List<MovieResult> searchMovieResults;
 
@@ -55,8 +52,8 @@ public class SearchTVShowsActivity extends AppCompatActivity {
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
-    Drawer navigationDrawer;
-
+    @BindView(R.id.drawer)
+    DrawerLayout mDrawerLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,9 +91,45 @@ public class SearchTVShowsActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        // Set behavior of Navigation drawer
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    // This method will trigger on item Click of navigation menu
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // Set item in checked state
+                        menuItem.setChecked(true);
 
-        // Create Navigation drawer
-        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+                        //Check to see which item was being clicked and perform appropriate action
+                        switch (menuItem.getItemId()) {
+
+                            //Replacing the main content with ContentFragment
+                            case R.id.movie_watch_list_menu_item:
+                                Intent watchListIntent = new Intent(MovieSearchActivity.this, MovieWatchListActivity.class);
+                                startActivity(watchListIntent);
+                                return true;
+
+                            case R.id.movie_browse_menu_item:
+                                Intent browseIntent = new Intent(MovieSearchActivity.this, MovieBrowseActivity.class);
+                                startActivity(browseIntent);
+                                return true;
+
+                            case R.id.movie_search_menu_item:
+                                mDrawerLayout.closeDrawers();
+                                return true;
+
+                            case R.id.settings_menu_item:
+                                Intent settingsIntent = new Intent(MovieSearchActivity.this, SettingsActivity.class);
+                                startActivity(settingsIntent);
+                                return true;
+                        }
+
+                        // Closing drawer on item click
+                        mDrawerLayout.closeDrawers();
+                        return true;
+                    }
+                });
+
 
         /*TextView navHeaderText = (TextView) findViewById(R.id.nav_header_text);
         Typeface font = Typeface.
@@ -168,15 +201,15 @@ public class SearchTVShowsActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            navigationDrawer.openDrawer();
+            mDrawerLayout.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (this.navigationDrawer.isDrawerOpen()) {
-            this.navigationDrawer.closeDrawer();
+        if (this.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }

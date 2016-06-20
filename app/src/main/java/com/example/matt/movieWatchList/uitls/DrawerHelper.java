@@ -9,9 +9,9 @@ import android.view.View;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.activities.SearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -83,11 +83,11 @@ public class DrawerHelper {
                             if (drawerItem.getIdentifier() == 1000) {
                                 intent = new Intent(currentActivity, TVShowWatchListActivity.class);
                             } else if (drawerItem.getIdentifier() == 1001) {
-                                intent = new Intent(currentActivity, BrowseTVShowsActivity.class);
+                                intent = new Intent(currentActivity, TVShowBrowseActivity.class);
                             } else if (drawerItem.getIdentifier() == 2000) {
                                 intent = new Intent(currentActivity, MovieWatchListActivity.class);
                             } else if (drawerItem.getIdentifier() == 2001) {
-                                intent = new Intent(currentActivity, BrowseMoviesActivity.class);
+                                intent = new Intent(currentActivity, MovieBrowseActivity.class);
                             } else if (drawerItem.getIdentifier() == 3000) {
                                 intent = new Intent(currentActivity, SearchActivity.class);
                             } else if (drawerItem.getIdentifier() == 4000) {
@@ -114,11 +114,11 @@ public class DrawerHelper {
 
         if (currentActivity.getClass().equals(TVShowWatchListActivity.class)){
             result.setSelection(1000, false);
-        } else if (currentActivity.getClass().equals(BrowseTVShowsActivity.class)){
+        } else if (currentActivity.getClass().equals(TVShowBrowseActivity.class)){
             result.setSelection(1001, false);
         } else if (currentActivity.getClass().equals(MovieWatchListActivity.class)){
             result.setSelection(2000, false);
-        } else if (currentActivity.getClass().equals(BrowseMoviesActivity.class)){
+        } else if (currentActivity.getClass().equals(MovieBrowseActivity.class)){
             result.setSelection(2001, false);
         } else if (currentActivity.getClass().equals(SearchActivity.class)){
             result.setSelection(3000, false);

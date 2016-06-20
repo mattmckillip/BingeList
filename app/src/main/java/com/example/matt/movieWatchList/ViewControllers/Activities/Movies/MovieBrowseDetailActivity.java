@@ -60,7 +60,7 @@ import retrofit.Retrofit;
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
-public class BrowseMoviesDetailActivity extends AppCompatActivity {
+public class MovieBrowseDetailActivity extends AppCompatActivity {
     Integer movieID;
     Bitmap thisBitmap;
     private JSONMovie realmMovie;
@@ -268,8 +268,6 @@ public class BrowseMoviesDetailActivity extends AppCompatActivity {
                             collapsingToolbar.setStatusBarScrimColor(vibrantColor);
 
                             fab.setBackgroundTintList(ColorStateList.valueOf(vibrantColor));
-
-
                         } else {
                             Log.d("Palette", "Could not gather vibrant color");
                         }
@@ -298,8 +296,6 @@ public class BrowseMoviesDetailActivity extends AppCompatActivity {
         stars.setRating(realmMovie.getVote_average().floatValue());
         runtime.setText(Integer.toString(realmMovie.getRuntime()) + " min");
         userRating.setText(Double.toString(realmMovie.getVote_average())+ "/10");
-
-
 
         collapsing_toolbar.setVisibility(View.VISIBLE);
 

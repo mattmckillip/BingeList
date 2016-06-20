@@ -13,11 +13,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchResult;
-import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesDetailActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.BrowseTVShowsDetailActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -92,11 +90,11 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                     MultiSearchResult result = results.get(getAdapterPosition());
 
                     if (result.getMediaType().equals("movie")) {
-                        Intent intent = new Intent(context, BrowseMoviesDetailActivity.class);
+                        Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
                         intent.putExtra("movieId", result.getId());
                         context.startActivity(intent);
                     } else if (result.getMediaType().equals("tv")) {
-                        Intent intent = new Intent(context, BrowseTVShowsDetailActivity.class);
+                        Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
                         intent.putExtra("tvShowID", result.getId());
                         context.startActivity(intent);
                     }

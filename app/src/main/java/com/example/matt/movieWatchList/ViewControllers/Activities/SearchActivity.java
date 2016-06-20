@@ -1,11 +1,7 @@
 package com.example.matt.movieWatchList.viewControllers.activities;
 
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,19 +12,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchResult;
-import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MultiSearchAPI;
-import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.BrowseMoviesActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.MultiSearchAdapter;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
 import com.mikepenz.materialdrawer.Drawer;
