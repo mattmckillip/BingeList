@@ -103,7 +103,17 @@
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/article_subheading"/>
 
-        <Button
+        <com.mikepenz.iconics.view.IconicsButton
+            android:id="@+id/action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="{gmd_add_to_queue} ADD TO WATCHLIST!"
+            android:textColor="?attr/colorPrimary"
+            android:layout_alignParentBottom="true"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+        <!--<Button
             android:id="@+id/action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -113,7 +123,7 @@
             android:text="Add to Watchlist"
             android:drawableLeft="@drawable/ic_add_to_queue_black_24dp"
             android:drawableTint="?attr/colorPrimary"
-            android:drawablePadding="6dp"/>
+            android:drawablePadding="6dp"/>-->
 
         <ImageButton
             android:id="@+id/more_button"

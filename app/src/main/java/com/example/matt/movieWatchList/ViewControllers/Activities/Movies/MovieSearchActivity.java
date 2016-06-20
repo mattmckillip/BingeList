@@ -1,6 +1,7 @@
 package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -25,6 +26,9 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.ionicons_typeface_library.Ionicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +102,7 @@ public class MovieSearchActivity extends AppCompatActivity {
 
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        myActionMenuItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE));
         searchView.setIconified(false);
         searchView.clearFocus();
 

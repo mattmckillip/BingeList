@@ -50,6 +50,8 @@ public class TVShowWatchlistSeasonFragment
 
     private int showID;
     private int numberOfSeasons;
+    private int vibrantColor;
+    private int mutedColor;
 
     public TVShowWatchlistSeasonFragment() {
         super();
@@ -104,7 +106,7 @@ public class TVShowWatchlistSeasonFragment
     }
 
     public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons) {
-        final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons);
+        final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons, vibrantColor, mutedColor);
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
 

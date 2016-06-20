@@ -17,6 +17,9 @@
 package com.example.matt.movieWatchList.viewControllers.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.view.LayoutInflaterCompat;
+import android.util.AndroidException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +39,8 @@ import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemViewHolder;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
+import com.mikepenz.iconics.view.IconicsImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -46,9 +51,13 @@ public class SeasonAdapter
     private static final String TAG = "MyExpandableItemAdapter";
     private List<TVShowSeasonResult> seasons;
     private Context context;
+    private int vibrantColor;
+    private int mutedColor;
 
-    public SeasonAdapter(List<TVShowSeasonResult> seasons) {
+    public SeasonAdapter(List<TVShowSeasonResult> seasons, int vibrantColor, int mutedColor) {
         this.seasons = seasons;
+        this.vibrantColor = vibrantColor;
+        this.mutedColor = mutedColor;
 
         // ExpandableItemAdapter requires stable ID, and also
         // have to implement the getGroupItemId()/getChildItemId() methods appropriately.
@@ -109,11 +118,11 @@ public class SeasonAdapter
         // set text
         holder.mSeasonName.setText("Season" + curSeason.getSeasonNumber());
         holder.mNumberOfEpisodes.setText(curSeason.getEpisodes().size() + " Episodes");
+        holder.mEpisodeProgress.getProgressDrawable().setColorFilter(
+                vibrantColor, android.graphics.PorterDuff.Mode.SRC_IN);
         Random r = new Random();
         int i = r.nextInt(100);
         holder.mEpisodeProgress.setProgress(i);
-        //holder.mWatchSeason.setFocusable(false);
-        holder.mWatchedSeason.setVisibility(View.GONE);
         Picasso.with(context)
                 .load("https://image.tmdb.org/t/p/w92/" + curSeason.getPosterPath()) // w92, w154, w185
                 .fit().centerCrop()
@@ -122,21 +131,7 @@ public class SeasonAdapter
 
         holder.mWatchSeason.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                //button functionalty   ...
-                Log.d("CLick", "Wathc");
-                holder.mWatchSeason.setVisibility(View.GONE);
-                holder.mWatchedSeason.setVisibility(View.VISIBLE);
-
-            }
-        });
-
-        holder.mWatchedSeason.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                //button functionalty   ...
-                Log.d("CLick", "UnWatch");
-                holder.mWatchedSeason.setVisibility(View.GONE);
-                holder.mWatchSeason.setVisibility(View.VISIBLE);
-
+                holder.mWatchSeason.setColor(vibrantColor);
             }
         });
 
@@ -147,7 +142,6 @@ public class SeasonAdapter
         final int expandState = holder.getExpandStateFlags();
 
         if ((expandState & ExpandableItemConstants.STATE_FLAG_IS_UPDATED) != 0) {
-            Log.d("Expanding", "Yeah");
             int bgResId;
             boolean isExpanded;
             boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
@@ -166,17 +160,26 @@ public class SeasonAdapter
     }
 
     @Override
-    public void onBindChildViewHolder(MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
+    public void onBindChildViewHolder(final MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
         // set text
         Episode curEpisode = seasons.get(groupPosition).getEpisodes().get(childPosition);
         holder.mEpisodeName.setText(curEpisode.getName());
         holder.mEpisodeDescription.setText(curEpisode.getOverview());
-        holder.mEpisodeNumber.setText("S" + curEpisode.getEpisodeNumber() + "E" + curEpisode.getEpisodeNumber());
+        holder.mEpisodeNumber.setText("S0" + curEpisode.getEpisodeNumber() + "E0" + curEpisode.getEpisodeNumber());
+        holder.mEpisodeNumber.setTextColor(vibrantColor);
+        holder.mEpisodeAirDate.setText("Aired on " + curEpisode.getAirDate());
 
         // set background resource (target view ID: container)
         int bgResId;
         bgResId = R.drawable.bg_item_normal_state;
         holder.mContainer.setBackgroundResource(bgResId);
+
+
+        holder.mWatchEpisode.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                holder.mWatchEpisode.setColor(vibrantColor);
+            }
+        });
     }
 
     @Override
@@ -195,10 +198,12 @@ public class SeasonAdapter
         public ImageView mSeasonPoster;
         public TextView mEpisodeName;
         public ProgressBar mEpisodeProgress;
-        public ImageButton mWatchSeason;
-        public ImageButton mWatchedSeason;
+        public IconicsImageView mWatchSeason;
+        public IconicsImageView mWatchEpisode;
         public TextView mEpisodeDescription;
+        public TextView mEpisodeAirDate;
         public TextView mEpisodeNumber;
+
 
         public MyBaseViewHolder(View v) {
             super(v);
@@ -208,10 +213,11 @@ public class SeasonAdapter
             mSeasonPoster = (ImageView) v.findViewById(R.id.season_poster);
             mEpisodeName = (TextView) v.findViewById(R.id.episode_name);
             mEpisodeProgress = (ProgressBar) v.findViewById(R.id.episode_progress);
-            mWatchSeason = (ImageButton) v.findViewById(R.id.watch_button);
-            mWatchedSeason = (ImageButton) v.findViewById(R.id.watched_button);
+            mWatchSeason = (IconicsImageView) v.findViewById(R.id.watch_season);
             mEpisodeDescription = (TextView) v.findViewById(R.id.episode_description);
             mEpisodeNumber = (TextView) v.findViewById(R.id.episode_number);
+            mEpisodeAirDate = (TextView) v.findViewById(R.id.episode_air_date);
+            mWatchEpisode = (IconicsImageView) v.findViewById(R.id.watch_episode);
         }
     }
 

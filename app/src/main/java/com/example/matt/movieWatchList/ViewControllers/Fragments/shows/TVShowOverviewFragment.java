@@ -43,8 +43,9 @@ import retrofit.Retrofit;
 public class TVShowOverviewFragment extends Fragment {
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     //ThingsAdapter adapter;
-    FragmentActivity listener;
-    int showID;
+    private FragmentActivity listener;
+    private int showID;
+
     @BindView(R.id.scroll_view)
     NestedScrollView scroll_view;
     @BindView(R.id.rating)
@@ -65,6 +66,7 @@ public class TVShowOverviewFragment extends Fragment {
     LinearLayout layout;
     @BindView(R.id.expand_text_view)
     ExpandableTextView plot;
+
     private int vibrantColor;
     private int mutedColor;
     private Realm uiRealm;
@@ -97,7 +99,6 @@ public class TVShowOverviewFragment extends Fragment {
         super.onCreate(savedInstanceState);
         showID = getArguments().getInt("showID", 0);
         vibrantColor = getArguments().getInt("vibrantColor", 0);
-        Log.d("Vibrant Color", Integer.toString(vibrantColor));
         mutedColor = getArguments().getInt("mutedColor", 0);
 
         /*ArrayList<Thing> things = new ArrayList<Thing>();

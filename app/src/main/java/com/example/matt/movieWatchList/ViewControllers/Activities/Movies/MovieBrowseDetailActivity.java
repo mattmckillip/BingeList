@@ -62,7 +62,7 @@ import retrofit.Retrofit;
 public class MovieBrowseDetailActivity extends AppCompatActivity {
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     Integer movieID;
-    Bitmap thisBitmap;
+
     @BindView(R.id.appbar)
     AppBarLayout appbar;
     @BindView(R.id.collapsing_toolbar)
@@ -79,9 +79,6 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
     RatingBar stars;
     @BindView(R.id.plot_title)
     TextView plotTitle;
-
-    /*@BindView(R.id.fab)
-    FloatingActionButton fab;*/
     @BindView(R.id.cast_title)
     TextView castTitle;
     @BindView(R.id.crew_title)
@@ -98,6 +95,7 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
     ExpandableTextView plot;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
     private JSONMovie realmMovie;
     private Movie movie;
     private RealmList<JSONCast> castList = new RealmList<>();

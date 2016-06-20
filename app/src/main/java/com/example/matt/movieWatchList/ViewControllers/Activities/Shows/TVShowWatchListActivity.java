@@ -18,6 +18,7 @@ package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +41,9 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowWatchListFragment;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.Iconics;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -76,6 +80,9 @@ public class TVShowWatchListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Iconics.init(getApplicationContext());
+        Iconics.registerFont(new GoogleMaterial());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
@@ -110,8 +117,8 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         try {
-            tabs.getTabAt(0).setIcon(R.drawable.ic_dvr_white_24dp);
-            tabs.getTabAt(1).setIcon(R.drawable.ic_playlist_add_check_white_24dp);
+            tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
+            tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
         } catch (NullPointerException npe) {
             //pass
         }
@@ -122,12 +129,15 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).sizeDp(16).color(Color.WHITE));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(24).color(Color.WHITE);
+        fab.setImageDrawable(search);
+
         final Intent intent = new Intent(this, MovieBrowseActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +171,8 @@ public class TVShowWatchListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem sortItem = menu.findItem(R.id.action_sort);
+        sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
         return true;
     }
 

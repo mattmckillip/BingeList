@@ -57,6 +57,7 @@ public class TVShowBrowseSeasonFragment
         extends Fragment
         implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
         RecyclerViewExpandableItemManager.OnGroupExpandListener {
+
     private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
 
     private RecyclerView mRecyclerView;
@@ -65,6 +66,8 @@ public class TVShowBrowseSeasonFragment
     private RecyclerViewExpandableItemManager mRecyclerViewExpandableItemManager;
     private int showID;
     private int numberOfSeasons;
+    private int vibrantColor;
+    private int mutedColor;
 
     public TVShowBrowseSeasonFragment() {
         super();
@@ -72,7 +75,8 @@ public class TVShowBrowseSeasonFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        numberOfSeasons = 6;
+        vibrantColor = getArguments().getInt("vibrantColor", 0);
+        mutedColor = getArguments().getInt("mutedColor", 0);
         showID = this.getArguments().getInt("showID");
         return inflater.inflate(R.layout.fragment_recycler_list_view, container, false);
     }
@@ -115,7 +119,7 @@ public class TVShowBrowseSeasonFragment
     }
 
     public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons) {
-        final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons);
+        final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons, vibrantColor, mutedColor);
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
 

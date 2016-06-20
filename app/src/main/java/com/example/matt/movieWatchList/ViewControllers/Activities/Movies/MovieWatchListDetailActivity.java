@@ -3,6 +3,7 @@ package com.example.matt.movieWatchList.viewControllers.activities.movies;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.LayerDrawable;
@@ -29,6 +30,8 @@ import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
 
@@ -96,7 +99,8 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setImageResource(R.drawable.ic_done_white_24dp);
+        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_done).sizeDp(16).color(Color.WHITE);
+        fab.setImageDrawable(search);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

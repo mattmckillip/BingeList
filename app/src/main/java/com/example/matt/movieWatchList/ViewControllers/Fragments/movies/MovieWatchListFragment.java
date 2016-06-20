@@ -38,6 +38,7 @@ import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListDetailActivity;
+import com.mikepenz.iconics.view.IconicsButton;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -89,7 +90,7 @@ public class MovieWatchListFragment extends Fragment {
 
             // Adding Snackbar to Action Button inside card
 
-            Button watchButton = (Button) itemView.findViewById(R.id.watch_button);
+            IconicsButton watchButton = (IconicsButton) itemView.findViewById(R.id.watch_button);
             if (isWatched) {
                 watchButton.setVisibility(View.GONE);
             } else {
@@ -113,7 +114,7 @@ public class MovieWatchListFragment extends Fragment {
 
 
             // Adding Snackbar to Action Button inside card
-            Button removeButton = (Button) itemView.findViewById(R.id.remove_button);
+            IconicsButton removeButton = (IconicsButton) itemView.findViewById(R.id.remove_button);
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

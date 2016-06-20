@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -19,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
@@ -28,6 +30,9 @@ import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
 import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.Iconics;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrInterface;
 import com.squareup.picasso.Picasso;
@@ -51,7 +56,7 @@ import retrofit.Retrofit;
 public class TVShowBrowseDetailActivity extends AppCompatActivity {
     Integer showID;
     Adapter adapterViewPager;
-    @BindView(R.id.appBar)
+    @BindView(R.id.appbar)
     AppBarLayout appbar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
@@ -65,6 +70,9 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
     ImageView background;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.loadingPanel)
+    RelativeLayout loadingPanel;
+
     private int vibrantColor;
     private int mutedColor;
     private JSONShow realmShow;
@@ -72,6 +80,10 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
+        Iconics.init(getApplicationContext());
+        Iconics.registerFont(new GoogleMaterial());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
         showID = getIntent().getIntExtra("showID", 0);
@@ -84,6 +96,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         background.setVisibility(View.GONE);
         tabLayout.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
+        loadingPanel.setVisibility(View.VISIBLE);
 
         // Set title of Detail page
         collapsingToolbar.setTitle(ShowName);
@@ -114,6 +127,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 appbar.setVisibility(View.VISIBLE);
                                 tabLayout.setVisibility(View.VISIBLE);
                                 fab.setVisibility(View.VISIBLE);
+                                loadingPanel.setVisibility(View.GONE);
 
                                 int defaultColor = 0x000000;
                                 vibrantColor = palette.getVibrantColor(defaultColor);
@@ -143,6 +157,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
                                 Bundle seasonsBundle = new Bundle();
                                 seasonsBundle.putInt("showID", showID);
+                                seasonsBundle.putInt("vibrantColor", vibrantColor);
+                                seasonsBundle.putInt("mutedColor", mutedColor);
                                 TVShowBrowseSeasonFragment seasonsFragment = new TVShowBrowseSeasonFragment();
                                 seasonsFragment.setArguments(seasonsBundle);
 
@@ -154,7 +170,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
                                 addByteArray(stream.toByteArray());
-
                             }
 
                             @Override

@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,6 +32,7 @@ import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseDetailActivity;
+import com.mikepenz.iconics.view.IconicsButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -146,6 +148,9 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         @BindView(R.id.more_button)
         ImageButton moreOptionsButton;
 
+        @BindView(R.id.action_button)
+        IconicsButton actionButton;
+
 
         public BrowseMoviesViewHolder(View v, final Activity activity, final List<JSONMovie> movieList) {
             super(v);
@@ -185,8 +190,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             });//closing the setOnClickListener method
 
 
-            Button button = (Button) itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener() {
+            actionButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(final View v) {

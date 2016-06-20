@@ -45,7 +45,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
     private static final String FRAGMENT_LIST_VIEW = "list view";
     Integer showID;
     Adapter adapterViewPager;
-    @BindView(R.id.appBar)
+    @BindView(R.id.appbar)
     AppBarLayout appbar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsing_toolbar;

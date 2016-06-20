@@ -18,6 +18,7 @@ package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,6 +41,9 @@ import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.MovieWatchListFragment;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.Iconics;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -90,6 +94,9 @@ public class MovieWatchListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Iconics.init(getApplicationContext());
+        Iconics.registerFont(new GoogleMaterial());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
@@ -142,6 +149,9 @@ public class MovieWatchListActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(24).color(Color.WHITE);
+        fab.setImageDrawable(search);
+
         final Intent intent = new Intent(this, MovieBrowseActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -180,6 +190,8 @@ public class MovieWatchListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem sortItem = menu.findItem(R.id.action_sort);
+        sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
         return true;
     }
 

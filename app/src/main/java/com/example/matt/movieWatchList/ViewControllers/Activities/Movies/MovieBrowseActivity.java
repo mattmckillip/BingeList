@@ -26,6 +26,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -40,9 +41,13 @@ import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
+import com.example.matt.movieWatchList.viewControllers.activities.SearchActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.movies.BrowseMoviesFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.Iconics;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -79,6 +84,10 @@ public class MovieBrowseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Iconics.init(getApplicationContext());
+        Iconics.registerFont(new GoogleMaterial());
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
@@ -129,7 +138,10 @@ public class MovieBrowseActivity extends AppCompatActivity {
 
         // Adding Floating Action Button to bottom right of main view
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final Intent intent = new Intent(this, MovieBrowseActivity.class);
+        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(24).color(Color.WHITE);
+        fab.setImageDrawable(search);
+
+        final Intent intent = new Intent(this, SearchActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +181,8 @@ public class MovieBrowseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem sortItem = menu.findItem(R.id.action_sort);
+        sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
         return true;
     }
 

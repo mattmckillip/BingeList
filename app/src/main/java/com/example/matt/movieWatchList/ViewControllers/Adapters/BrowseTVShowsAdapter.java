@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
+import com.mikepenz.iconics.view.IconicsButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -140,6 +142,9 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         @BindView(R.id.watch_list_layout)
         RelativeLayout watchListLayout;
 
+        @BindView(R.id.action_button)
+        IconicsButton actionButton;
+
         public BrowseTVShowsViewHolder(View v) {
             super(v);
 
@@ -158,8 +163,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 }
             });
 
-            Button button = (Button) itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener() {
+            actionButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(final View v) {
