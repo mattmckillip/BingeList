@@ -56,11 +56,11 @@
 
         <com.mikepenz.iconics.view.IconicsImageView
             android:id="@+id/watch_episode"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginRight="@dimen/md_keylines"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:padding="16dp"
             app:iiv_color="@color/button_grey"
             app:iiv_icon="gmd_remove_red_eye"/>
 

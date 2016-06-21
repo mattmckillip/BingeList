@@ -33,6 +33,9 @@ import android.view.ViewGroup;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
+import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
+import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
 import com.example.matt.movieWatchList.viewControllers.adapters.SeasonAdapter;
@@ -48,6 +51,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -227,6 +233,7 @@ public class TVShowBrowseSeasonFragment
                     e.printStackTrace();
                 }
             }
+
             return seasons;
         }
 

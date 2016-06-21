@@ -76,21 +76,6 @@ public class MovieWatchListActivity extends AppCompatActivity {
         }
     };
 
-    public static void applyFontForToolbarTitle(Activity context) {
-        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            if (view instanceof TextView) {
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-                if (tv.getText().equals(context.getTitle())) {
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +106,6 @@ public class MovieWatchListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Movie Watch List");
-        applyFontForToolbarTitle(this);
 
         // Setting ViewPager for each Tabs
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -160,11 +144,6 @@ public class MovieWatchListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*TextView navHeaderText = (TextView) mDrawerLayout.findViewById(R.id.nav_header_text);
-        Typeface font = Typeface.
-                createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        navHeaderText.setTypeface(font);*/
     }
 
     // Add Fragments to Tabs

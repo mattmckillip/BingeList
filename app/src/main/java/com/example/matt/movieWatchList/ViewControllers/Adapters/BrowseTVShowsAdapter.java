@@ -99,8 +99,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         }
 
         title.setText(showList.get(position).getName());
-        Typeface type = Typeface.createFromAsset(this.activity.getAssets(), "fonts/Lobster-Regular.ttf");
-        title.setTypeface(type);
         overview.setText(showList.get(position).getOverview());
 
         // Build the query looking at all users:

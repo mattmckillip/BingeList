@@ -15,16 +15,13 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
 
-        <activity android:name=".viewControllers.activities.movies.MovieWatchListActivity">
-
+        <!-- Movies -->
+        <activity
+            android:name=".viewControllers.activities.movies.MovieWatchListActivity">
         </activity>
 
         <activity
             android:name=".viewControllers.activities.movies.MovieBrowseActivity">
-        </activity>
-
-        <activity
-            android:name=".viewControllers.activities.shows.TVShowBrowseActivity">
         </activity>
 
         <activity
@@ -33,7 +30,34 @@
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.movies.MovieBrowseActivity" />
+                android:value=".viewControllers.activities.movies.MovieBrowseActivity"/>
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.movies.MovieWatchListDetailActivity"
+            android:parentActivityName=".viewControllers.activities.movies.MovieWatchListActivity"
+            android:theme="@style/Theme.Slidr.Slidable">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".viewControllers.activities.movies.MovieWatchListActivity"/>
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.movies.MovieSearchActivity">
+        </activity>
+
+        <!-- Shows -->
+        <activity
+            android:name=".viewControllers.activities.shows.TVShowBrowseActivity">
+        </activity>
+
+        <activity
+            android:name="com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -46,19 +70,15 @@
         </activity>
 
         <activity
-            android:name=".viewControllers.activities.movies.MovieWatchListDetailActivity"
-            android:parentActivityName=".viewControllers.activities.movies.MovieWatchListActivity"
+            android:name=".viewControllers.activities.shows.TVShowWatchListDetailActivity"
+            android:parentActivityName=".viewControllers.activities.shows.TVShowWatchListActivity"
             android:theme="@style/Theme.Slidr.Slidable">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".viewControllers.activities.movies.MovieWatchListActivity" />
+                android:value=".viewControllers.activities.shows.TVShowWatchListActivity" />
         </activity>
 
-        <activity
-            android:name=".viewControllers.activities.movies.MovieSearchActivity">
-        </activity>
-
+        <!-- other -->
         <activity
             android:name="com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity">
         </activity>
@@ -67,17 +87,8 @@
             android:name="com.example.matt.movieWatchList.viewControllers.activities.SearchActivity">
         </activity>
 
-        <activity
-        android:name="com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowWatchListActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-    </activity>
 
-        <activity
-            android:name=".viewControllers.activities.shows.TVShowWatchListDetailActivity">
-        </activity>
+
 
     </application>
 

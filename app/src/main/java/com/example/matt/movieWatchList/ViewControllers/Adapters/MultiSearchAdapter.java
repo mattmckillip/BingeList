@@ -42,8 +42,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
     public void onBindViewHolder(SearchViewHolder searchViewHolder, int i) {
         MultiSearchResult result = results.get(i);
         searchViewHolder.movieTitle.setText(result.getTitle());
-        Typeface type = Typeface.createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-        searchViewHolder.movieTitle.setTypeface(type);
         if (result.getOverview() != null) {
             searchViewHolder.movieDescription.setText(result.getOverview().toString());
         }

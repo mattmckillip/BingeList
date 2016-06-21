@@ -1,7 +1,12 @@
 package com.example.matt.movieWatchList.Models.POJO.shows;
 
+import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
+import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import io.realm.RealmList;
 
 public class Season {
 
@@ -91,4 +96,14 @@ public class Season {
         this.seasonNumber = seasonNumber;
     }
 
+    public JSONSeason convertToRealm() {
+        JSONSeason returnSeason = new JSONSeason();
+        returnSeason.setAirDate(getAirDate());
+        returnSeason.setId(getId());
+        returnSeason.setEpisodeCount(getEpisodeCount());
+        returnSeason.setPosterPath(getPosterPath());
+        returnSeason.setSeasonNumber(getSeasonNumber());
+        returnSeason.setIsWatched(false);
+        return returnSeason;
+    }
 }

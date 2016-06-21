@@ -100,8 +100,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         }
 
         title.setText(movieList.get(position).getTitle());
-        Typeface type = Typeface.createFromAsset(this.activity.getAssets(), "fonts/Lobster-Regular.ttf");
-        title.setTypeface(type);
         overview.setText(movieList.get(position).getOverview());
 
         // Build the query looking at all users:

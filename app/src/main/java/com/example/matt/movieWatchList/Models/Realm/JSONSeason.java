@@ -1,5 +1,6 @@
 package com.example.matt.movieWatchList.Models.Realm;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
@@ -11,6 +12,8 @@ public class JSONSeason extends RealmObject {
     private Integer id;
     private String posterPath;
     private Integer seasonNumber;
+    private RealmList<JSONEpisode> episodes;
+    private Boolean isWatched;
 
     /**
      * @return The airDate
@@ -82,5 +85,11 @@ public class JSONSeason extends RealmObject {
         this.seasonNumber = seasonNumber;
     }
 
+    public RealmList<JSONEpisode> getEpisodes() { return episodes; }
 
+    public void setEpisodes( RealmList<JSONEpisode> episodes) { this.episodes = episodes;}
+
+    public Boolean getIsWatched() {return isWatched;}
+
+    public void setIsWatched(Boolean isWatched) {this.isWatched = isWatched;}
 }

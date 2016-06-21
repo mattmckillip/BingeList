@@ -2,6 +2,7 @@ package com.example.matt.movieWatchList.Models.Realm;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Matt on 6/13/2016.
@@ -14,6 +15,7 @@ public class JSONShow extends RealmObject {
     private String firstAirDate;
     private RealmList<JSONGenre> genres = new RealmList<>();
     private String homepage;
+    @PrimaryKey
     private Integer id;
     private Boolean inProduction;
     //private List<String> languages = new ArrayList<String>();
@@ -29,7 +31,7 @@ public class JSONShow extends RealmObject {
     private Double popularity;
     private String posterPath;
     //private List<ProductionCompany> productionCompanies = new ArrayList<ProductionCompany>();
-    //private List<Season> seasons = new ArrayList<Season>();
+    private RealmList<JSONSeason> seasons = new RealmList<JSONSeason>();
     private String status;
     private String type;
     private Double voteAverage;
@@ -256,12 +258,12 @@ public class JSONShow extends RealmObject {
     }
 
 
-    /*public List<Season> getSeasons() {
+    public RealmList<JSONSeason> getSeasons() {
         return seasons;
     }
-    public void setSeasons(List<Season> seasons) {
+    public void setSeasons(RealmList<JSONSeason> seasons) {
         this.seasons = seasons;
-    }*/
+    }
 
     /**
      * @return The status

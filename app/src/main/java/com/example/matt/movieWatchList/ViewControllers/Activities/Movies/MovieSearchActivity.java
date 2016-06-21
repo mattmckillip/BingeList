@@ -71,19 +71,6 @@ public class MovieSearchActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
 
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            if (view instanceof TextView) {
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-                if (tv.getText().equals(this.getTitle())) {
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
-        }
-
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {

@@ -1,51 +1,32 @@
-package com.example.matt.movieWatchList.Models.POJO.shows;
+package com.example.matt.movieWatchList.Models.Realm;
 
-import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
-import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Episode {
+import io.realm.RealmObject;
 
-    @SerializedName("air_date")
-    @Expose
+/**
+ * Created by Matt on 6/20/2016.
+ */
+public class JSONEpisode extends RealmObject {
     private String airDate;
-    @SerializedName("crew")
-    @Expose
-    private List<Object> crew = new ArrayList<Object>();
-    @SerializedName("episode_number")
-    @Expose
+    //private List<Object> crew = new ArrayList<Object>();
     private Integer episodeNumber;
-    @SerializedName("guest_stars")
-    @Expose
-    private List<Object> guestStars = new ArrayList<Object>();
-    @SerializedName("name")
-    @Expose
+   // private List<Object> guestStars = new ArrayList<Object>();
     private String name;
-    @SerializedName("overview")
-    @Expose
     private String overview;
-    @SerializedName("id")
-    @Expose
     private Integer id;
-    @SerializedName("production_code")
-    @Expose
-    private Object productionCode;
-    @SerializedName("season_number")
-    @Expose
+    //private Object productionCode;
     private Integer seasonNumber;
-    @SerializedName("still_path")
-    @Expose
-    private Object stillPath;
-    @SerializedName("vote_average")
-    @Expose
+    //private Object stillPath;
     private Double voteAverage;
-    @SerializedName("vote_count")
-    @Expose
     private Integer voteCount;
+    private Boolean isWatched;
+    private Integer season_id;
+
 
     /**
      * @return The airDate
@@ -61,19 +42,12 @@ public class Episode {
         this.airDate = airDate;
     }
 
-    /**
-     * @return The crew
-     */
-    public List<Object> getCrew() {
+    /*public List<Object> getCrew() {
         return crew;
     }
-
-    /**
-     * @param crew The crew
-     */
     public void setCrew(List<Object> crew) {
         this.crew = crew;
-    }
+    }*/
 
     /**
      * @return The episodeNumber
@@ -89,19 +63,12 @@ public class Episode {
         this.episodeNumber = episodeNumber;
     }
 
-    /**
-     * @return The guestStars
-     */
-    public List<Object> getGuestStars() {
+    /*public List<Object> getGuestStars() {
         return guestStars;
     }
-
-    /**
-     * @param guestStars The guest_stars
-     */
     public void setGuestStars(List<Object> guestStars) {
         this.guestStars = guestStars;
-    }
+    }*/
 
     /**
      * @return The name
@@ -145,19 +112,12 @@ public class Episode {
         this.id = id;
     }
 
-    /**
-     * @return The productionCode
-     */
-    public Object getProductionCode() {
+    /*public Object getProductionCode() {
         return productionCode;
     }
-
-    /**
-     * @param productionCode The production_code
-     */
     public void setProductionCode(Object productionCode) {
         this.productionCode = productionCode;
-    }
+    }*/
 
     /**
      * @return The seasonNumber
@@ -173,19 +133,12 @@ public class Episode {
         this.seasonNumber = seasonNumber;
     }
 
-    /**
-     * @return The stillPath
-     */
-    public Object getStillPath() {
+    /*public Object getStillPath() {
         return stillPath;
     }
-
-    /**
-     * @param stillPath The still_path
-     */
     public void setStillPath(Object stillPath) {
         this.stillPath = stillPath;
-    }
+    }*/
 
     /**
      * @return The voteAverage
@@ -215,17 +168,10 @@ public class Episode {
         this.voteCount = voteCount;
     }
 
-    public JSONEpisode convertToRealm() {
-        JSONEpisode returnEpisode = new JSONEpisode();
-        returnEpisode.setAirDate(getAirDate());
-        returnEpisode.setId(getId());
-        returnEpisode.setName(getName());
-        returnEpisode.setOverview(getOverview());
-        returnEpisode.setSeasonNumber(getSeasonNumber());
-        returnEpisode.setIsWatched(false);
-        returnEpisode.setEpisodeNumber(getEpisodeNumber());
-        returnEpisode.setVoteAverage(getVoteAverage());
-        returnEpisode.setVoteCount(getVoteCount());
-        return returnEpisode;
-    }
+    
+    public Boolean getIsWatched() {return isWatched;}
+    public void setIsWatched(Boolean isWatched) {this.isWatched = isWatched;}
+
+    public Integer getSeason_id() { return season_id; }
+    public void setSeason_id(Integer season_id) { this.season_id = season_id; }
 }

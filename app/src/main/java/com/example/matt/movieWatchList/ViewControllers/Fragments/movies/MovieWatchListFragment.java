@@ -185,11 +185,7 @@ public class MovieWatchListFragment extends Fragment {
             }
 
             title.setText(movieList.get(position).getTitle());
-
             title.setText(movieList.get(position).getTitle());
-            Typeface type = Typeface.createFromAsset(this.activity.getAssets(), "fonts/Lobster-Regular.ttf");
-            title.setTypeface(type);
-
             genre.setText(movieList.get(position).getOverview());
         }
 

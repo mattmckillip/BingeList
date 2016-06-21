@@ -83,9 +83,6 @@ public class TVShowWatchListFragment extends Fragment {
                     Context context = v.getContext();
                     JSONShow movie = movieList.get(getAdapterPosition());
                     Intent intent = new Intent(context, TVShowWatchListDetailActivity.class);
-                    Log.d("ViewHodler()", movie.getName());
-                    Log.d("ViewHodler()", Integer.toString(movie.getId()));
-
                     intent.putExtra("showID", movie.getId());
                     context.startActivity(intent);
                 }
@@ -188,11 +185,7 @@ public class TVShowWatchListFragment extends Fragment {
             }
 
             title.setText(showList.get(position).getName());
-
             title.setText(showList.get(position).getName());
-            Typeface type = Typeface.createFromAsset(this.activity.getAssets(), "fonts/Lobster-Regular.ttf");
-            title.setTypeface(type);
-
             genre.setText(showList.get(position).getOverview());
         }
 

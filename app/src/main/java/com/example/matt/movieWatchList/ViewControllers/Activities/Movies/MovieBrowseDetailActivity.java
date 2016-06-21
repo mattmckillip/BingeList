@@ -200,19 +200,6 @@ public class MovieBrowseDetailActivity extends AppCompatActivity {
         collapsingToolbar.setTitle(movie.getTitle());
 
         final ImageView image = (ImageView) findViewById(R.id.backdrop);
-        final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        try {
-            final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
-            field.setAccessible(true);
-
-            final Object object = field.get(collapsingToolbar);
-            final Field tpf = object.getClass().getDeclaredField("mTextPaint");
-            tpf.setAccessible(true);
-
-            ((TextPaint) tpf.get(object)).setTypeface(tf);
-        } catch (Exception ignored) {
-        }
-        Log.d("Update UI", "3");
 
         Picasso.with(this)
                 .load(movie.getBackdropPath())

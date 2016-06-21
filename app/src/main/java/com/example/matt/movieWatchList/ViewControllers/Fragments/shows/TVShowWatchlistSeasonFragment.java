@@ -17,9 +17,15 @@ import android.view.ViewGroup;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
+import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
+import com.example.matt.movieWatchList.Models.Realm.JSONShow;
+import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
 import com.example.matt.movieWatchList.viewControllers.adapters.SeasonAdapter;
+import com.example.matt.movieWatchList.viewControllers.adapters.WatchListSeasonAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
@@ -32,6 +38,9 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -56,20 +65,16 @@ public class TVShowWatchlistSeasonFragment
     public TVShowWatchlistSeasonFragment() {
         super();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        showID = args.getInt("showID", 0);
-        Log.d("SHOW ID", Integer.toString(showID));
+        vibrantColor = getArguments().getInt("vibrantColor", 0);
+        mutedColor = getArguments().getInt("mutedColor", 0);
+        showID = this.getArguments().getInt("showID");
         return inflater.inflate(R.layout.fragment_recycler_list_view, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        showID = 1399;
-        numberOfSeasons = 6;
-
         super.onViewCreated(view, savedInstanceState);
 
         //noinspection ConstantConditions
@@ -81,32 +86,21 @@ public class TVShowWatchlistSeasonFragment
         mRecyclerViewExpandableItemManager.setOnGroupExpandListener(this);
         mRecyclerViewExpandableItemManager.setOnGroupCollapseListener(this);
 
-        final FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/tv/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final TVShowAPI service = retrofit.create(TVShowAPI.class);
-        Call<TVShow> call = service.getTVShow(Integer.toString(showID));
-        call.enqueue(new Callback<TVShow>() {
-            @Override
-            public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
-                Log.d("getMovie()", "Callback Success");
-                numberOfSeasons = response.body().getNumberOfSeasons();
-                fetchSeasonsTask.execute(showID, numberOfSeasons);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.d("getMovie()", "Callback Failure");
-            }
-        });
+        Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
+        RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
+        JSONShow realmShow = query.equalTo("id", showID).findFirst();
+        updateSeasonRecyclerView(realmShow.getSeasons());
     }
 
-    public void updateSeasonRecyclerView(ArrayList<TVShowSeasonResult> seasons) {
-        final SeasonAdapter myItemAdapter = new SeasonAdapter(seasons, vibrantColor, mutedColor);
+    public void updateSeasonRecyclerView(RealmList<JSONSeason> seasons) {
+
+        for (JSONSeason season : seasons) {
+            Log.d("Season check", Integer.toString(season.getSeasonNumber()));
+            for (JSONEpisode episode : season.getEpisodes()){
+                Log.d("Episode check", Integer.toString(episode.getId()));
+            }
+        }
+        final WatchListSeasonAdapter myItemAdapter = new WatchListSeasonAdapter(mRecyclerViewExpandableItemManager, seasons, vibrantColor, mutedColor, ((MyApplication)getActivity().getApplication()).getUiRealm());
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
 
@@ -129,7 +123,6 @@ public class TVShowWatchlistSeasonFragment
             mRecyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z1)));
         }
         mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
-
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
     }
 
@@ -188,38 +181,5 @@ public class TVShowWatchlistSeasonFragment
 
     private boolean supportsViewElevation() {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
-    }
-
-    private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
-        protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
-            Integer showID = params[0];
-            Integer numberOfSeasons = params[1];
-
-            ExecutorService backgroundExecutor = Executors.newFixedThreadPool(numberOfSeasons);
-
-            ArrayList<TVShowSeasonResult> seasons = new ArrayList<>();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org/3/tv/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .callbackExecutor(backgroundExecutor)
-                    .build();
-
-            final TVShowAPI service = retrofit.create(TVShowAPI.class);
-
-            for (int i = 1; i <= numberOfSeasons; i++) {
-                Call<TVShowSeasonResult> call = service.getSeasons(Integer.toString(showID), Integer.toString(i));
-                try {
-                    seasons.add(call.execute().body());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return seasons;
-        }
-
-        protected void onPostExecute(ArrayList<TVShowSeasonResult> result) {
-            updateSeasonRecyclerView(result);
-        }
     }
 }

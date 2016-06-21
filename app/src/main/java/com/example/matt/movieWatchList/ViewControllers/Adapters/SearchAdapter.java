@@ -40,8 +40,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     public void onBindViewHolder(SearchViewHolder searchViewHolder, int i) {
         MovieResult movie = movies.get(i);
         searchViewHolder.movieTitle.setText(movie.getTitle());
-        Typeface type = Typeface.createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-        searchViewHolder.movieTitle.setTypeface(type);
         searchViewHolder.movieDescription.setText(movie.getOverview());
         searchViewHolder.watchedLayout.setVisibility(View.GONE);
         searchViewHolder.watchListLayout.setVisibility(View.GONE);

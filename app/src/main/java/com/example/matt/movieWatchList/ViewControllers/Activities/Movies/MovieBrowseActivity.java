@@ -66,21 +66,6 @@ public class MovieBrowseActivity extends AppCompatActivity {
     Adapter adapterViewPager;
     Drawer navigationDrawer;
 
-    public static void applyFontForToolbarTitle(Activity context) {
-        Toolbar toolbar = (Toolbar) context.findViewById(R.id.toolbar);
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            if (view instanceof TextView) {
-                TextView tv = (TextView) view;
-                Typeface titleFont = Typeface.
-                        createFromAsset(context.getAssets(), "fonts/Lobster-Regular.ttf");
-                if (tv.getText().equals(context.getTitle())) {
-                    tv.setTypeface(titleFont);
-                    break;
-                }
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +97,6 @@ public class MovieBrowseActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Browse Movies");
-        applyFontForToolbarTitle(this);
 
         // Setting ViewPager for each Tabs
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

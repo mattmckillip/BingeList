@@ -128,18 +128,6 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
         // Set title of Detail page
         collapsingToolbar.setTitle(movie.getTitle());
         final ImageView image = (ImageView) findViewById(R.id.backdrop);
-        final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        try {
-            final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
-            field.setAccessible(true);
-
-            final Object object = field.get(collapsingToolbar);
-            final Field tpf = object.getClass().getDeclaredField("mTextPaint");
-            tpf.setAccessible(true);
-
-            ((TextPaint) tpf.get(object)).setTypeface(tf);
-        } catch (Exception ignored) {
-        }
 
         Bitmap thisBitmap;
         BitmapFactory.Options options = new BitmapFactory.Options();

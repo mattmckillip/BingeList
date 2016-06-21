@@ -3,6 +3,7 @@ package com.example.matt.movieWatchList.viewControllers.activities.shows;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -23,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
+import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
@@ -38,12 +41,17 @@ import com.r0adkll.slidr.model.SlidrInterface;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -132,18 +140,20 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 int defaultColor = 0x000000;
                                 vibrantColor = palette.getVibrantColor(defaultColor);
                                 mutedColor = palette.getLightMutedColor(defaultColor);
-
-                                if (vibrantColor != 0) {
-                                    appbar.setBackgroundColor(vibrantColor);
-                                    collapsingToolbar.setBackgroundColor(vibrantColor);
-                                    collapsingToolbar.setContentScrimColor(vibrantColor);
-                                    collapsingToolbar.setStatusBarScrimColor(vibrantColor);
-                                    tabLayout.setBackgroundColor(vibrantColor);
-                                    fab.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
-                                } else {
-                                    vibrantColor = R.color.colorPrimary;
-                                    mutedColor = R.color.colorAccent;
+                                if (vibrantColor == 0) {
+                                    vibrantColor = getResources().getColor(R.color.colorPrimary);
                                 }
+
+                                if (mutedColor == 0) {
+                                    mutedColor = getResources().getColor(R.color.colorAccent);
+                                }
+
+                                appbar.setBackgroundColor(vibrantColor);
+                                collapsingToolbar.setBackgroundColor(vibrantColor);
+                                collapsingToolbar.setContentScrimColor(vibrantColor);
+                                collapsingToolbar.setStatusBarScrimColor(vibrantColor);
+                                tabLayout.setBackgroundColor(vibrantColor);
+                                fab.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
 
                                 // Setting ViewPager for each Tabs
                                 adapterViewPager = new Adapter(getSupportFragmentManager());
@@ -177,7 +187,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 //TODO
                             }
                         });
-
             }
 
             @Override
@@ -196,20 +205,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // Doesn't work
-        /*final Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/Lobster-Regular.ttf");
-        try {
-            final Field field = collapsingToolbar.getClass().getDeclaredField("mCollapsingTextHelper");
-            field.setAccessible(true);
-
-            final Object object = field.get(collapsingToolbar);
-            final Field tpf = object.getClass().getDeclaredField("mTextPaint");
-            tpf.setAccessible(true);
-
-            ((TextPaint) tpf.get(object)).setTypeface(tf);
-        } catch (Exception ignored) {
-        }*/
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -230,17 +225,18 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             }
         });
 
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
-
                 uiRealm.beginTransaction();
                 realmShow.setOnWatchList(true);
                 //JSONMovie movieToAdd = uiRealm.createObject(movie);
                 uiRealm.copyToRealm(realmShow);
                 uiRealm.commitTransaction();
+                Log.d("realm transaction","success");
+                FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
+                fetchSeasonsTask.execute(showID, realmShow.getNumberOfSeasons());
 
                 Snackbar.make(v, "Added to your shows!",
                         Snackbar.LENGTH_LONG).show();
@@ -278,6 +274,56 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
+        }
+    }
+
+    public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons) {
+        //add to realm
+        Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
+        Log.d("realm transaction","attempting to add");
+
+        RealmList<JSONSeason> jsonSeasonRealmList = new RealmList<>();
+        for (TVShowSeasonResult season: seasons) {
+            jsonSeasonRealmList.add(season.convertToRealm());
+        }
+
+        uiRealm.beginTransaction();
+        realmShow.setSeasons(jsonSeasonRealmList);
+        uiRealm.copyToRealmOrUpdate(realmShow);
+        uiRealm.commitTransaction();
+    }
+
+
+    private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
+        protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
+            Integer showID = params[0];
+            Integer numberOfSeasons = params[1];
+
+            ExecutorService backgroundExecutor = Executors.newFixedThreadPool(numberOfSeasons);
+
+            ArrayList<TVShowSeasonResult> seasons = new ArrayList<>();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org/3/tv/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .callbackExecutor(backgroundExecutor)
+                    .build();
+
+            final TVShowAPI service = retrofit.create(TVShowAPI.class);
+
+            for (int i = 1; i <= numberOfSeasons; i++) {
+                Call<TVShowSeasonResult> call = service.getSeasons(Integer.toString(showID), Integer.toString(i));
+                try {
+                    seasons.add(call.execute().body());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return seasons;
+        }
+
+        protected void onPostExecute(ArrayList<TVShowSeasonResult> result) {
+            UpdateRealmSeasons(result);
         }
     }
 }
