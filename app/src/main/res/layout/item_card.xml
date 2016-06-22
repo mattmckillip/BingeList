@@ -35,6 +35,14 @@
             android:layout_height="@dimen/card_image_height"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/title_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_backgound_height"
+            android:background="#000000"
+            android:alpha=".25"
+            android:layout_alignBottom="@+id/card_title"/>
+
         <TextView
             android:id="@+id/card_title"
             android:textSize="32sp"
@@ -44,8 +52,8 @@
             android:layout_marginLeft="@dimen/md_keylines"
             android:textColor="#FFFFFF"
             android:shadowColor="#000000"
-            android:shadowDx="0.0"
-            android:shadowDy="0.0"
+            android:shadowDx="1.0"
+            android:shadowDy="1.0"
             android:shadowRadius="5.0" />
 
         <RelativeLayout
@@ -66,14 +74,24 @@
                 android:layout_height="@dimen/card_overlay_image_height"
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_playlist_add_check_white_24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="Watched!"
+                android:layout_marginTop="60dp"
+                android:layout_below="@+id/watched_image"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/watch_list_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            >
+            android:animateLayoutChanges="true">
+
             <ImageView
                 android:id="@+id/watch_list_blur"
                 android:layout_width="match_parent"
@@ -87,6 +105,17 @@
                 android:layout_height="@dimen/card_overlay_image_height"
                 android:layout_centerInParent="true"
                 android:src="@drawable/ic_dvr_white_24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:text="On watchlist!"
+                android:layout_marginTop="60dp"
+                android:layout_below="@+id/watch_list_image"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
         </RelativeLayout>
 
         <TextView
@@ -112,18 +141,6 @@
             android:layout_alignParentBottom="true"
             style="?android:attr/borderlessButtonStyle"
             />
-
-        <!--<Button
-            android:id="@+id/action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/card_text"
-            style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorPrimary"
-            android:text="Add to Watchlist"
-            android:drawableLeft="@drawable/ic_add_to_queue_black_24dp"
-            android:drawableTint="?attr/colorPrimary"
-            android:drawablePadding="6dp"/>-->
 
         <ImageButton
             android:id="@+id/more_button"

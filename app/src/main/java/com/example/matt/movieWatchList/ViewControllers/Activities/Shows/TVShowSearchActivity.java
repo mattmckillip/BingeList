@@ -1,5 +1,6 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,8 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -69,7 +72,7 @@ public class TVShowSearchActivity extends AppCompatActivity {
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_more_vert).color(Color.WHITE).sizeDp(24));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 

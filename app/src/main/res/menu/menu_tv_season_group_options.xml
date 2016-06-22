@@ -5,13 +5,13 @@
 
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/action_sort"
-        android:title="Sort"
+        android:id="@+id/action_mark_watched"
+        android:title="Watch season"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_mark_unwatched"
+        android:title="Unwatched season"
+        app:showAsAction="ifRoom"/>
 
 </menu>

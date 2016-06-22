@@ -87,9 +87,6 @@
             android:name="com.example.matt.movieWatchList.viewControllers.activities.SearchActivity">
         </activity>
 
-
-
-
     </application>
 
 </manifest>

@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
+import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
 import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
@@ -51,7 +52,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -62,7 +62,6 @@ import retrofit.Retrofit;
  * Provides UI for the Detail page with Collapsing Toolbar.
  */
 public class TVShowBrowseDetailActivity extends AppCompatActivity {
-    Integer showID;
     Adapter adapterViewPager;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -81,6 +80,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
     @BindView(R.id.loadingPanel)
     RelativeLayout loadingPanel;
 
+    private Integer showID;
     private int vibrantColor;
     private int mutedColor;
     private JSONShow realmShow;
@@ -96,6 +96,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         setContentView(R.layout.tvshow_activity_detail);
         showID = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
+
+        Log.d("SHOWID", Integer.toString(showID));
 
         ButterKnife.bind(this);
 
@@ -121,6 +123,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
                 background.setVisibility(View.VISIBLE);
                 collapsingToolbar.setVisibility(View.VISIBLE);
+                Log.d("Resonse", response.raw().toString());
 
                 realmShow = response.body().convertToRealm();
 
@@ -154,6 +157,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 collapsingToolbar.setStatusBarScrimColor(vibrantColor);
                                 tabLayout.setBackgroundColor(vibrantColor);
                                 fab.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
+                                tabLayout.setSelectedTabIndicatorColor(mutedColor);
+
 
                                 // Setting ViewPager for each Tabs
                                 adapterViewPager = new Adapter(getSupportFragmentManager());
@@ -178,7 +183,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
                                 addByteArray(stream.toByteArray());
                             }
 
@@ -284,7 +288,13 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
         RealmList<JSONSeason> jsonSeasonRealmList = new RealmList<>();
         for (TVShowSeasonResult season: seasons) {
-            jsonSeasonRealmList.add(season.convertToRealm());
+            JSONSeason realmSeason = season.convertToRealm();
+            jsonSeasonRealmList.add(realmSeason);
+
+            RealmList<JSONEpisode> jsonEpisodeRealmList = realmSeason.getEpisodes();
+            for (JSONEpisode episode: jsonEpisodeRealmList) {
+                episode.setShow_id(showID);
+            }
         }
 
         uiRealm.beginTransaction();
@@ -292,7 +302,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         uiRealm.copyToRealmOrUpdate(realmShow);
         uiRealm.commitTransaction();
     }
-
 
     private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
         protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {

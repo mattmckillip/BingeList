@@ -63,25 +63,33 @@
             android:layout_below="@+id/card_image"
             android:layout_marginLeft="@dimen/md_keylines"
             android:layout_marginTop="@dimen/md_keylines"
-            android:layout_marginBottom="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="2"
+            android:lines="2"
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/article_subheading" />
 
-        <Button
+        <com.mikepenz.iconics.view.IconicsButton
             android:id="@+id/remove_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
             android:textColor="?attr/colorAccent"
+            android:text="{gmd_remove_from_queue} Remove"
+            android:layout_alignParentLeft="true"/>
+
+        <com.mikepenz.iconics.view.IconicsButton
+            android:id="@+id/watch_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_text"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="?attr/colorPrimary"
             android:layout_alignParentRight="true"
-            android:text="Remove"
-            android:drawableLeft="@drawable/ic_remove_from_queue_black_24dp"
-            android:drawableTint="?attr/colorAccent"
-            android:drawablePadding="6dp"/>
+            android:text="{gmd_add_to_queue} Watch"/>
+
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

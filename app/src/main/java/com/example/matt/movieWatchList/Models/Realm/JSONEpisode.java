@@ -26,6 +26,7 @@ public class JSONEpisode extends RealmObject {
     private Integer voteCount;
     private Boolean isWatched;
     private Integer season_id;
+    private Integer show_id;
 
 
     /**
@@ -174,4 +175,7 @@ public class JSONEpisode extends RealmObject {
 
     public Integer getSeason_id() { return season_id; }
     public void setSeason_id(Integer season_id) { this.season_id = season_id; }
+
+    public Integer getShow_id() { return show_id; }
+    public void setShow_id(Integer show_id) { this.show_id = show_id; }
 }

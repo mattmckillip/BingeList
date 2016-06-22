@@ -92,15 +92,19 @@ public class TVShowWatchlistSeasonFragment
         updateSeasonRecyclerView(realmShow.getSeasons());
     }
 
-    public void updateSeasonRecyclerView(RealmList<JSONSeason> seasons) {
+    public void updateAllGroupsAndChildren(){
+        mWrappedAdapter.notifyDataSetChanged();
+    }
 
-        for (JSONSeason season : seasons) {
-            Log.d("Season check", Integer.toString(season.getSeasonNumber()));
-            for (JSONEpisode episode : season.getEpisodes()){
-                Log.d("Episode check", Integer.toString(episode.getId()));
-            }
-        }
-        final WatchListSeasonAdapter myItemAdapter = new WatchListSeasonAdapter(mRecyclerViewExpandableItemManager, seasons, vibrantColor, mutedColor, ((MyApplication)getActivity().getApplication()).getUiRealm());
+    public void updateSeasonRecyclerView(RealmList<JSONSeason> seasons) {
+        final WatchListSeasonAdapter myItemAdapter =
+                new WatchListSeasonAdapter(mRecyclerViewExpandableItemManager,
+                        seasons,
+                        vibrantColor,
+                        mutedColor,
+                        ((MyApplication)getActivity().getApplication()).getUiRealm(),
+                        getContext()
+                );
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
 

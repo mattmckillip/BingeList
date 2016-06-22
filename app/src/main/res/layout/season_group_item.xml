@@ -25,6 +25,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -33,6 +34,7 @@
 
         <ImageView
             android:id="@+id/season_poster"
+            android:contentDescription="Season Poster"
             android:src="@drawable/season_poster"
             android:layout_width="40dp"
             android:layout_height="match_parent"
@@ -41,7 +43,7 @@
 
         <TextView
             android:id="@+id/season_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:layout_marginLeft="16dp"
@@ -56,40 +58,56 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_toRightOf="@id/season_poster"
-            android:layout_toEndOf="@id/season_poster"
-            android:layout_below="@+id/season_name"/>
+            android:layout_gravity="top"
+            android:layout_toRightOf="@id/season_name"
+            android:layout_toEndOf="@id/season_name"/>
 
-        <ProgressBar
-            android:id="@+id/episode_progress"
-            android:layout_width="250dp"
+        <TextView
+            android:id="@+id/season_air_date"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/season_poster"
-            android:layout_toEndOf="@id/season_poster"
+            android:textSize="12sp"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_below="@+id/number_of_episodes"
-            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
-            />
+            android:layout_toRightOf="@id/season_poster"
+            android:layout_toEndOf="@id/season_poster"
+            android:layout_below="@+id/number_of_episodes" />
 
         <com.example.matt.movieWatchList.uitls.ExpandableItemIndicator
             android:id="@+id/indicator"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_toRightOf="@id/episode_progress"
-            android:layout_toEndOf="@id/episode_progress"
-            android:layout_below="@+id/number_of_episodes"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp" />
 
+        <ProgressBar
+            android:id="@+id/episode_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/season_poster"
+            android:layout_toEndOf="@id/season_poster"
+            android:layout_toLeftOf="@id/indicator"
+            android:layout_toStartOf="@id/indicator"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_below="@+id/season_air_date"
+            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal" />
+
         <com.mikepenz.iconics.view.IconicsImageView
-            android:id="@+id/watch_season"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/more_options"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="7dp"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             app:iiv_color="@color/button_grey"
-            app:iiv_icon="gmd_remove_red_eye" />
+            app:iiv_icon="gmd_more_vert" />
 
     </RelativeLayout>
 

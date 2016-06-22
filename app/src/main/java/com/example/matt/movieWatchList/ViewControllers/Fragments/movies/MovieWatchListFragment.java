@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -30,7 +29,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -74,7 +72,7 @@ public class MovieWatchListFragment extends Fragment {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public ViewHolder(final LayoutInflater inflater, ViewGroup parent, final RealmResults<JSONMovie> movieList, final Realm uiRealm, final ContentAdapter adapter, final boolean isWatched) {
-            super(inflater.inflate(R.layout.watch_list_card, parent, false));
+            super(inflater.inflate(R.layout.movie_watch_list_card, parent, false));
 
 
             itemView.setOnClickListener(new View.OnClickListener() {

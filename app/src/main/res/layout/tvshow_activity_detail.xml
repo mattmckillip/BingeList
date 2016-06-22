@@ -19,8 +19,9 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginStart="@dimen/md_keylines"
+            app:expandedTitleMarginEnd="@dimen/md_keylines"
+            app:expandedTitleTextAppearance="@style/HeaderTitleStyle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="true">
 
@@ -71,9 +72,9 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        app:layout_anchor="@id/tabs"
+        app:layout_anchor="@id/appbar"
         app:layout_behavior="com.example.matt.movieWatchList.uitls.ScrollAwareFABBehavior"
-        app:layout_anchorGravity="top|right|end"
+        app:layout_anchorGravity="bottom|right|end"
         style="@style/FabStyle" />
 
 </android.support.design.widget.CoordinatorLayout>

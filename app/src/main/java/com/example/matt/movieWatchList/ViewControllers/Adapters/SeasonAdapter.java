@@ -43,6 +43,9 @@ import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.mikepenz.iconics.view.IconicsImageView;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -114,26 +117,23 @@ public class SeasonAdapter
     @Override
     public void onBindGroupViewHolder(final MyGroupViewHolder holder, int groupPosition, int viewType) {
         TVShowSeasonResult curSeason = seasons.get(groupPosition);
+        holder.mEpisodeProgress.setVisibility(View.GONE);
 
         // set text
         holder.mSeasonName.setText("Season" + curSeason.getSeasonNumber());
         holder.mNumberOfEpisodes.setText(curSeason.getEpisodes().size() + " Episodes");
         holder.mEpisodeProgress.getProgressDrawable().setColorFilter(
                 vibrantColor, android.graphics.PorterDuff.Mode.SRC_IN);
-        Random r = new Random();
-        int i = r.nextInt(100);
-        holder.mEpisodeProgress.setProgress(i);
+        holder.mSeasonAirDate.setText(formatAirDate(curSeason.getAirDate().toString()));
+
         Picasso.with(context)
                 .load("https://image.tmdb.org/t/p/w92/" + curSeason.getPosterPath()) // w92, w154, w185
                 .fit().centerCrop()
                 .transform(PaletteTransformation.instance())
                 .into(holder.mSeasonPoster);
 
-        holder.mWatchSeason.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                holder.mWatchSeason.setColor(vibrantColor);
-            }
-        });
+        holder.mMoreOptions.setVisibility(View.GONE);
+
 
         // mark as clickable
         holder.itemView.setClickable(true);
@@ -147,14 +147,10 @@ public class SeasonAdapter
             boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
 
             if ((expandState & Expandable.STATE_FLAG_IS_EXPANDED) != 0) {
-                bgResId = R.drawable.bg_group_item_expanded_state;
                 isExpanded = true;
             } else {
-                bgResId = R.drawable.bg_group_item_normal_state;
                 isExpanded = false;
             }
-
-            //holder.mContainer.setBackgroundResource(bgResId);
             holder.mIndicator.setExpandedState(isExpanded, animateIndicator);
         }
     }
@@ -165,21 +161,11 @@ public class SeasonAdapter
         Episode curEpisode = seasons.get(groupPosition).getEpisodes().get(childPosition);
         holder.mEpisodeName.setText(curEpisode.getName());
         holder.mEpisodeDescription.setText(curEpisode.getOverview());
-        holder.mEpisodeNumber.setText("S0" + curEpisode.getEpisodeNumber() + "E0" + curEpisode.getEpisodeNumber());
+        holder.mEpisodeNumber.setText(formatEpisodeTitle(curEpisode.getSeasonNumber(), curEpisode.getEpisodeNumber()));
         holder.mEpisodeNumber.setTextColor(vibrantColor);
-        holder.mEpisodeAirDate.setText("Aired on " + curEpisode.getAirDate());
+        holder.mEpisodeAirDate.setText("Aired on " + formatAirDate(curEpisode.getAirDate().toString()));
 
-        // set background resource (target view ID: container)
-        int bgResId;
-        bgResId = R.drawable.bg_item_normal_state;
-        holder.mContainer.setBackgroundResource(bgResId);
-
-
-        holder.mWatchEpisode.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                holder.mWatchEpisode.setColor(vibrantColor);
-            }
-        });
+        holder.mWatchEpisode.setVisibility(View.GONE);
     }
 
     @Override
@@ -191,6 +177,41 @@ public class SeasonAdapter
     private interface Expandable extends ExpandableItemConstants {
     }
 
+    private String formatAirDate(String airDate) {
+        SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
+        Date newDate = null;
+        String date = null;
+        try {
+            newDate = dateFormater.parse(airDate);
+            dateFormater = new SimpleDateFormat("MM/dd/yy");
+            date = dateFormater.format(newDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            date = airDate;
+        }
+
+        return date;
+    }
+
+    private String formatEpisodeTitle(Integer seasonNumber, Integer episodeNumber) {
+        String seasonText = "";
+        String episodeText = "";
+
+        if (seasonNumber >= 10) {
+            seasonText = "S" + Integer.toString(seasonNumber);
+        } else {
+            seasonText = "S0" + Integer.toString(seasonNumber);
+        }
+
+        if (episodeNumber >= 10) {
+            episodeText = "E" + Integer.toString(episodeNumber);
+        } else {
+            episodeText = "E0" + Integer.toString(episodeNumber);
+        }
+        Log.d("Episode Number", seasonText + episodeText);
+        return seasonText + episodeText;
+    }
+
     public static abstract class MyBaseViewHolder extends AbstractExpandableItemViewHolder {
         public RelativeLayout mContainer;
         public TextView mSeasonName;
@@ -198,11 +219,13 @@ public class SeasonAdapter
         public ImageView mSeasonPoster;
         public TextView mEpisodeName;
         public ProgressBar mEpisodeProgress;
-        public IconicsImageView mWatchSeason;
         public IconicsImageView mWatchEpisode;
         public TextView mEpisodeDescription;
-        public TextView mEpisodeAirDate;
+        public TextView mSeasonAirDate;
         public TextView mEpisodeNumber;
+        public IconicsImageView mMoreOptions;
+        public ExpandableItemIndicator mIndicator;
+        public TextView mEpisodeAirDate;
 
 
         public MyBaseViewHolder(View v) {
@@ -210,14 +233,16 @@ public class SeasonAdapter
             mContainer = (RelativeLayout) v.findViewById(R.id.container);
             mSeasonName = (TextView) v.findViewById(R.id.season_name);
             mNumberOfEpisodes = (TextView) v.findViewById(R.id.number_of_episodes);
+            mSeasonAirDate = (TextView) v.findViewById(R.id.season_air_date);
             mSeasonPoster = (ImageView) v.findViewById(R.id.season_poster);
             mEpisodeName = (TextView) v.findViewById(R.id.episode_name);
             mEpisodeProgress = (ProgressBar) v.findViewById(R.id.episode_progress);
-            mWatchSeason = (IconicsImageView) v.findViewById(R.id.watch_season);
             mEpisodeDescription = (TextView) v.findViewById(R.id.episode_description);
             mEpisodeNumber = (TextView) v.findViewById(R.id.episode_number);
             mEpisodeAirDate = (TextView) v.findViewById(R.id.episode_air_date);
             mWatchEpisode = (IconicsImageView) v.findViewById(R.id.watch_episode);
+            mMoreOptions = (IconicsImageView) v.findViewById(R.id.more_options);
+            mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
         }
     }
 

@@ -24,11 +24,9 @@ import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.SearchMoviesAPI;
-import com.example.matt.movieWatchList.viewControllers.activities.SettingsActivity;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.ionicons_typeface_library.Ionicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +72,7 @@ public class MovieSearchActivity extends AppCompatActivity {
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_more_vert).color(Color.WHITE).sizeDp(24));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
     }

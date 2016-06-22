@@ -8,10 +8,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +26,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -31,7 +37,9 @@ import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
@@ -56,6 +64,7 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -99,6 +108,8 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
     private SlidrInterface slidrInterface;
     private JSONShow show;
     private Bitmap thisBitmap;
+    ArrayList<IconicsDrawable> mFabIcons = new ArrayList<>();
+    private Integer mSelectedTab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,17 +117,26 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         setContentView(R.layout.tvshow_activity_detail);
         showID = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
+        mSelectedTab = 0;
 
+        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_remove_circle_outline).sizeDp(16).color(Color.WHITE));
+        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_done_all).sizeDp(16).color(Color.WHITE));
 
         Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
         RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
         show = query.equalTo("id", showID).findFirst();
+        RealmQuery<JSONEpisode> episodeRealmQuery = uiRealm.where(JSONEpisode.class);
+        RealmResults<JSONEpisode> episodeRealmResults = episodeRealmQuery.equalTo("isWatched", false).equalTo("show_id", show.getId()).findAll();
+
+        if (episodeRealmResults.size() == 0) {
+            mFabIcons.set(1, new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear_all).sizeDp(16).color(Color.WHITE));
+        }
+
 
         Log.d("Number of seasons", Integer.toString(show.getSeasons().size()));
         ButterKnife.bind(this);
 
-        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_done_all).sizeDp(16).color(Color.WHITE);
-        fab.setImageDrawable(search);
+        fab.setImageDrawable(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_remove_circle_outline).sizeDp(16).color(Color.WHITE));
 
         // Set title of Detail page
         collapsingToolbar.setTitle(ShowName);
@@ -128,6 +148,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Seasons"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
@@ -169,6 +190,8 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
             collapsingToolbar.setStatusBarScrimColor(vibrantColor);
             tabLayout.setBackgroundColor(vibrantColor);
             fab.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
+            tabLayout.setSelectedTabIndicatorColor(mutedColor);
+
 
             // Setting ViewPager for each Tabs
             adapterViewPager = new Adapter(getSupportFragmentManager());
@@ -200,10 +223,16 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.d("Tab Selected", Integer.toString(tab.getPosition()));
                 viewPager.setCurrentItem(tab.getPosition());
-                if (tab.getPosition() == 0) slidrInterface.unlock();
-                else slidrInterface.lock();
+                mSelectedTab = tab.getPosition();
+                if (mSelectedTab == 0) {
+                    slidrInterface.unlock();
+
+                    animateFab(mSelectedTab, mFabIcons);
+                } else {
+                    animateFab(mSelectedTab, mFabIcons);
+                    slidrInterface.lock();
+                }
             }
 
             @Override
@@ -216,6 +245,98 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
             }
         });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSelectedTab == 0) {
+                    //TODO Remove from your shows
+                } else if (mSelectedTab == 1) {
+                    Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
+
+                    RealmQuery<JSONEpisode> query = uiRealm.where(JSONEpisode.class);
+                    RealmResults<JSONEpisode> episodeRealmResults = query.equalTo("isWatched", false).equalTo("show_id", show.getId()).findAll();
+                    Log.d("Unwatched Episodes", Integer.toString(episodeRealmResults.size()));
+
+                    if (episodeRealmResults.size() > 0) { // unwatched episodes
+                        uiRealm.beginTransaction();
+                        RealmList<JSONSeason> seasons = show.getSeasons();
+                        for (int i = 0; i < seasons.size(); i++) {
+                            JSONSeason season = seasons.get(i);
+                            RealmList<JSONEpisode> episodes = season.getEpisodes();
+                            for (int j = 0; j < episodes.size(); j++) {
+                                episodes.get(j).setIsWatched(true);
+                            }
+                        }
+                        uiRealm.commitTransaction();
+
+                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) adapterViewPager.getRegisteredFragment(1);
+                        fragment.updateAllGroupsAndChildren();
+
+                        Snackbar.make(v, "All episodes marked watched!",
+                                Snackbar.LENGTH_LONG).show();
+
+                        mFabIcons.set(1, new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear_all).sizeDp(16).color(Color.WHITE));
+                        animateFab(mSelectedTab, mFabIcons);
+
+                    } else { //all episodes watched
+                        uiRealm.beginTransaction();
+                        RealmList<JSONSeason> seasons = show.getSeasons();
+                        for (int i = 0; i < seasons.size(); i++) {
+                            JSONSeason season = seasons.get(i);
+                            RealmList<JSONEpisode> episodes = season.getEpisodes();
+                            for (int j = 0; j < episodes.size(); j++) {
+                                episodes.get(j).setIsWatched(false);
+                            }
+                        }
+                        uiRealm.commitTransaction();
+
+                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) adapterViewPager.getRegisteredFragment(1);
+                        fragment.updateAllGroupsAndChildren();
+
+                        Snackbar.make(v, "All episodes marked unwatched!",
+                                Snackbar.LENGTH_LONG).show();
+
+                        mFabIcons.set(1, new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_done_all).sizeDp(16).color(Color.WHITE));
+                        animateFab(mSelectedTab, mFabIcons);
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    protected void animateFab(final int position, final ArrayList<IconicsDrawable> drawables) {
+        fab.clearAnimation();
+        // Scale down animation
+        ScaleAnimation shrink = new ScaleAnimation(1f, 0.2f, 1f, 0.2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        shrink.setDuration(150);     // animation duration in milliseconds
+        shrink.setInterpolator(new DecelerateInterpolator());
+        shrink.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Change FAB color and icon
+                fab.setImageDrawable(drawables.get(position));
+
+                // Scale up animation
+                ScaleAnimation expand = new ScaleAnimation(0.2f, 1f, 0.2f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                expand.setDuration(100);     // animation duration in milliseconds
+                expand.setInterpolator(new AccelerateInterpolator());
+                fab.startAnimation(expand);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        fab.startAnimation(shrink);
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -244,6 +365,10 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return mFragmentList.get(position);
         }
     }
 }

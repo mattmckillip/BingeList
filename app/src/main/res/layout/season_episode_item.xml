@@ -20,7 +20,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
-    android:background="@drawable/bg_swipe_item_neutral"
+    android:background="@color/material_grey_300"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/episode_name"
-            android:layout_width="wrap_content"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/md_keylines"
             android:layout_marginLeft="@dimen/md_keylines"
@@ -51,7 +51,6 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:lines="1"
-            android:maxEms="25"
             android:textStyle="bold"/>
 
         <com.mikepenz.iconics.view.IconicsImageView
@@ -59,6 +58,7 @@
             android:layout_width="54dp"
             android:layout_height="54dp"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:padding="16dp"
             app:iiv_color="@color/button_grey"
@@ -68,6 +68,7 @@
             android:id="@+id/episode_air_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="12sp"
             android:layout_below="@+id/episode_number"
             android:layout_marginLeft="@dimen/md_keylines"/>
 
@@ -78,9 +79,8 @@
             android:layout_below="@+id/episode_air_date"
             android:layout_toLeftOf="@+id/watch_episode"
             android:layout_marginLeft="@dimen/md_keylines"
-            android:textColor="@color/medium_grey"
             android:ellipsize="end"
-            android:singleLine="true"/>
+            android:maxLines="2"/>
 
     </RelativeLayout>
 

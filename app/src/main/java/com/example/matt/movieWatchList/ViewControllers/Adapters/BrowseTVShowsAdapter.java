@@ -3,11 +3,15 @@ package com.example.matt.movieWatchList.viewControllers.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,19 +27,30 @@ import com.example.matt.movieWatchList.Models.POJO.Cast;
 import com.example.matt.movieWatchList.Models.POJO.Credits;
 import com.example.matt.movieWatchList.Models.POJO.Crew;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
+import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
+import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
+import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
+import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
+import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +69,7 @@ import retrofit.Retrofit;
 public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdapter.BrowseTVShowsViewHolder> {
     private RealmList<JSONShow> showList;
     private Activity activity;
+    private JSONShow realmShow;
 
 
     public BrowseTVShowsAdapter(RealmList<JSONShow> showList, Activity activity) {
@@ -160,7 +176,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     context.startActivity(intent);
                 }
             });
-
             actionButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -182,7 +197,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                             Log.d("getMovie()", "Callback Success");
                             TVShow show = response.body();
                             show.setBackdropPath("https://image.tmdb.org/t/p/w780/" + show.getBackdropPath());
-                            final JSONShow realmShow = show.convertToRealm();
+                            realmShow = show.convertToRealm();
 
                             MovieAPI service = retrofit.create(MovieAPI.class);
                             Call<Credits> call = service.getCredits(Integer.toString(showID));
@@ -220,6 +235,9 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
                                             watchListLayout.setVisibility(View.VISIBLE);
 
+                                            FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
+                                            fetchSeasonsTask.execute(showID, realmShow.getNumberOfSeasons());
+
                                             Snackbar.make(v, "Added to your shows!",
                                                     Snackbar.LENGTH_LONG).show();
                                         }
@@ -242,22 +260,18 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
 
 
-                                    /*Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
+                                    /*Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
                                     uiRealm.beginTransaction();
                                     realmShow.setOnWatchList(true);
-
                                     uiRealm.copyToRealm(realmShow);
                                     uiRealm.commitTransaction();
                                     RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
                                     RealmResults<JSONShow> movies = query.equalTo("onWatchList", true).findAll();
                                     Log.d("Watch List Size", Integer.toString(movies.size()));
-
                                     RealmResults<JSONShow> watchedMovies = query.equalTo("isWatched", true).findAll();
                                     Log.d("Watched List Size", Integer.toString(watchedMovies.size()));
-
                                     Log.d("url", realmShow.getBackdropPath());*/
-
 
                                 }
 
@@ -276,6 +290,58 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     });
                 }
             });
+        }
+    }
+    public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons, Integer showID) {
+        RealmList<JSONSeason> jsonSeasonRealmList = new RealmList<>();
+        for (TVShowSeasonResult season: seasons) {
+            JSONSeason realmSeason = season.convertToRealm();
+            jsonSeasonRealmList.add(realmSeason);
+
+            RealmList<JSONEpisode> jsonEpisodeRealmList = realmSeason.getEpisodes();
+            for (JSONEpisode episode: jsonEpisodeRealmList) {
+                episode.setShow_id(showID);
+            }
+        }
+
+        Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
+        uiRealm.beginTransaction();
+        realmShow.setSeasons(jsonSeasonRealmList);
+        uiRealm.copyToRealmOrUpdate(realmShow);
+        uiRealm.commitTransaction();
+    }
+
+    private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
+        private Integer showID;
+        protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
+            showID = params[0];
+            Integer numberOfSeasons = params[1];
+
+            ExecutorService backgroundExecutor = Executors.newFixedThreadPool(numberOfSeasons);
+
+            ArrayList<TVShowSeasonResult> seasons = new ArrayList<>();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org/3/tv/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .callbackExecutor(backgroundExecutor)
+                    .build();
+
+            final TVShowAPI service = retrofit.create(TVShowAPI.class);
+
+            for (int i = 1; i <= numberOfSeasons; i++) {
+                Call<TVShowSeasonResult> call = service.getSeasons(Integer.toString(showID), Integer.toString(i));
+                try {
+                    seasons.add(call.execute().body());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return seasons;
+        }
+
+        protected void onPostExecute(ArrayList<TVShowSeasonResult> result) {
+            UpdateRealmSeasons(result, showID);
         }
     }
 }

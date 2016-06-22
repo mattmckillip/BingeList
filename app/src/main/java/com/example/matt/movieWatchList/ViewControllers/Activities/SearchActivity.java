@@ -13,17 +13,21 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.BaseAdapter;
 
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchResult;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
+import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MultiSearchAPI;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.adapters.MultiSearchAdapter;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -73,7 +78,7 @@ public class SearchActivity extends AppCompatActivity {
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_more_vert).color(Color.WHITE).sizeDp(24));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
         // Create Navigation drawer
@@ -115,8 +120,9 @@ public class SearchActivity extends AppCompatActivity {
                     public void onResponse(retrofit.Response<MultiSearchQueryReturn> response, Retrofit retrofit) {
                         Log.d("getMovie()", response.raw().toString());
                         List<MultiSearchResult> multiSearchResults = response.body().getResults();
+                        Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
 
-                        searchRecyclerView.setAdapter(new MultiSearchAdapter(multiSearchResults, getApplicationContext()));
+                        searchRecyclerView.setAdapter(new MultiSearchAdapter(multiSearchResults, getApplicationContext(), uiRealm));
                         searchRecyclerView.setFocusable(false);
                     }
 
