@@ -6,15 +6,15 @@ import io.realm.RealmObject;
  * Created by Matt on 5/31/2016.
  */
 public class JSONGenre extends RealmObject {
-    private String genreName;
+    private String genre;
     private Integer id;
 
-    public String getGenreName() {
-        return genreName;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setGenreName(String genreName) {
-        this.genreName = genreName;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public Integer getId() {

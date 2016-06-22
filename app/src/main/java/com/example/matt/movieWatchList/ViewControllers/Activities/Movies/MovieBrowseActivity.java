@@ -53,62 +53,52 @@ import com.mikepenz.materialdrawer.Drawer;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 
 
-/**
- * Provides UI for the main screen.
- */
 public class MovieBrowseActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
     Adapter adapterViewPager;
     Drawer navigationDrawer;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
-        // Instantiate realms
-        RealmConfiguration config1 = new RealmConfiguration.Builder(this)
-                .name("default")
-                .schemaVersion(6)
-                .migration(new RealmMigration() {
-                    @Override
-                    public long execute(Realm realm, long version) {
-                        return 6;
-                    }
-                })
-                .build();
-
-        Realm.setDefaultConfiguration(config1);
-        Realm uiRealm = Realm.getInstance(getApplicationContext());
-
-        ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
+        ButterKnife.bind(this);
 
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Browse Movies");
 
         // Setting ViewPager for each Tabs
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
         tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_theater).color(Color.WHITE));
         tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
-
 
         // Create Navigation drawer
         navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
@@ -121,9 +111,7 @@ public class MovieBrowseActivity extends AppCompatActivity {
         }
 
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE);
-        fab.setImageDrawable(search);
+        fab.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE));;
 
         final Intent intent = new Intent(this, SearchActivity.class);
 

@@ -4,6 +4,8 @@ import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
+
 public class Cast {
 
     @SerializedName("cast_id")

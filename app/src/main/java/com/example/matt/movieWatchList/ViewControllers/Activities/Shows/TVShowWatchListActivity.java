@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.matt.movieWatchList.Models.Realm.Migration;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
@@ -31,15 +32,32 @@ import com.mikepenz.materialdrawer.Drawer;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.realm.DynamicRealm;
+import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmSchema;
 
 
 public class TVShowWatchListActivity extends AppCompatActivity {
     private static final String TAG = TVShowWatchListActivity.class.getSimpleName();
-    Adapter adapterViewPager;
-    Drawer navigationDrawer;
+    private Adapter mAdapterViewPager;
+    private Drawer mNavigationDrawer;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,34 +67,17 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
-        // Instantiate realms
-        RealmConfiguration config1 = new RealmConfiguration.Builder(this)
-                .name("default")
-                .schemaVersion(6)
-                .migration(new RealmMigration() {
-                    @Override
-                    public long execute(Realm realm, long version) {
-                        return 6;
-                    }
-                })
-                .build();
-
-        Realm.setDefaultConfiguration(config1);
-        Realm uiRealm = Realm.getInstance(getApplicationContext());
-
-        ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
+        ButterKnife.bind(this);
+        migrateRealm();
 
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.drawer_item_show_watchlist);
 
         // Setting ViewPager for each Tabs
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         try {
             tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
@@ -86,7 +87,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         }
 
         // Create Navigation drawer
-        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -96,8 +97,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         }
 
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE);
+        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
         fab.setImageDrawable(search);
 
         final Intent intent = new Intent(this, MovieBrowseActivity.class);
@@ -110,9 +110,23 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         });
     }
 
+    private void migrateRealm() {
+        // Instantiate realms
+        // Or you can add the migration code to the configuration. This will run the migration code without throwing
+        // a RealmMigrationNeededException.
+        RealmConfiguration config = new RealmConfiguration.Builder(this)
+                .name("default")
+                .schemaVersion(1)
+                .migration(new Migration())
+                .build();
+
+        Realm uiRealm = Realm.getInstance(config); // Automatically run migration if needed
+        ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
+    }
+
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
-        adapterViewPager = new Adapter(getSupportFragmentManager());
+        mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
         Bundle watchedMoviesBundle = new Bundle();
         watchedMoviesBundle.putInt("watched", 1);
@@ -124,9 +138,9 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         TVShowWatchListFragment watchListMovies = new TVShowWatchListFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
-        adapterViewPager.addFragment(watchListMovies, "Your Shows");
-        adapterViewPager.addFragment(watchedMovies, "New Episodes");
-        viewPager.setAdapter(adapterViewPager);
+        mAdapterViewPager.addFragment(watchListMovies, "Your Shows");
+        mAdapterViewPager.addFragment(watchedMovies, "New Episodes");
+        viewPager.setAdapter(mAdapterViewPager);
     }
 
     @Override
@@ -161,7 +175,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Log.d("onOptionsItemSelected()", "Sort");
-                navigationDrawer.openDrawer();
+                mNavigationDrawer.openDrawer();
 
                 return true;
 
@@ -184,8 +198,8 @@ public class TVShowWatchListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (this.navigationDrawer.isDrawerOpen()) {
-            this.navigationDrawer.closeDrawer();
+        if (this.mNavigationDrawer.isDrawerOpen()) {
+            this.mNavigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

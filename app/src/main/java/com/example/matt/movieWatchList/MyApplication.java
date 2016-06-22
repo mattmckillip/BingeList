@@ -23,7 +23,4 @@ public class MyApplication extends Application {
     public void setUiRealm(Realm uiRealm) {
         this.uiRealm = uiRealm;
     }
-
-
-
 }

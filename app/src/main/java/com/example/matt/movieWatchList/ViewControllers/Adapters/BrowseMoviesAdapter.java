@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -72,21 +73,18 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     @Override
-    public void onBindViewHolder(BrowseMoviesViewHolder holder, final int position) {
-        final TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
-        TextView overview = (TextView) holder.itemView.findViewById(R.id.card_text);
-        final ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
-        title.setVisibility(View.GONE);
-        holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.GONE);
-        holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.GONE);
-
+    public void onBindViewHolder(final BrowseMoviesViewHolder holder, final int position) {
+        holder.progressSpinner.setVisibility(View.GONE);
+        holder.watchedLayout.setVisibility(View.GONE);
+        holder.watchListLayout.setVisibility(View.GONE);
+        holder.movieTitle.setVisibility(View.GONE);
         String path = movieList.get(position).getBackdropURL();
 
         if (path != null) {
-            Picasso.with(activity.getApplicationContext()).load(path).into(coverArt, new com.squareup.picasso.Callback() {
+            Picasso.with(activity.getApplicationContext()).load(path).into(holder.movieImage, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
-                    Bitmap bitmap = ((BitmapDrawable) coverArt.getDrawable()).getBitmap(); // Ew!
+                    Bitmap bitmap = ((BitmapDrawable) holder.movieImage.getDrawable()).getBitmap(); // Ew!
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     movieList.get(position).setBackdropBitmap(stream.toByteArray());
@@ -96,29 +94,26 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                 public void onError() {
                 }
             });
-            title.setVisibility(View.VISIBLE);
+            holder.movieTitle.setVisibility(View.VISIBLE);
         }
 
-        title.setText(movieList.get(position).getTitle());
-        overview.setText(movieList.get(position).getOverview());
+        holder.movieTitle.setText(movieList.get(position).getTitle());
+        holder.movieDescription.setText(movieList.get(position).getOverview());
 
         // Build the query looking at all users:
         Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
-        RealmQuery<JSONMovie> watchedQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchedMovies = watchedQuery.equalTo("isWatched", true).equalTo("id", movieList.get(position).getId()).findAll();
+        RealmResults<JSONMovie> watchedMovies = uiRealm.where(JSONMovie.class).equalTo("isWatched", true).equalTo("id", movieList.get(position).getId()).findAll();
         if (watchedMovies.size() == 1) {
-            holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
+            holder.watchedLayout.setVisibility(View.VISIBLE);
+            holder.actionButton.setVisibility(View.GONE);
         }
 
-        RealmQuery<JSONMovie> watchListQuery = uiRealm.where(JSONMovie.class);
-        RealmResults<JSONMovie> watchListMovies = watchListQuery.equalTo("onWatchList", true).equalTo("id", movieList.get(position).getId()).findAll();
-
+        RealmResults<JSONMovie> watchListMovies = uiRealm.where(JSONMovie.class).equalTo("onWatchList", true).equalTo("id", movieList.get(position).getId()).findAll();
         if (watchListMovies.size() == 1) {
-            holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
+            holder.watchListLayout.setVisibility(View.VISIBLE);
+            holder.actionButton.setVisibility(View.GONE);
         }
-
-
     }
 
     @Override
@@ -127,7 +122,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     public static class BrowseMoviesViewHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.card_title)
         TextView movieTitle;
 
@@ -149,6 +143,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         @BindView(R.id.action_button)
         IconicsButton actionButton;
 
+        @BindView(R.id.progress_spinner)
+        ProgressBar progressSpinner;
 
         public BrowseMoviesViewHolder(View v, final Activity activity, final List<JSONMovie> movieList) {
             super(v);
@@ -192,8 +188,9 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
                 @Override
                 public void onClick(final View v) {
-                    final int movieID = movieList.get(getAdapterPosition()).getId();
+                    progressSpinner.setVisibility(View.VISIBLE);
 
+                    final int movieID = movieList.get(getAdapterPosition()).getId();
 
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://api.themoviedb.org/3/movie/")
@@ -206,7 +203,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                     call.enqueue(new Callback<Movie>() {
                         @Override
                         public void onResponse(retrofit.Response<Movie> response, Retrofit retrofit) {
-                            Log.d("getMovie()", "Callback Success");
                             Movie movie = response.body();
                             movie.setBackdropPath("https://image.tmdb.org/t/p/w780/" + movie.getBackdropPath());
                             final JSONMovie realmMovie = movie.convertToRealm();
@@ -217,7 +213,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                             call.enqueue(new Callback<Credits>() {
                                 @Override
                                 public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
-                                    Log.d("GetCredits()", "Callback Success");
                                     List<Cast> cast = response.body().getCast();
                                     List<Crew> crew = response.body().getCrew();
 
@@ -249,6 +244,9 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
                                             Snackbar.make(v, "Added to watchlist!",
                                                     Snackbar.LENGTH_LONG).show();
+
+                                            progressSpinner.setVisibility(View.GONE);
+                                            actionButton.setVisibility(View.GONE);
                                         }
 
                                         @Override
@@ -266,8 +264,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
                                     realmMovie.setCrew(realmCrew);
                                     realmMovie.setCast(realmCast);
-
-
                                 }
 
                                 @Override
@@ -275,7 +271,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                     Log.d("GetCredits()", "Callback Failure");
                                 }
                             });
-                            //TODOgenre
                         }
 
                         @Override

@@ -42,9 +42,6 @@ import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-/**
- * Provides UI for the view with Cards.
- */
 public class MovieWatchListFragment extends Fragment {
 
     @Override

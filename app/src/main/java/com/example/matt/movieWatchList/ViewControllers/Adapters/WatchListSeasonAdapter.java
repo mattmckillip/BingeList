@@ -47,7 +47,6 @@ import io.realm.RealmResults;
 
 
 public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchListSeasonAdapter.MyGroupViewHolder, WatchListSeasonAdapter.MyChildViewHolder> {
-    private static final String TAG = "MyExpandableItemAdapter";
     private RealmList<JSONSeason> seasons;
     private Context context;
     private int vibrantColor;
@@ -55,7 +54,6 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
     private Realm uiRealm;
     private JSONEpisode curEpisode;
     private RecyclerViewExpandableItemManager mExpandableItemManager;
-
     private View.OnClickListener mItemOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -239,7 +237,6 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
             // child item events
             // common events
             case R.id.container:
-                Log.d("Handle container", "called");
                 if (childPosition == RecyclerView.NO_POSITION) {
                     handleOnClickGroupItemContainerView(groupPosition);
                 } else {
@@ -247,7 +244,6 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
                 }
                 break;
             case R.id.more_options:
-                Log.d("Handle more options", "called");
                 handleOnClickGroupItemAddChild2BottomButton(groupPosition, v);
                 break;
             case R.id.watch_episode:
@@ -259,9 +255,7 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
     }
 
     private void handleOnClickGroupItemAddChild2BottomButton(final int groupPosition, final View v) {
-        Log.d("Handle more options", "start");
         //Creating the instance of PopupMenu
-
         PopupMenu popup = new PopupMenu(context, v);
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.menu_tv_season_group_options, popup.getMenu());
@@ -323,13 +317,10 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
     }
 
     private void handleOnClickGroupItemContainerView(int groupPosition) {
-        Log.d("Handle container", "start");
         // toggle expanded/collapsed
         if (isGroupExpanded(groupPosition)) {
-            Log.d("Handle container", "collapse");
             mExpandableItemManager.collapseGroup(groupPosition);
         } else {
-            Log.d("Handle container", "expand");
             mExpandableItemManager.expandGroup(groupPosition);
         }
     }

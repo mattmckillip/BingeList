@@ -1,15 +1,21 @@
 package com.example.matt.movieWatchList.viewControllers.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.R;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.picasso.Picasso;
 
 import io.realm.RealmList;
@@ -20,7 +26,7 @@ import io.realm.RealmList;
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHolder> {
 
     private RealmList<JSONCast> contactList;
-    private Context context;
+    private Context mContext;
 
     public CastAdapter(RealmList<JSONCast> contactList, Context context, int numberToDisplay) {
         this.contactList = new RealmList<>();
@@ -29,7 +35,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
         for (int i = 0; i < castNumber; i++) {
             this.contactList.add(contactList.get(i));
         }
-        this.context = context;
+        this.mContext = context;
     }
 
     @Override
@@ -43,10 +49,10 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
         contactViewHolder.characterTextView.setText(castMember.getActorName());
         contactViewHolder.actorTextView.setText("as " + castMember.getCharacterName());
 
-        Picasso.with(context)
+        Picasso.with(mContext)
                 .load(castMember.getImagePath())
-                //.placeholder(R.drawable.unkown_person)
-                .error(R.drawable.ic_person_black_24dp)
+                .placeholder(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_person).sizeDp(16).color(Color.GRAY))
+                .error(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_person).sizeDp(16).color(Color.GRAY))
                 .into(contactViewHolder.actorImageView);
     }
 
@@ -71,6 +77,18 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.ContactViewHol
             characterTextView = (TextView) v.findViewById(R.id.list_title);
             actorTextView = (TextView) v.findViewById(R.id.list_desc);
             actorImageView = (ImageView) v.findViewById(R.id.list_avatar);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JSONCast castMember = contactList.get(getAdapterPosition());
+                    Toast.makeText(mContext, castMember.getCharacterName(), Toast.LENGTH_SHORT).show();
+
+                    /*Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
+                    intent.putExtra("movieId", movie.getId());
+                    context.startActivity(intent);*/
+                }
+            });
         }
     }
 }

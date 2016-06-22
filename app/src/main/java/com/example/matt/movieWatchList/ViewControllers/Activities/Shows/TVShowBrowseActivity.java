@@ -18,15 +18,12 @@ package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.LayoutInflaterCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -40,7 +37,6 @@ import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.activities.SearchActivity;
-import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieSearchActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieWatchListActivity;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
@@ -62,7 +58,8 @@ import butterknife.ButterKnife;
  */
 public class TVShowBrowseActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
-    Adapter adapterViewPager;
+    private Adapter mAdapterViewPager;
+    private Drawer mNavigationDrawer;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -75,9 +72,6 @@ public class TVShowBrowseActivity extends AppCompatActivity {
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
-
-    Drawer navigationDrawer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +105,7 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         }
 
         // Create Navigation drawer
-        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
 
         // Adding Floating Action Button to bottom right of main view
@@ -130,7 +124,7 @@ public class TVShowBrowseActivity extends AppCompatActivity {
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
-        adapterViewPager = new Adapter(getSupportFragmentManager());
+        mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
 
         Bundle nowShowingBundle = new Bundle();
@@ -148,11 +142,11 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         TVShowBrowseFragment topRatedMovies = new TVShowBrowseFragment();
         topRatedMovies.setArguments(topRatedBundle);
 
-        adapterViewPager.addFragment(popularMovies, "Popular");
-        adapterViewPager.addFragment(nowShowingMovies, "Now Airing");
-        adapterViewPager.addFragment(topRatedMovies, "Top Rated");
+        mAdapterViewPager.addFragment(popularMovies, "Popular");
+        mAdapterViewPager.addFragment(nowShowingMovies, "Now Airing");
+        mAdapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
-        viewPager.setAdapter(adapterViewPager);
+        viewPager.setAdapter(mAdapterViewPager);
     }
 
     /*
@@ -164,33 +158,6 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem sortItem = menu.findItem(R.id.action_sort);
         sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
-        // Inflate the menu; this adds items to the action bar if it is present.
-        /*getMenuInflater().inflate(R.menu.menu_search, menu);
-
-        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
-        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.d("onQueryTextSubmit()", "HERE");
-
-                Bundle searchBundle = new Bundle();
-                searchBundle.putString("query", query);
-                SearchFragment searchMovies = new SearchFragment();
-                searchMovies.setArguments(searchBundle);
-
-                adapterViewPager.addFragment(searchMovies, " Search");
-                adapterViewPager.notifyDataSetChanged();
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String s) {
-                Log.d("onQueryTextChange()", "HERE");
-                return false;
-            }
-        });*/
-
         return true;
     }
 
@@ -204,15 +171,15 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            navigationDrawer.openDrawer();
+            mNavigationDrawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (this.navigationDrawer.isDrawerOpen()) {
-            this.navigationDrawer.closeDrawer();
+        if (this.mNavigationDrawer.isDrawerOpen()) {
+            this.mNavigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

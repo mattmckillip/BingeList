@@ -1,9 +1,7 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,8 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
@@ -41,16 +37,15 @@ import retrofit.Retrofit;
  * Created by Matt on 6/7/2016.
  */
 public class TVShowSearchActivity extends AppCompatActivity {
+    private Drawer mNavigationDrawer;
+    private SearchAdapter mSearchAdapter;
+    private List<MovieResult> mSearchMovieResults;
 
     @BindView(R.id.search_recycler_view)
     RecyclerView searchRecyclerView;
 
     @BindView(R.id.search_toolber)
     Toolbar toolbar;
-
-    Drawer navigationDrawer;
-    private SearchAdapter searchAdapter;
-    private List<MovieResult> searchMovieResults;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,12 +54,12 @@ public class TVShowSearchActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        searchMovieResults = new ArrayList<>();
-        searchAdapter = new SearchAdapter(searchMovieResults, getApplicationContext());
+        mSearchMovieResults = new ArrayList<>();
+        mSearchAdapter = new SearchAdapter(mSearchMovieResults, getApplicationContext());
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         searchRecyclerView.setLayoutManager(castLayoutManager);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        searchRecyclerView.setAdapter(searchAdapter);
+        searchRecyclerView.setAdapter(mSearchAdapter);
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
@@ -77,7 +72,7 @@ public class TVShowSearchActivity extends AppCompatActivity {
         }
 
         // Create Navigation drawer
-        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
     }
 
     /*
@@ -96,8 +91,6 @@ public class TVShowSearchActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("SearchView", "onQueryTextSubmit");
-
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://api.themoviedb.org/3/search/movie/")
                         .addConverterFactory(GsonConverterFactory.create())
@@ -110,7 +103,6 @@ public class TVShowSearchActivity extends AppCompatActivity {
                 call.enqueue(new Callback<MovieQueryReturn>() {
                     @Override
                     public void onResponse(retrofit.Response<MovieQueryReturn> response, Retrofit retrofit) {
-                        Log.d("getMovie()", "Callback Success");
                         List<MovieResult> movieResults = response.body().getMovieResults();
 
                         searchRecyclerView.setAdapter(new SearchAdapter(movieResults, getApplicationContext()));
@@ -145,15 +137,15 @@ public class TVShowSearchActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            navigationDrawer.openDrawer();
+            mNavigationDrawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (this.navigationDrawer.isDrawerOpen()) {
-            this.navigationDrawer.closeDrawer();
+        if (this.mNavigationDrawer.isDrawerOpen()) {
+            this.mNavigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

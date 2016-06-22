@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,15 +21,14 @@ import com.example.matt.movieWatchList.Models.POJO.Crew;
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchResult;
 import com.example.matt.movieWatchList.Models.POJO.movies.Movie;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
+import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
-import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.viewControllers.activities.movies.MovieBrowseDetailActivity;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
-import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -40,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -50,41 +50,59 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
     private static final String MOVIE_TYPE = "movie";
     private static final String SHOW_TYPE = "tv";
 
-    private List<MultiSearchResult> multiSearchResults;
+    private List<MultiSearchResult> mMultiSearchResults;
     private Context mContext;
     private Realm mUIrealm;
 
     public MultiSearchAdapter(List<MultiSearchResult> results, Context context, Realm uiRealm) {
-        multiSearchResults = results;
+        mMultiSearchResults = results;
         mContext = context;
         mUIrealm = uiRealm;
     }
 
     @Override
     public int getItemCount() {
-        return multiSearchResults.size();
+        return mMultiSearchResults.size();
     }
 
     @Override
     public void onBindViewHolder(SearchViewHolder searchViewHolder, int i) {
-        MultiSearchResult result = multiSearchResults.get(i);
+        MultiSearchResult result = mMultiSearchResults.get(i);
+
+        searchViewHolder.progressSpinner.setVisibility(View.GONE);
+        searchViewHolder.watchedLayout.setVisibility(View.GONE);
+        searchViewHolder.watchListLayout.setVisibility(View.GONE);
 
         if (result.getMediaType().equals(MOVIE_TYPE)) {
             searchViewHolder.mediaTitle.setText(result.getTitle());
+            searchViewHolder.actionButton.setText("{gmd_add_to_queue} add to watchlist");
+
+            if (mUIrealm.where(JSONMovie.class).equalTo("id", result.getId()).equalTo("isWatched", true).findAll().size() == 1) {
+                searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
+                searchViewHolder.actionButton.setVisibility(View.GONE);
+            } else if (mUIrealm.where(JSONMovie.class).equalTo("id", result.getId()).equalTo("onWatchList", true).findAll().size() == 1) {
+                searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
+                searchViewHolder.actionButton.setVisibility(View.GONE);
+            }
         } else if (result.getMediaType().equals(SHOW_TYPE)) {
             searchViewHolder.mediaTitle.setText(result.getName());
+            searchViewHolder.actionButton.setText("{gmd_add_to_queue} add to your shows");
+
+            if (mUIrealm.where(JSONShow.class).equalTo("id", result.getId()).equalTo("isWatched", true).findAll().size() == 1) {
+                searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
+                searchViewHolder.actionButton.setVisibility(View.GONE);
+            } else if (mUIrealm.where(JSONShow.class).equalTo("id", result.getId()).equalTo("onWatchList", true).findAll().size() == 1) {
+                searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
+                searchViewHolder.actionButton.setVisibility(View.GONE);
+            }
         }
 
         if (result.getOverview() != null) {
             searchViewHolder.mediaDescription.setText(result.getOverview().toString());
         }
 
-        searchViewHolder.watchedLayout.setVisibility(View.GONE);
-        searchViewHolder.watchListLayout.setVisibility(View.GONE);
-
         Picasso.with(mContext)
                 .load("https://image.tmdb.org/t/p/w342/" + result.getBackdropPath())
-                //.placeholder(R.drawable.unkown_person)
                 .error(R.drawable.generic_movie_background)
                 .into(searchViewHolder.mediaImage);
     }
@@ -97,7 +115,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
         return new SearchViewHolder(itemView);
     }
-
 
     public class SearchViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.card_title)
@@ -118,6 +135,10 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         @BindView(R.id.watch_list_layout)
         RelativeLayout watchListLayout;
 
+
+        @BindView(R.id.progress_spinner)
+        ProgressBar progressSpinner;
+
         public SearchViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
@@ -126,7 +147,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    MultiSearchResult result = multiSearchResults.get(getAdapterPosition());
+                    MultiSearchResult result = mMultiSearchResults.get(getAdapterPosition());
 
                     if (result.getMediaType().equals(MOVIE_TYPE)) {
                         Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
@@ -147,7 +168,8 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
             actionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    MultiSearchResult result = multiSearchResults.get(getAdapterPosition());
+                    progressSpinner.setVisibility(View.VISIBLE);
+                    MultiSearchResult result = mMultiSearchResults.get(getAdapterPosition());
 
                     if (result.getMediaType().equals(MOVIE_TYPE)) {
                         final int movieID = result.getId();
@@ -202,6 +224,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                                                 mUIrealm.commitTransaction();
 
                                                 watchListLayout.setVisibility(View.VISIBLE);
+                                                progressSpinner.setVisibility(View.GONE);
 
                                                 Snackbar.make(v, "Added to watchlist!",
                                                         Snackbar.LENGTH_LONG).show();

@@ -2,7 +2,6 @@ package com.example.matt.movieWatchList.viewControllers.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.BaseAdapter;
 
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.MultiSearchResult;
@@ -24,10 +22,8 @@ import com.example.matt.movieWatchList.uitls.API.MultiSearchAPI;
 import com.example.matt.movieWatchList.uitls.DrawerHelper;
 import com.example.matt.movieWatchList.viewControllers.adapters.MultiSearchAdapter;
 import com.example.matt.movieWatchList.viewControllers.adapters.SearchAdapter;
-import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
-import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -41,21 +37,17 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
-/**
- * Created by Matt on 6/15/2016.
- */
+
 public class SearchActivity extends AppCompatActivity {
+    private Drawer mNavigationDrawer;
+    private SearchAdapter mSearchAdapter;
+    private List<MovieResult> mSearchMovieResults;
 
     @BindView(R.id.search_recycler_view)
     RecyclerView searchRecyclerView;
 
     @BindView(R.id.search_toolber)
     Toolbar toolbar;
-
-    Drawer navigationDrawer;
-
-    private SearchAdapter searchAdapter;
-    private List<MovieResult> searchMovieResults;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,12 +56,12 @@ public class SearchActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        searchMovieResults = new ArrayList<>();
-        searchAdapter = new SearchAdapter(searchMovieResults, getApplicationContext());
+        mSearchMovieResults = new ArrayList<>();
+        mSearchAdapter = new SearchAdapter(mSearchMovieResults, getApplicationContext());
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         searchRecyclerView.setLayoutManager(castLayoutManager);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        searchRecyclerView.setAdapter(searchAdapter);
+        searchRecyclerView.setAdapter(mSearchAdapter);
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
@@ -82,7 +74,7 @@ public class SearchActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
         // Create Navigation drawer
-        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
     }
 
@@ -154,15 +146,15 @@ public class SearchActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == android.R.id.home) {
-            navigationDrawer.openDrawer();
+            mNavigationDrawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        if (this.navigationDrawer.isDrawerOpen()) {
-            this.navigationDrawer.closeDrawer();
+        if (this.mNavigationDrawer.isDrawerOpen()) {
+            this.mNavigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

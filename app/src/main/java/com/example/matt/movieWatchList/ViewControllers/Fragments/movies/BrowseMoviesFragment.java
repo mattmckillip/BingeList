@@ -29,7 +29,7 @@ import com.example.matt.movieWatchList.Models.POJO.movies.MovieQueryReturn;
 import com.example.matt.movieWatchList.Models.POJO.movies.MovieResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.API.BrowseMoviesAPI;
+import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.BrowseMovieType;
 import com.example.matt.movieWatchList.viewControllers.adapters.BrowseMoviesAdapter;
 
@@ -70,7 +70,7 @@ public class BrowseMoviesFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        BrowseMoviesAPI service = retrofit.create(BrowseMoviesAPI.class);
+        MovieAPI service = retrofit.create(MovieAPI.class);
 
         Call<MovieQueryReturn> call;
         if (movieType == BrowseMovieType.POPULAR) {

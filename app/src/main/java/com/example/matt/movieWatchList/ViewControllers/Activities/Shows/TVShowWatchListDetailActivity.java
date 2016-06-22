@@ -1,14 +1,9 @@
 package com.example.matt.movieWatchList.viewControllers.activities.shows;
 
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.LayerDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -19,10 +14,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -31,31 +24,20 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
-import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
-import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
-import com.example.matt.movieWatchList.uitls.PaletteTransformation;
-import com.example.matt.movieWatchList.viewControllers.adapters.CastAdapter;
-import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrInterface;
-import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,57 +47,46 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
 
 
-/**
- * Provides UI for the Detail page with Collapsing Toolbar.
- */
 public class TVShowWatchListDetailActivity extends AppCompatActivity {
-    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
-    private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
-    private static final String FRAGMENT_LIST_VIEW = "list view";
-    Integer showID;
-    Adapter adapterViewPager;
+    private Integer mShowID;
+    private Adapter mAdapterViewPager;
+    private SlidrInterface mSlidrInterface;
+    private JSONShow mShow;
+    private Bitmap mBitmap;
+    private ArrayList<IconicsDrawable> mFabIcons = new ArrayList<>();
+    private Integer mSelectedTab;
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
+
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.viewpager)
     ViewPager viewPager;
+
     @BindView(R.id.tabs)
     TabLayout tabLayout;
+
     @BindView(R.id.background)
     ImageView backdrop;
+
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
     @BindView(R.id.loadingPanel)
     RelativeLayout loadingPanel;
-
-    private RealmList<JSONCast> castList = new RealmList<>();
-    private RecyclerView castRecyclerView;
-    private CastAdapter castAdapter;
-    private RealmList<JSONCast> crewList = new RealmList<>();
-    private RecyclerView crewRecyclerView;
-    private CastAdapter crewAdapter;
-    private DrawerLayout mDrawerLayout;
-    private SlidrInterface slidrInterface;
-    private JSONShow show;
-    private Bitmap thisBitmap;
-    ArrayList<IconicsDrawable> mFabIcons = new ArrayList<>();
-    private Integer mSelectedTab;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
-        showID = getIntent().getIntExtra("showID", 0);
+        mShowID = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
         mSelectedTab = 0;
 
@@ -124,26 +95,24 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
         Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
         RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
-        show = query.equalTo("id", showID).findFirst();
+        Log.d("Show id", Integer.toString(mShowID));
+        mShow = query.equalTo("id", mShowID).findFirst();
         RealmQuery<JSONEpisode> episodeRealmQuery = uiRealm.where(JSONEpisode.class);
-        RealmResults<JSONEpisode> episodeRealmResults = episodeRealmQuery.equalTo("isWatched", false).equalTo("show_id", show.getId()).findAll();
+        RealmResults<JSONEpisode> episodeRealmResults = episodeRealmQuery.equalTo("isWatched", false).equalTo("show_id", mShow.getId()).findAll();
 
         if (episodeRealmResults.size() == 0) {
             mFabIcons.set(1, new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear_all).sizeDp(16).color(Color.WHITE));
         }
 
-
-        Log.d("Number of seasons", Integer.toString(show.getSeasons().size()));
         ButterKnife.bind(this);
 
         fab.setImageDrawable(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_remove_circle_outline).sizeDp(16).color(Color.WHITE));
 
         // Set title of Detail page
         collapsingToolbar.setTitle(ShowName);
-        Log.d("WatchList backdrop", show.getBackdropBitmap().toString());
 
         // Attach the Slidr Mechanism to this activity
-        slidrInterface = Slidr.attach(this);
+        mSlidrInterface = Slidr.attach(this);
 
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Seasons"));
@@ -154,28 +123,26 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set title of Detail page
-        collapsingToolbar.setTitle(show.getName());
+        collapsingToolbar.setTitle(mShow.getName());
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;
         loadingPanel.setVisibility(View.GONE);
 
-        if (show.getBackdropBitmap() != null) {
-            thisBitmap = BitmapFactory.decodeByteArray(show.getBackdropBitmap(), 0, show.getBackdropBitmap().length, options);
-            backdrop.setImageBitmap(thisBitmap);
+        if (mShow.getBackdropBitmap() != null) {
+            mBitmap = BitmapFactory.decodeByteArray(mShow.getBackdropBitmap(), 0, mShow.getBackdropBitmap().length, options);
+            backdrop.setImageBitmap(mBitmap);
         } else {
-            thisBitmap = null;
+            mBitmap = null;
         }
 
-        if (thisBitmap != null) {
+        if (mBitmap != null) {
             // save image as byte array
             int defaultColor = 0x000000;
-            Palette palette = Palette.from(thisBitmap).generate();
+            Palette palette = Palette.from(mBitmap).generate();
 
             int vibrantColor = palette.getVibrantColor(defaultColor);
             int mutedColor = palette.getLightMutedColor(defaultColor);
-
-            Log.d("vibrant color", Integer.toString(vibrantColor));
 
             if (vibrantColor == 0) {
                 vibrantColor = getResources().getColor(R.color.colorPrimary);
@@ -194,25 +161,25 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
 
             // Setting ViewPager for each Tabs
-            adapterViewPager = new Adapter(getSupportFragmentManager());
+            mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
             Bundle overviewBundle = new Bundle();
-            overviewBundle.putInt("showID", showID);
+            overviewBundle.putInt("showID", mShowID);
             overviewBundle.putInt("vibrantColor", vibrantColor);
             overviewBundle.putInt("mutedColor", mutedColor);
             TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
             overviewFragment.setArguments(overviewBundle);
 
             Bundle seasonsBundle = new Bundle();
-            seasonsBundle.putInt("showID", showID);
+            seasonsBundle.putInt("showID", mShowID);
             seasonsBundle.putInt("vibrantColor", vibrantColor);
             seasonsBundle.putInt("mutedColor", mutedColor);
             TVShowWatchlistSeasonFragment seasonsFragment = new TVShowWatchlistSeasonFragment();
             seasonsFragment.setArguments(seasonsBundle);
 
-            adapterViewPager.addFragment(overviewFragment, "");
-            adapterViewPager.addFragment(seasonsFragment, "");
-            viewPager.setAdapter(adapterViewPager);
+            mAdapterViewPager.addFragment(overviewFragment, "");
+            mAdapterViewPager.addFragment(seasonsFragment, "");
+            viewPager.setAdapter(mAdapterViewPager);
 
 
         } else {
@@ -226,12 +193,12 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(tab.getPosition());
                 mSelectedTab = tab.getPosition();
                 if (mSelectedTab == 0) {
-                    slidrInterface.unlock();
+                    mSlidrInterface.unlock();
 
                     animateFab(mSelectedTab, mFabIcons);
                 } else {
                     animateFab(mSelectedTab, mFabIcons);
-                    slidrInterface.lock();
+                    mSlidrInterface.lock();
                 }
             }
 
@@ -255,12 +222,11 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
                     Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
 
                     RealmQuery<JSONEpisode> query = uiRealm.where(JSONEpisode.class);
-                    RealmResults<JSONEpisode> episodeRealmResults = query.equalTo("isWatched", false).equalTo("show_id", show.getId()).findAll();
-                    Log.d("Unwatched Episodes", Integer.toString(episodeRealmResults.size()));
+                    RealmResults<JSONEpisode> episodeRealmResults = query.equalTo("isWatched", false).equalTo("show_id", mShow.getId()).findAll();
 
                     if (episodeRealmResults.size() > 0) { // unwatched episodes
                         uiRealm.beginTransaction();
-                        RealmList<JSONSeason> seasons = show.getSeasons();
+                        RealmList<JSONSeason> seasons = mShow.getSeasons();
                         for (int i = 0; i < seasons.size(); i++) {
                             JSONSeason season = seasons.get(i);
                             RealmList<JSONEpisode> episodes = season.getEpisodes();
@@ -270,7 +236,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
                         }
                         uiRealm.commitTransaction();
 
-                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) adapterViewPager.getRegisteredFragment(1);
+                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getRegisteredFragment(1);
                         fragment.updateAllGroupsAndChildren();
 
                         Snackbar.make(v, "All episodes marked watched!",
@@ -281,7 +247,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
                     } else { //all episodes watched
                         uiRealm.beginTransaction();
-                        RealmList<JSONSeason> seasons = show.getSeasons();
+                        RealmList<JSONSeason> seasons = mShow.getSeasons();
                         for (int i = 0; i < seasons.size(); i++) {
                             JSONSeason season = seasons.get(i);
                             RealmList<JSONEpisode> episodes = season.getEpisodes();
@@ -291,7 +257,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
                         }
                         uiRealm.commitTransaction();
 
-                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) adapterViewPager.getRegisteredFragment(1);
+                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getRegisteredFragment(1);
                         fragment.updateAllGroupsAndChildren();
 
                         Snackbar.make(v, "All episodes marked unwatched!",

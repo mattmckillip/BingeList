@@ -39,9 +39,7 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
-/**
- * Provides UI for the view with Cards.
- */
+
 public class SearchFragment extends Fragment {
     private List<MovieResult> searchMovieResults;
     private RecyclerView recyclerView;
@@ -51,7 +49,6 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //String query = getArguments().getString("query");
         query = getArguments().getString("query");
 
         searchMovieResults = new ArrayList<>();
@@ -65,7 +62,6 @@ public class SearchFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager searchLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(searchLayoutManager);
-        //searchMovies("fight club");
         searchMovies(query);
 
         return recyclerView;

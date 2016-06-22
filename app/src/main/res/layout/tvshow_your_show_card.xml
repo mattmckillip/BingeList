@@ -93,22 +93,6 @@
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/article_subheading" />
 
-        <ProgressBar
-            android:id="@+id/episode_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/episodes"
-            android:layout_toEndOf="@id/episodes"
-            android:layout_toLeftOf="@id/more_button"
-            android:layout_toStartOf="@id/more_button"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="@dimen/md_keylines"
-            android:layout_below="@+id/card_text"
-            style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
-            android:layout_alignParentBottom="false"
-            android:layout_alignBottom="@+id/episodes" />
-
         <ImageButton
             android:id="@+id/more_button"
             android:layout_width="wrap_content"

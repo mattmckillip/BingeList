@@ -16,10 +16,8 @@
 
 package com.example.matt.movieWatchList.viewControllers.activities.movies;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -29,13 +27,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
@@ -52,6 +50,8 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
@@ -62,20 +62,20 @@ import io.realm.RealmMigration;
  */
 public class MovieWatchListActivity extends AppCompatActivity {
     private static final String TAG = MovieWatchListActivity.class.getSimpleName();
-    Adapter adapterViewPager;
+    private Adapter mAdapterViewPager;
+    private Drawer mNavigationDrawer;
 
-    Drawer navigationDrawer;
-    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
-            if (drawerItem instanceof Nameable) {
-                Log.i("material-drawer", "DrawerItem: " + ((Nameable) drawerItem).getName() + " - toggleChecked: " + isChecked);
-            } else {
-                Log.i("material-drawer", "toggleChecked: " + isChecked);
-            }
-        }
-    };
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
+    @BindView(R.id.viewpager)
+    ViewPager viewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,34 +85,16 @@ public class MovieWatchListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
-        // Instantiate realms
-        RealmConfiguration config1 = new RealmConfiguration.Builder(this)
-                .name("default")
-                .schemaVersion(6)
-                .migration(new RealmMigration() {
-                    @Override
-                    public long execute(Realm realm, long version) {
-                        return 6;
-                    }
-                })
-                .build();
-
-        Realm.setDefaultConfiguration(config1);
-        Realm uiRealm = Realm.getInstance(getApplicationContext());
-
-        ((MyApplication) this.getApplication()).setUiRealm(uiRealm);
+        ButterKnife.bind(this);
 
         // Adding Toolbar to Main screen
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Movie Watch List");
 
         // Setting ViewPager for each Tabs
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         // Set Tabs inside Toolbar
-        TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         try {
             tabs.getTabAt(0).setIcon(R.drawable.ic_dvr_white_24dp);
@@ -122,17 +104,16 @@ public class MovieWatchListActivity extends AppCompatActivity {
         }
 
         // Create Navigation drawer
-        navigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).sizeDp(16).color(Color.WHITE));
+            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE);
         fab.setImageDrawable(search);
 
@@ -148,7 +129,7 @@ public class MovieWatchListActivity extends AppCompatActivity {
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
-        adapterViewPager = new Adapter(getSupportFragmentManager());
+        mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
         Bundle watchedMoviesBundle = new Bundle();
         watchedMoviesBundle.putInt("watched", 1);
@@ -160,9 +141,9 @@ public class MovieWatchListActivity extends AppCompatActivity {
         MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
-        adapterViewPager.addFragment(watchListMovies, " Watch List");
-        adapterViewPager.addFragment(watchedMovies, " Watched");
-        viewPager.setAdapter(adapterViewPager);
+        mAdapterViewPager.addFragment(watchListMovies, " Watch List");
+        mAdapterViewPager.addFragment(watchedMovies, " Watched");
+        viewPager.setAdapter(mAdapterViewPager);
     }
 
     @Override
@@ -197,7 +178,7 @@ public class MovieWatchListActivity extends AppCompatActivity {
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Log.d("onOptionsItemSelected()", "Sort");
-                navigationDrawer.openDrawer();
+                mNavigationDrawer.openDrawer();
 
                 return true;
 
@@ -211,8 +192,8 @@ public class MovieWatchListActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (this.navigationDrawer.isDrawerOpen()) {
-            this.navigationDrawer.closeDrawer();
+        if (this.mNavigationDrawer.isDrawerOpen()) {
+            this.mNavigationDrawer.closeDrawer();
         } else {
             super.onBackPressed();
         }

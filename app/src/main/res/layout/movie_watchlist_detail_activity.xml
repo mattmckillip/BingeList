@@ -52,6 +52,7 @@
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:indeterminate="true" />
     </RelativeLayout>
 
@@ -78,7 +79,6 @@
                 android:textColor="?attr/colorAccent"
                 android:text="Overview"
                 android:textSize="@dimen/article_titles"
-                android:layout_marginTop="@dimen/md_keylines"
                 android:layout_marginBottom="@dimen/md_keylines" />
 
             <TextView
@@ -117,20 +117,41 @@
 
                     />
             </RelativeLayout>
+
             <TextView
                 android:text="Runtime"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/md_keylines"
-                />
+                android:paddingLeft="@dimen/md_keylines"/>
+
             <TextView
                 android:id="@+id/runtime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/md_keylines"
-                android:paddingLeft="@dimen/md_keylines"
-                />
+                android:paddingLeft="@dimen/md_keylines"/>
+
+            <TextView
+                android:text="Genres"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/md_keylines"/>
+
+            <TextView
+                android:id="@+id/genres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/md_keylines"/>
+
+            <com.mikepenz.iconics.view.IconicsButton
+                android:id="@+id/imdb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="{gmd_exit_to_app} IMDb"
+                android:textColor="?attr/colorPrimary"
+                style="?android:attr/borderlessButtonStyle"/>
 
             <TextView
                 android:id="@+id/plot_title"
@@ -139,7 +160,8 @@
                 android:textColor="?attr/colorAccent"
                 android:text="Plot"
                 android:textSize="@dimen/article_titles"
-                android:layout_marginTop="@dimen/md_keylines"/>
+                android:layout_marginTop="@dimen/md_keylines"
+                android:layout_marginBottom="@dimen/md_keylines" />
 
 
             <!-- sample xml -->
@@ -172,8 +194,7 @@
                 android:textColor="?attr/colorAccent"
                 android:text="Cast"
                 android:textSize="@dimen/article_titles"
-                android:layout_marginBottom="@dimen/md_keylines"
-                android:layout_marginTop="@dimen/md_keylines" />
+                android:layout_marginBottom="@dimen/md_keylines"/>
 
             <RelativeLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -187,8 +208,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"/>
-
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/see_more_cast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="See more"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/borderlessButtonStyle"/>
 
             <TextView
                 android:id="@+id/crew_title"
@@ -197,8 +225,7 @@
                 android:textColor="?attr/colorAccent"
                 android:text="Crew"
                 android:textSize="@dimen/article_titles"
-                android:layout_marginBottom="@dimen/md_keylines"
-                android:layout_marginTop="@dimen/md_keylines" />
+                android:layout_marginBottom="@dimen/md_keylines"/>
 
             <RelativeLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -207,21 +234,30 @@
                 android:layout_height="220dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/crew_recycler_view"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/crew_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"/>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/see_more_crew"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="vertical"/>
-            </RelativeLayout>
+                android:text="See more"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginBottom="@dimen/md_keylines"/>
 
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-         android:id="@+id/fab"
-         app:layout_anchor="@id/appbar"
-         app:layout_anchorGravity="bottom|right|end"
-         style="@style/FabStyle"/>
+        android:id="@+id/fab"
+        app:layout_anchor="@id/appbar"
+        app:layout_anchorGravity="bottom|right|end"
+        style="@style/FabStyle"/>
 
 </android.support.design.widget.CoordinatorLayout>

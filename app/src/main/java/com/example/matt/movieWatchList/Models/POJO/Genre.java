@@ -1,5 +1,6 @@
 package com.example.matt.movieWatchList.Models.POJO;
 
+import com.example.matt.movieWatchList.Models.Realm.JSONGenre;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -40,4 +41,10 @@ public class Genre {
         this.name = name;
     }
 
+    public JSONGenre convertToRealm() {
+        JSONGenre returnGenre = new JSONGenre();
+        returnGenre.setId(getId());
+        returnGenre.setGenre(getName());
+        return returnGenre;
+    }
 }

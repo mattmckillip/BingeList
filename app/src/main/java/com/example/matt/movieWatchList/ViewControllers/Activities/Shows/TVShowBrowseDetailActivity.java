@@ -58,33 +58,37 @@ import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 
-/**
- * Provides UI for the Detail page with Collapsing Toolbar.
- */
 public class TVShowBrowseDetailActivity extends AppCompatActivity {
-    Adapter adapterViewPager;
+    private Adapter mAdapterViewPager;
+    private Integer mShowID;
+    private int mVibrantColor;
+    private int mMutedColor;
+    private JSONShow mRealmShow;
+    private SlidrInterface mSlidrInterface;
+
     @BindView(R.id.appbar)
     AppBarLayout appbar;
+
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbar;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     @BindView(R.id.viewpager)
     ViewPager viewPager;
+
     @BindView(R.id.tabs)
     TabLayout tabLayout;
+
     @BindView(R.id.background)
     ImageView background;
+
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
     @BindView(R.id.loadingPanel)
     RelativeLayout loadingPanel;
-
-    private Integer showID;
-    private int vibrantColor;
-    private int mutedColor;
-    private JSONShow realmShow;
-    private SlidrInterface slidrInterface;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,10 +98,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
-        showID = getIntent().getIntExtra("showID", 0);
+        mShowID = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
-
-        Log.d("SHOWID", Integer.toString(showID));
 
         ButterKnife.bind(this);
 
@@ -117,18 +119,17 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
         final TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-        Call<TVShow> call = service.getTVShow(Integer.toString(showID));
+        Call<TVShow> call = service.getTVShow(Integer.toString(mShowID));
         call.enqueue(new Callback<TVShow>() {
             @Override
             public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
                 background.setVisibility(View.VISIBLE);
                 collapsingToolbar.setVisibility(View.VISIBLE);
-                Log.d("Resonse", response.raw().toString());
 
-                realmShow = response.body().convertToRealm();
+                mRealmShow = response.body().convertToRealm();
 
                 Picasso.with(getApplicationContext())
-                        .load("https://image.tmdb.org/t/p/w500//" + response.body().getBackdropPath())
+                        .load("https://image.tmdb.org/t/p/w500/" + response.body().getBackdropPath())
                         .fit().centerCrop()
                         .transform(PaletteTransformation.instance())
                         .into(background, new PaletteTransformation.PaletteCallback(background) {
@@ -141,45 +142,45 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 loadingPanel.setVisibility(View.GONE);
 
                                 int defaultColor = 0x000000;
-                                vibrantColor = palette.getVibrantColor(defaultColor);
-                                mutedColor = palette.getLightMutedColor(defaultColor);
-                                if (vibrantColor == 0) {
-                                    vibrantColor = getResources().getColor(R.color.colorPrimary);
+                                mVibrantColor = palette.getVibrantColor(defaultColor);
+                                mMutedColor = palette.getLightMutedColor(defaultColor);
+                                if (mVibrantColor == 0) {
+                                    mVibrantColor = getResources().getColor(R.color.colorPrimary);
                                 }
 
-                                if (mutedColor == 0) {
-                                    mutedColor = getResources().getColor(R.color.colorAccent);
+                                if (mMutedColor == 0) {
+                                    mMutedColor = getResources().getColor(R.color.colorAccent);
                                 }
 
-                                appbar.setBackgroundColor(vibrantColor);
-                                collapsingToolbar.setBackgroundColor(vibrantColor);
-                                collapsingToolbar.setContentScrimColor(vibrantColor);
-                                collapsingToolbar.setStatusBarScrimColor(vibrantColor);
-                                tabLayout.setBackgroundColor(vibrantColor);
-                                fab.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
-                                tabLayout.setSelectedTabIndicatorColor(mutedColor);
+                                appbar.setBackgroundColor(mVibrantColor);
+                                collapsingToolbar.setBackgroundColor(mVibrantColor);
+                                collapsingToolbar.setContentScrimColor(mVibrantColor);
+                                collapsingToolbar.setStatusBarScrimColor(mVibrantColor);
+                                tabLayout.setBackgroundColor(mVibrantColor);
+                                fab.setBackgroundTintList(ColorStateList.valueOf(mMutedColor));
+                                tabLayout.setSelectedTabIndicatorColor(mMutedColor);
 
 
                                 // Setting ViewPager for each Tabs
-                                adapterViewPager = new Adapter(getSupportFragmentManager());
+                                mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
                                 Bundle overviewBundle = new Bundle();
-                                overviewBundle.putInt("showID", showID);
-                                overviewBundle.putInt("vibrantColor", vibrantColor);
-                                overviewBundle.putInt("mutedColor", mutedColor);
+                                overviewBundle.putInt("showID", mShowID);
+                                overviewBundle.putInt("vibrantColor", mVibrantColor);
+                                overviewBundle.putInt("mutedColor", mMutedColor);
                                 TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
                                 overviewFragment.setArguments(overviewBundle);
 
                                 Bundle seasonsBundle = new Bundle();
-                                seasonsBundle.putInt("showID", showID);
-                                seasonsBundle.putInt("vibrantColor", vibrantColor);
-                                seasonsBundle.putInt("mutedColor", mutedColor);
+                                seasonsBundle.putInt("showID", mShowID);
+                                seasonsBundle.putInt("vibrantColor", mVibrantColor);
+                                seasonsBundle.putInt("mutedColor", mMutedColor);
                                 TVShowBrowseSeasonFragment seasonsFragment = new TVShowBrowseSeasonFragment();
                                 seasonsFragment.setArguments(seasonsBundle);
 
-                                adapterViewPager.addFragment(overviewFragment, "");
-                                adapterViewPager.addFragment(seasonsFragment, "");
-                                viewPager.setAdapter(adapterViewPager);
+                                mAdapterViewPager.addFragment(overviewFragment, "");
+                                mAdapterViewPager.addFragment(seasonsFragment, "");
+                                viewPager.setAdapter(mAdapterViewPager);
 
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -200,7 +201,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         });
 
         // Attach the Slidr Mechanism to this activity
-        slidrInterface = Slidr.attach(this);
+        mSlidrInterface = Slidr.attach(this);
 
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
         tabLayout.addTab(tabLayout.newTab().setText("Seasons"));
@@ -216,8 +217,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.d("Tab Selected", Integer.toString(tab.getPosition()));
                 viewPager.setCurrentItem(tab.getPosition());
-                if (tab.getPosition() == 0) slidrInterface.unlock();
-                else slidrInterface.lock();
+                if (tab.getPosition() == 0) mSlidrInterface.unlock();
+                else mSlidrInterface.lock();
             }
 
             @Override
@@ -234,13 +235,13 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
                 uiRealm.beginTransaction();
-                realmShow.setOnWatchList(true);
+                mRealmShow.setOnWatchList(true);
                 //JSONMovie movieToAdd = uiRealm.createObject(movie);
-                uiRealm.copyToRealm(realmShow);
+                uiRealm.copyToRealm(mRealmShow);
                 uiRealm.commitTransaction();
                 Log.d("realm transaction","success");
                 FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
-                fetchSeasonsTask.execute(showID, realmShow.getNumberOfSeasons());
+                fetchSeasonsTask.execute(mShowID, mRealmShow.getNumberOfSeasons());
 
                 Snackbar.make(v, "Added to your shows!",
                         Snackbar.LENGTH_LONG).show();
@@ -249,7 +250,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
     }
 
     private void addByteArray(byte[] image) {
-        realmShow.setBackdropBitmap(image);
+        mRealmShow.setBackdropBitmap(image);
     }
 
     static class Adapter extends FragmentPagerAdapter {
@@ -293,13 +294,13 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
             RealmList<JSONEpisode> jsonEpisodeRealmList = realmSeason.getEpisodes();
             for (JSONEpisode episode: jsonEpisodeRealmList) {
-                episode.setShow_id(showID);
+                episode.setShow_id(mShowID);
             }
         }
 
         uiRealm.beginTransaction();
-        realmShow.setSeasons(jsonSeasonRealmList);
-        uiRealm.copyToRealmOrUpdate(realmShow);
+        mRealmShow.setSeasons(jsonSeasonRealmList);
+        uiRealm.copyToRealmOrUpdate(mRealmShow);
         uiRealm.commitTransaction();
     }
 

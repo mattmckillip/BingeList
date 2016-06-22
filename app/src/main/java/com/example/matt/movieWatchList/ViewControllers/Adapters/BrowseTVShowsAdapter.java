@@ -3,23 +3,18 @@ package com.example.matt.movieWatchList.viewControllers.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,17 +25,13 @@ import com.example.matt.movieWatchList.Models.POJO.shows.TVShow;
 import com.example.matt.movieWatchList.Models.POJO.shows.TVShowSeasonResult;
 import com.example.matt.movieWatchList.Models.Realm.JSONCast;
 import com.example.matt.movieWatchList.Models.Realm.JSONEpisode;
-import com.example.matt.movieWatchList.Models.Realm.JSONMovie;
 import com.example.matt.movieWatchList.Models.Realm.JSONSeason;
 import com.example.matt.movieWatchList.Models.Realm.JSONShow;
 import com.example.matt.movieWatchList.MyApplication;
 import com.example.matt.movieWatchList.R;
 import com.example.matt.movieWatchList.uitls.API.MovieAPI;
 import com.example.matt.movieWatchList.uitls.API.TVShowAPI;
-import com.example.matt.movieWatchList.uitls.PaletteTransformation;
 import com.example.matt.movieWatchList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
-import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
-import com.example.matt.movieWatchList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -56,7 +47,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
@@ -87,21 +77,18 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     }
 
     @Override
-    public void onBindViewHolder(BrowseTVShowsViewHolder holder, final int position) {
-        final TextView title = (TextView) holder.itemView.findViewById(R.id.card_title);
-        TextView overview = (TextView) holder.itemView.findViewById(R.id.card_text);
-        final ImageView coverArt = (ImageView) holder.itemView.findViewById(R.id.card_image);
-        title.setVisibility(View.GONE);
-        holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.GONE);
-        holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.GONE);
-
+    public void onBindViewHolder(final BrowseTVShowsViewHolder holder, final int position) {
+        holder.progressSpinner.setVisibility(View.GONE);
+        holder.watchedLayout.setVisibility(View.GONE);
+        holder.watchListLayout.setVisibility(View.GONE);
+        holder.showName.setVisibility(View.GONE);
         String path = showList.get(position).getBackdropPath();
 
         if (path != null) {
-            Picasso.with(activity.getApplicationContext()).load(path).into(coverArt, new com.squareup.picasso.Callback() {
+            Picasso.with(activity.getApplicationContext()).load(path).into(holder.showImage, new com.squareup.picasso.Callback() {
                 @Override
                 public void onSuccess() {
-                    Bitmap bitmap = ((BitmapDrawable) coverArt.getDrawable()).getBitmap(); // Ew!
+                    Bitmap bitmap = ((BitmapDrawable) holder.showImage.getDrawable()).getBitmap(); // Ew!
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     showList.get(position).setBackdropBitmap(stream.toByteArray());
@@ -111,26 +98,25 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 public void onError() {
                 }
             });
-            title.setVisibility(View.VISIBLE);
+            holder.showName.setVisibility(View.VISIBLE);
         }
 
-        title.setText(showList.get(position).getName());
-        overview.setText(showList.get(position).getOverview());
+        holder.showName.setText(showList.get(position).getName());
+        holder.showDescription.setText(showList.get(position).getOverview());
 
         // Build the query looking at all users:
         Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
 
-        RealmQuery<JSONShow> watchedQuery = uiRealm.where(JSONShow.class);
-        RealmResults<JSONShow> watchedShows = watchedQuery.equalTo("isWatched", true).equalTo("id", showList.get(position).getId()).findAll();
+        RealmResults<JSONShow> watchedShows = uiRealm.where(JSONShow.class).equalTo("isWatched", true).equalTo("id", showList.get(position).getId()).findAll();
         if (watchedShows.size() == 1) {
-            holder.itemView.findViewById(R.id.watched_layout).setVisibility(View.VISIBLE);
+            holder.watchedLayout.setVisibility(View.VISIBLE);
+            holder.actionButton.setVisibility(View.GONE);
         }
 
-        RealmQuery<JSONShow> watchListQuery = uiRealm.where(JSONShow.class);
-        RealmResults<JSONShow> watchListShows = watchListQuery.equalTo("onWatchList", true).equalTo("id", showList.get(position).getId()).findAll();
-
+        RealmResults<JSONShow> watchListShows = uiRealm.where(JSONShow.class).equalTo("onWatchList", true).equalTo("id", showList.get(position).getId()).findAll();
         if (watchListShows.size() == 1) {
-            holder.itemView.findViewById(R.id.watch_list_layout).setVisibility(View.VISIBLE);
+            holder.watchListLayout.setVisibility(View.VISIBLE);
+            holder.actionButton.setVisibility(View.GONE);
         }
     }
 
@@ -140,15 +126,14 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     }
 
     public class BrowseTVShowsViewHolder extends RecyclerView.ViewHolder {
-
         @BindView(R.id.card_title)
-        TextView movieTitle;
+        TextView showName;
 
         @BindView(R.id.card_image)
-        ImageView movieImage;
+        ImageView showImage;
 
         @BindView(R.id.card_text)
-        TextView movieDescription;
+        TextView showDescription;
 
         @BindView(R.id.watched_layout)
         RelativeLayout watchedLayout;
@@ -158,6 +143,10 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
         @BindView(R.id.action_button)
         IconicsButton actionButton;
+
+        @BindView(R.id.progress_spinner)
+        ProgressBar progressSpinner;
+
 
         public BrowseTVShowsViewHolder(View v) {
             super(v);
@@ -176,13 +165,14 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     context.startActivity(intent);
                 }
             });
+
             actionButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(final View v) {
+                    progressSpinner.setVisibility(View.VISIBLE);
+
                     final int showID = showList.get(getAdapterPosition()).getId();
-
-
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl("http://api.themoviedb.org/3/tv/")
                             .addConverterFactory(GsonConverterFactory.create())
@@ -194,7 +184,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     call.enqueue(new Callback<TVShow>() {
                         @Override
                         public void onResponse(retrofit.Response<TVShow> response, Retrofit retrofit) {
-                            Log.d("getMovie()", "Callback Success");
                             TVShow show = response.body();
                             show.setBackdropPath("https://image.tmdb.org/t/p/w780/" + show.getBackdropPath());
                             realmShow = show.convertToRealm();
@@ -205,7 +194,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                             call.enqueue(new Callback<Credits>() {
                                 @Override
                                 public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
-                                    Log.d("GetCredits()", "Callback Success");
                                     List<Cast> cast = response.body().getCast();
                                     List<Crew> crew = response.body().getCrew();
 
@@ -240,6 +228,9 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
                                             Snackbar.make(v, "Added to your shows!",
                                                     Snackbar.LENGTH_LONG).show();
+
+                                            progressSpinner.setVisibility(View.GONE);
+                                            actionButton.setVisibility(View.GONE);
                                         }
 
                                         @Override
@@ -257,22 +248,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     Picasso.with(activity.getApplicationContext())
                                             .load(realmShow.getBackdropPath())
                                             .into(target);
-
-
-
-
-                                    /*Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
-                                    uiRealm.beginTransaction();
-                                    realmShow.setOnWatchList(true);
-                                    uiRealm.copyToRealm(realmShow);
-                                    uiRealm.commitTransaction();
-                                    RealmQuery<JSONShow> query = uiRealm.where(JSONShow.class);
-                                    RealmResults<JSONShow> movies = query.equalTo("onWatchList", true).findAll();
-                                    Log.d("Watch List Size", Integer.toString(movies.size()));
-                                    RealmResults<JSONShow> watchedMovies = query.equalTo("isWatched", true).findAll();
-                                    Log.d("Watched List Size", Integer.toString(watchedMovies.size()));
-                                    Log.d("url", realmShow.getBackdropPath());*/
-
                                 }
 
                                 @Override
