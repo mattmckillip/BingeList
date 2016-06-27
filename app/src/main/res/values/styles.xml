@@ -27,8 +27,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/md_keylines</item>
-        <item name="android:src">@drawable/ic_add_white_24dp</item>
         <item name="borderWidth">0dp</item>
+        <item name="android:scaleType">center</item>
         <item name="elevation">6dp</item>
         <item name="pressedTranslationZ">12dp</item>
         <item name="rippleColor">@android:color/white</item>

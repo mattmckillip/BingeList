@@ -33,6 +33,33 @@
     <string name="important">Important</string>
     <string name="documents">Documents</string>
 
+    <!-- API Strings -->
+    <string name="image_base_url">https://image.tmdb.org/t/p/</string>
+    <string name="movie_base_url">http://api.themoviedb.org/3/movie/</string>
+
+    <!-- UI Strings -->
+    <string name="overview_title">Overview</string>
+    <string name="plot_title">Plot</string>
+    <string name="cast_title">Cast</string>
+    <string name="crew_title">Crew</string>
+
+    <string name="rating_header">User Rating</string>
+    <string name="runtime_header">Runtime</string>
+    <string name="genre_header">Genres</string>
+
+    <string name="see_more">See more</string>
+
+    <string name="expand_collapse_description">ExpandCollapseArrow</string>
+    <string name="movie_backdrop_description">MovieDetailBackdrop</string>
+
+
+    <!-- button image text -->
+    <string name="add_to_watchlist_button">{gmd_add_to_queue} add to watchlist!</string>
+    <string name="watch_button">{gmd_ondemand_video} watch!</string>
+    <string name="watched_button">{gmd_done} watched!</string>
+    <string name="imdb_button">{gmd_exit_to_app} IMDb</string>
+
+
     <!-- Drawer Items -->
     <string name="drawer_item_show_header">TV Shows</string>
     <string name="drawer_item_movie_header">Movies</string>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/watch_list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/watch_list_blur"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_image_height"
+        android:background="#000000"
+        android:alpha=".50"/>
+
+    <ImageView
+        android:id="@+id/watchlist_icon"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_overlay_image_height"
+        android:layout_centerInParent="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="On watchlist!"
+        android:layout_marginTop="60dp"
+        android:layout_below="@+id/watchlist_icon"
+        android:textColor="@color/white"
+        android:textStyle="bold"/>
+</RelativeLayout>

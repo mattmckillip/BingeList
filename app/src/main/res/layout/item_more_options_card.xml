@@ -17,7 +17,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/tv_card_height"
+    android:layout_height="@dimen/card_height"
     android:layout_gravity="center"
     android:layout_marginBottom="@dimen/md_keylines"
     android:layout_marginLeft="@dimen/md_keylines"
@@ -35,12 +35,12 @@
             android:layout_height="@dimen/card_image_height"
             android:scaleType="centerCrop" />
 
-        <ImageView
-            android:id="@+id/title_background"
+        <!-- Bottom Scrim -->
+        <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_backgound_height"
-            android:background="#000000"
-            android:alpha=".250"
+            android:layout_height="@dimen/card_scrim_height"
+            android:layout_gravity="bottom"
+            android:background="@drawable/scrim_bottom_layout"
             android:layout_alignBottom="@+id/card_title"/>
 
         <TextView
@@ -56,6 +56,12 @@
             android:shadowDy="1.0"
             android:shadowRadius="5.0" />
 
+        <!-- Watchlist overlay -->
+        <include layout="@layout/movie_watchlist_overlay" />
+
+        <!-- Watched overlay -->
+        <include layout="@layout/movie_watched_overlay" />
+
         <TextView
             android:id="@+id/card_text"
             android:layout_width="match_parent"
@@ -68,43 +74,46 @@
             android:maxLines="2"
             android:lines="2"
             android:textColor="@color/dark_grey"
-            android:textSize="@dimen/article_subheading" />
-
-        <!--<ImageButton
-            android:id="@+id/episodes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_more_vert_black_24dp"
-            android:layout_below="@+id/card_text"
-            style="?android:attr/borderlessButtonStyle"
-            android:tint="@color/button_grey"
-            />-->
-
-        <TextView
-            android:id="@+id/episodes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="10/30"
-            android:layout_marginTop="@dimen/md_keylines"
-            android:layout_marginLeft="@dimen/md_keylines"
-            android:layout_below="@+id/card_text"
-            android:textColor="@color/dark_grey"
-            android:textSize="@dimen/article_subheading" />
+            android:textSize="@dimen/article_subheading"/>
 
         <com.mikepenz.iconics.view.IconicsButton
+            android:id="@+id/action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="{gmd_add_to_queue} add to watchlist!"
+            android:textColor="?attr/colorPrimary"
+            android:layout_alignParentBottom="true"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <ImageButton
             android:id="@+id/more_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="false"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/card_text"
+            style="?android:attr/borderlessButtonStyle"
+            android:tint="@color/button_grey"/>
+
+        <!--<com.mikepenz.iconics.view.IconicsButton
+            android:id="@+id/more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:text="{gmd_more_vert}"
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
-            android:tint="@color/button_grey"
-            android:layout_marginTop="@dimen/md_keylines"
-            android:layout_alignBottom="@+id/episodes"
-            android:layout_alignParentEnd="true"/>
+            android:tint="@color/button_grey"/>-->
+
+        <ProgressBar
+            android:id="@+id/progress_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:foregroundGravity="clip_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="false"
+            android:layout_alignParentTop="false" />
 
     </RelativeLayout>
+
 </android.support.v7.widget.CardView>

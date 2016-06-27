@@ -67,12 +67,9 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_margin="@dimen/fab_margin"
-            app:fab_size="normal"
-            app:layout_behavior="com.example.matt.movieWatchList.uitls.ScrollingFabBehavior"/>
+            style="@style/FabStyle"
+            app:layout_behavior="com.example.matt.bingeList.uitls.ScrollingFabBehavior"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </android.support.v4.widget.DrawerLayout>

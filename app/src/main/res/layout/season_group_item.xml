@@ -35,7 +35,6 @@
         <ImageView
             android:id="@+id/season_poster"
             android:contentDescription="Season Poster"
-            android:src="@drawable/season_poster"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
@@ -73,7 +72,7 @@
             android:layout_toEndOf="@id/season_poster"
             android:layout_below="@+id/number_of_episodes" />
 
-        <com.example.matt.movieWatchList.uitls.ExpandableItemIndicator
+        <com.example.matt.bingeList.uitls.ExpandableItemIndicator
             android:id="@+id/indicator"
             android:layout_width="24dp"
             android:layout_height="24dp"
