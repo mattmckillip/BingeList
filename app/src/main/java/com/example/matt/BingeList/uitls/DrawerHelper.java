@@ -9,8 +9,8 @@ import android.view.View;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.viewControllers.activities.SearchActivity;
 import com.example.matt.bingeList.viewControllers.activities.SettingsActivity;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseActivity;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowWatchListActivity;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
@@ -85,9 +85,9 @@ public class DrawerHelper {
                             } else if (drawerItem.getIdentifier() == 1001) {
                                 intent = new Intent(currentActivity, TVShowBrowseActivity.class);
                             } else if (drawerItem.getIdentifier() == 2000) {
-                                intent = new Intent(currentActivity, MovieWatchListActivity.class);
+                                intent = new Intent(currentActivity, WatchlistActivity.class);
                             } else if (drawerItem.getIdentifier() == 2001) {
-                                intent = new Intent(currentActivity, MovieBrowseActivity.class);
+                                intent = new Intent(currentActivity, BrowseMoviesActivity.class);
                             } else if (drawerItem.getIdentifier() == 3000) {
                                 intent = new Intent(currentActivity, SearchActivity.class);
                             } else if (drawerItem.getIdentifier() == 4000) {
@@ -98,7 +98,7 @@ public class DrawerHelper {
                             }
                             if (intent != null) {
                                 currentActivity.startActivity(intent);
-                                //MovieWatchListActivity.this.startActivity(intent);
+                                //WatchlistActivity.this.startActivity(intent);
                             }
                         }
 
@@ -116,9 +116,9 @@ public class DrawerHelper {
             result.setSelection(1000, false);
         } else if (currentActivity.getClass().equals(TVShowBrowseActivity.class)) {
             result.setSelection(1001, false);
-        } else if (currentActivity.getClass().equals(MovieWatchListActivity.class)) {
+        } else if (currentActivity.getClass().equals(WatchlistActivity.class)) {
             result.setSelection(2000, false);
-        } else if (currentActivity.getClass().equals(MovieBrowseActivity.class)) {
+        } else if (currentActivity.getClass().equals(BrowseMoviesActivity.class)) {
             result.setSelection(2001, false);
         } else if (currentActivity.getClass().equals(SearchActivity.class)) {
             result.setSelection(3000, false);

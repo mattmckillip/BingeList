@@ -7,6 +7,7 @@ import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by Matt on 6/7/2016.
@@ -29,4 +30,13 @@ public interface MovieAPI {
 
     @GET("top_rated?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
     Call<MovieQueryReturn> getTopRatedMovies();
+
+    @GET("popular?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+    Call<MovieQueryReturn> getPopularMoviesPage(@Query("page") String page);
+
+    @GET("now_playing?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+    Call<MovieQueryReturn> getInTheatersMoviesPage(@Query("page") String page);
+
+    @GET("top_rated?language=en&api_key=788bf2d4d9f5db03979efed58cbf6713")
+    Call<MovieQueryReturn> getTopRatedMoviesPage(@Query("page") String page);
 }

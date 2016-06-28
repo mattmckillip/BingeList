@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseDetailActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.picasso.Picasso;
@@ -84,7 +84,7 @@ public class SimilarMoviesAdapter extends RecyclerView.Adapter<SimilarMoviesAdap
                 @Override
                 public void onClick(View v) {
                     MovieResult movie = mSimilarMovieList.get(getAdapterPosition());
-                    Intent intent = new Intent(v.getContext(), MovieBrowseDetailActivity.class);
+                    Intent intent = new Intent(v.getContext(), BrowseMovieDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     v.getContext().startActivity(intent);
                 }

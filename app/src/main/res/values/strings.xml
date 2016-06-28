@@ -46,6 +46,13 @@
     <string name="rating_header">User Rating</string>
     <string name="runtime_header">Runtime</string>
     <string name="genre_header">Genres</string>
+    <string name="name_header">Name</string>
+    <string name="biography_header">Biography</string>
+    <string name="born_header">Born</string>
+    <string name="died_header">Died</string>
+    <string name="known_for_header">Known For</string>
+
+
 
     <string name="see_more">See more</string>
 
@@ -58,6 +65,7 @@
     <string name="watch_button">{gmd_ondemand_video} watch!</string>
     <string name="watched_button">{gmd_done} watched!</string>
     <string name="imdb_button">{gmd_exit_to_app} IMDb</string>
+    <string name="unwatch_button">{gmd_undo} Unwatch</string>
 
 
     <!-- Drawer Items -->

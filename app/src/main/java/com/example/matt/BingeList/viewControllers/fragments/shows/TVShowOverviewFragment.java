@@ -203,8 +203,8 @@ public class TVShowOverviewFragment extends Fragment {
             @Override
             public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
                 Log.d("GetCredits()", "Callback Success");
-                List<Cast> cast = response.body().getCast();
-                List<Crew> crew = response.body().getCrew();
+                List<PersonCast> cast = response.body().getCast();
+                List<PersonCrew> crew = response.body().getCrew();
 
                 RealmList<JSONCast> realmCast = new RealmList<>();
                 for( int i = 0; i <= 3; i++) {

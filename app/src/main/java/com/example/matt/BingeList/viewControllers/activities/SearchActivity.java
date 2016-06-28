@@ -44,16 +44,16 @@ public class SearchActivity extends AppCompatActivity {
     private SearchAdapter mSearchAdapter;
     private List<MovieResult> mSearchMovieResults;
 
-    @BindView(R.id.search_recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView searchRecyclerView;
 
-    @BindView(R.id.search_toolber)
+    @BindView(R.id.toolber)
     Toolbar toolbar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_activity);
+        setContentView(R.layout.recyclerview_with_appbar);
 
         ButterKnife.bind(this);
 

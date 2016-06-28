@@ -8,7 +8,8 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/material_grey_100">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -17,7 +18,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/search_toolber"
+                android:id="@+id/toolber"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -32,7 +33,7 @@
             tools:context="com.numetriclabz.androidsearch.MainActivity">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/search_recycler_view"
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/toolbar_height"

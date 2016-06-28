@@ -16,29 +16,19 @@
 
 package com.example.matt.bingeList.viewControllers.fragments.movies;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListDetailActivity;
 import com.example.matt.bingeList.viewControllers.adapters.MovieWatchedAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.MoviesWatchListAdapter;
-import com.mikepenz.iconics.view.IconicsButton;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;

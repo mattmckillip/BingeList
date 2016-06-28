@@ -17,34 +17,34 @@
 
         <!-- Movies -->
         <activity
-            android:name="com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListActivity">
+            android:name=".viewControllers.activities.movies.WatchlistActivity">
         </activity>
 
         <activity
-            android:name="com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseActivity">
+            android:name=".viewControllers.activities.movies.BrowseMoviesActivity">
         </activity>
 
         <activity
-            android:name="com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseDetailActivity"
-            android:parentActivityName="com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseActivity"
+            android:name=".viewControllers.activities.movies.BrowseMovieDetailActivity"
+            android:parentActivityName=".viewControllers.activities.movies.BrowseMoviesActivity"
             android:theme="@style/Theme.Slidr.Slidable">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseActivity"/>
+                android:value=".viewControllers.activities.movies.BrowseMoviesActivity"/>
         </activity>
 
         <activity
-            android:name="com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListDetailActivity"
-            android:parentActivityName="com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListActivity"
+            android:name=".viewControllers.activities.movies.WatchlistDetailActivity"
+            android:parentActivityName=".viewControllers.activities.movies.WatchlistActivity"
             android:theme="@style/Theme.Slidr.Slidable">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListActivity"/>
+                android:value=".viewControllers.activities.movies.WatchlistActivity"/>
         </activity>
 
         <activity
-            android:name="com.example.matt.bingeList.viewControllers.activities.movies.MovieSearchActivity">
+            android:name=".viewControllers.activities.movies.SearchMoviesActivity">
         </activity>
 
         <!-- Shows -->
@@ -87,6 +87,21 @@
             android:name="com.example.matt.bingeList.viewControllers.activities.SearchActivity">
         </activity>
 
+        <activity
+            android:name=".viewControllers.activities.movies.SimilarMoviesActivity">
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.CastActivity">
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.CrewActivity">
+        </activity>
+
+        <activity
+            android:name=".viewControllers.activities.PersonActivity">
+        </activity>
     </application>
 
 </manifest>

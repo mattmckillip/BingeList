@@ -1,6 +1,7 @@
 package com.example.matt.bingeList.viewControllers.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.viewControllers.activities.CastActivity;
+import com.example.matt.bingeList.viewControllers.activities.PersonActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.picasso.Picasso;
@@ -82,11 +85,10 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CrewViewHolder
                 @Override
                 public void onClick(View v) {
                     Cast castMember = mCastList.get(getAdapterPosition());
-                    Toast.makeText(mContext, castMember.getName(), Toast.LENGTH_SHORT).show();
-
-                    /*Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
-                    intent.putExtra("movieId", movie.getId());
-                    context.startActivity(intent);*/
+                    Intent intent = new Intent(mContext, PersonActivity.class);
+                    intent.putExtra("personId", castMember.getId());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
                 }
             });
         }

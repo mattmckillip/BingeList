@@ -5,25 +5,26 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
-import com.example.matt.bingeList.models.Crew;
 import com.example.matt.bingeList.models.MultiSearchResult;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseDetailActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.squareup.picasso.Picasso;
@@ -34,8 +35,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
-import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,12 +45,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.SearchViewHolder> {
+    private static final String TAG = MultiSearchAdapter.class.getName();
     private static final String MOVIE_TYPE = "movie";
     private static final String SHOW_TYPE = "tv";
 
     private List<MultiSearchResult> mMultiSearchResults;
     private Context mContext;
     private Realm mUIrealm;
+
+    private Movie mMovie;
+    private TVShow mTvShow;
+    private Credits mCredits;
+
 
     public MultiSearchAdapter(List<MultiSearchResult> results, Context context, Realm uiRealm) {
         mMultiSearchResults = results;
@@ -99,7 +106,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         }
 
         Picasso.with(mContext)
-                .load("https://image.tmdb.org/t/p/w342/" + result.getBackdropPath())
+                .load("https://image.tmdb.org/t/p/" + mContext.getString(R.string.image_size_w500) + result.getBackdropPath())
                 .error(R.drawable.generic_movie_background)
                 .into(searchViewHolder.mediaImage);
     }
@@ -114,8 +121,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
     }
 
     public class SearchViewHolder extends RecyclerView.ViewHolder {
-        private Movie movie;
-
         @BindView(R.id.card_title)
         TextView mediaTitle;
 
@@ -134,9 +139,26 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         @BindView(R.id.watch_list_layout)
         RelativeLayout watchListLayout;
 
-
         @BindView(R.id.progress_spinner)
         ProgressBar progressSpinner;
+
+        @BindView(R.id.more_button)
+        ImageButton mMoreOptionsButton;
+
+        @OnClick(R.id.more_button)
+        public void setmMoreOptionsButton(View view) {
+            Log.d(TAG, "moreOptionsButtonClick()");
+
+            PopupMenu popup = new PopupMenu(mContext, mMoreOptionsButton);
+            popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    Log.d(TAG, "More options clicked");
+                    return true;
+                }
+            });
+            popup.show();
+        }
 
         public SearchViewHolder(View v) {
             super(v);
@@ -149,17 +171,18 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                     MultiSearchResult result = mMultiSearchResults.get(getAdapterPosition());
 
                     if (result.getMediaType().equals(MOVIE_TYPE)) {
-                        Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
+                        Log.d(TAG, "movieId" + Integer.toString(result.getId()));
+                        Intent intent = new Intent(context, BrowseMovieDetailActivity.class);
                         intent.putExtra("movieId", result.getId());
                         context.startActivity(intent);
                     } else if (result.getMediaType().equals(SHOW_TYPE)) {
-                        Log.d("SHOWID", Integer.toString(result.getId()));
+                        Log.d(TAG, "showId" + Integer.toString(result.getId()));
                         Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
                         intent.putExtra("showID", result.getId());
                         intent.putExtra("showName", result.getName());
                         context.startActivity(intent);
                     } else {
-                        Log.d("CLICK", "ERROR");
+                        Log.d(TAG, "ERROR");
                     }
                 }
             });
@@ -184,9 +207,9 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                         call.enqueue(new Callback<Movie>() {
                             @Override
                             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                                Log.d("getMovie()", "Callback Success");
-                                movie = response.body();
-                                movie.setBackdropPath("https://image.tmdb.org/t/p/w780/" + movie.getBackdropPath());
+                                Log.d(TAG, "getMovie() Callback Success");
+                                mMovie = response.body();
+                                mMovie.setBackdropPath("https://image.tmdb.org/t/p/"  + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
 
                                 Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("http://api.themoviedb.org/3/movie/")
@@ -199,30 +222,20 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                                 creditsCall.enqueue(new Callback<Credits>() {
                                     @Override
                                     public void onResponse(Call<Credits> call, Response<Credits> response) {
-                                        Log.d("GetCredits()", "Callback Success");
-                                        List<Cast> cast = response.body().getCast();
-                                        List<Crew> crew = response.body().getCrew();
-
-                                        RealmList<Cast> realmCast = new RealmList<>();
-                                        /*for (Cast castMember : cast) {
-                                            realmCast.add(castMember.convertToRealm());
-                                        }*/
-
-                                        RealmList<Cast> realmCrew = new RealmList<>();
-                                        /*for (Crew crewMember : crew) {
-                                            realmCrew.add(crewMember.convertToRealm());
-                                        }*/
+                                        Log.d(TAG, "GetCredits Callback Success");
+                                        mCredits = response.body();
 
                                         Target target = new Target() {
                                             @Override
                                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                                movie.setBackdropBitmap(stream.toByteArray());
+                                                mMovie.setBackdropBitmap(stream.toByteArray());
 
                                                 mUIrealm.beginTransaction();
-                                                movie.setOnWatchList(true);
-                                                mUIrealm.copyToRealm(movie);
+                                                mMovie.setOnWatchList(true);
+                                                mUIrealm.copyToRealmOrUpdate(mMovie);
+                                                mUIrealm.copyToRealmOrUpdate(mCredits);
                                                 mUIrealm.commitTransaction();
 
                                                 watchListLayout.setVisibility(View.VISIBLE);
@@ -242,24 +255,20 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                                         };
 
                                         Picasso.with(mContext)
-                                                .load(movie.getBackdropPath())
+                                                .load(mMovie.getBackdropPath())
                                                 .into(target);
-
-                                        /*realmMovie.setCrew(realmCrew);
-                                        realmMovie.setCast(realmCast);*/
                                     }
 
                                     @Override
                                     public void onFailure(Call<Credits> call, Throwable t) {
-                                        Log.d("GetCredits()", "Callback Failure");
+                                        Log.d(TAG, "GetCredits() Callback Failure");
                                     }
                                 });
-                                //TODOgenre
                             }
 
                             @Override
                             public void onFailure(Call<Movie> call, Throwable t) {
-                                Log.d("getMovie()", "Callback Failure");
+                                Log.d(TAG, "getMovie() Callback Failure");
                             }
                         });
                     }
@@ -268,4 +277,3 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         }
     }
 }
-

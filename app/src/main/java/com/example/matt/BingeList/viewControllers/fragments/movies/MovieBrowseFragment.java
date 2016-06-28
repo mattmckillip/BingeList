@@ -32,6 +32,7 @@ import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.BrowseMovieType;
+import com.example.matt.bingeList.uitls.EndlessRecyclerOnScrollListener;
 import com.example.matt.bingeList.viewControllers.adapters.MovieBrowseAdapter;
 
 import java.util.List;
@@ -52,6 +53,7 @@ public class MovieBrowseFragment extends Fragment {
     private RecyclerView recyclerView;
     private MovieBrowseAdapter mBrowseMoviesAdapter;
     private Integer movieType;
+    private Integer mPage;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,17 +64,72 @@ public class MovieBrowseFragment extends Fragment {
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         recyclerView.setAdapter(mBrowseMoviesAdapter);
-        RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(castLayoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         loadData();
+        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int current_page) {
+                // do something...
+                Log.d(TAG, "loadData()");
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://api.themoviedb.org/3/movie/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                MovieAPI service = retrofit.create(MovieAPI.class);
+
+                Call<MovieQueryReturn> call;
+                if (movieType == BrowseMovieType.POPULAR) {
+                    call = service.getPopularMoviesPage(Integer.toString(mPage));
+                } else if (movieType == BrowseMovieType.NOW_SHOWING) {
+                    call = service.getInTheatersMoviesPage(Integer.toString(mPage));
+                } else if (movieType == BrowseMovieType.TOP_RATED) {
+                    call = service.getTopRatedMoviesPage(Integer.toString(mPage));
+                } else {
+                    call = null;
+                }
+                if (call != null) {
+                    mPage++;
+                    call.enqueue(new Callback<MovieQueryReturn>() {
+                        @Override
+                        public void onResponse(Call<MovieQueryReturn> call, Response<MovieQueryReturn> response) {
+                            Log.d(TAG, response.raw().toString());
+
+                            if (response.isSuccessful()) {
+                                List<MovieResult> movieResults = response.body().getMovieResults();
+                                data = new RealmList<>();
+                                for (MovieResult movieResult : movieResults) {
+                                    Movie movie = new Movie();
+                                    movie.setTitle(movieResult.getTitle());
+                                    movie.setId(movieResult.getId());
+                                    movie.setOverview(movieResult.getOverview());
+                                    movie.setBackdropPath("https://image.tmdb.org/t/p/" + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                                    data.add(movie);
+                                }
+                                mBrowseMoviesAdapter.addMoreMovies(data);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MovieQueryReturn> call, Throwable t) {
+                            Log.d(TAG, "MovieQueryReturn - Failure");
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "Null call");
+                }
+
+            }
+        });
 
         return recyclerView;
     }
 
     public void loadData() {
         Log.d(TAG, "loadData()");
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/movie/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -119,6 +176,7 @@ public class MovieBrowseFragment extends Fragment {
         } else {
             Log.d(TAG, "Null call");
         }
+        mPage = 2;
     }
 
     public void notifyAdapter(){

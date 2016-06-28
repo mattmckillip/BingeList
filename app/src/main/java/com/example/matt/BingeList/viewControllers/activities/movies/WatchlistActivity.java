@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.example.matt.bingeList.viewControllers.activities.movies;
 
 import android.content.Intent;
@@ -16,16 +32,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.uitls.BrowseMovieType;
 import com.example.matt.bingeList.uitls.DrawerHelper;
-import com.example.matt.bingeList.viewControllers.activities.SearchActivity;
-import com.example.matt.bingeList.viewControllers.fragments.movies.MovieBrowseFragment;
 import com.example.matt.bingeList.viewControllers.fragments.movies.MovieWatchListFragment;
-import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -36,14 +47,17 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
-public class MovieBrowseActivity extends AppCompatActivity {
-    private static final String TAG = MovieBrowseActivity.class.getSimpleName();
+/**
+ * Provides UI for the main screen.
+ */
+public class WatchlistActivity extends AppCompatActivity {
+    private static final String TAG = WatchlistActivity.class.getSimpleName();
     private Adapter mAdapterViewPager;
     private Drawer mNavigationDrawer;
     private int mViewPagerPosition;
-
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -67,20 +81,21 @@ public class MovieBrowseActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        mViewPagerPosition = 0;
-
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Browse Movies");
+        getSupportActionBar().setTitle("Movie Watch List");
 
         // Setting ViewPager for each Tabs
         setupViewPager(viewPager);
 
+        mViewPagerPosition = 0;
+
         // Set Tabs inside Toolbar
         tabs.setupWithViewPager(viewPager);
-        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
-        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_theater).color(Color.WHITE));
-        tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
+        if( tabs.getTabAt(0) != null && tabs.getTabAt(1) !=null) {
+            tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
+            tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
+        }
 
         // Create Navigation drawer
         mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
@@ -93,52 +108,44 @@ public class MovieBrowseActivity extends AppCompatActivity {
         }
 
         // Adding Floating Action Button to bottom right of main view
-        fab.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE));;
-
-        final Intent intent = new Intent(this, SearchActivity.class);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(intent);
-            }
-        });
+        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
+        fab.setImageDrawable(search);
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
-        Toast.makeText(getApplicationContext(), "onResume()", Toast.LENGTH_SHORT).show();
-        MovieBrowseFragment movieBrowseFragment = (MovieBrowseFragment) mAdapterViewPager.getItem(mViewPagerPosition);
-        if (movieBrowseFragment != null) {
-            movieBrowseFragment.notifyAdapter();
+        Log.d(TAG, Integer.toString(mViewPagerPosition));
+        Log.d(TAG, Integer.toString(mAdapterViewPager.getCount()));
+        MovieWatchListFragment movieWatchListFragment = (MovieWatchListFragment) mAdapterViewPager.getItem(mViewPagerPosition);
+        if (movieWatchListFragment != null) {
+            movieWatchListFragment.notifyAdapter();
         }
     }
 
+    @OnClick(R.id.fab)
+    public void startMovieBrowseActivity(View view) {
+        // TODO submit data to server...
+        startActivity( new Intent(this, BrowseMoviesActivity.class));
+    }
+
     // Add Fragments to Tabs
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(final ViewPager viewPager) {
         mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
-        Bundle nowShowingBundle = new Bundle();
-        nowShowingBundle.putInt("movieType", BrowseMovieType.NOW_SHOWING);
-        MovieBrowseFragment nowShowingMovies = new MovieBrowseFragment();
-        nowShowingMovies.setArguments(nowShowingBundle);
+        Bundle watchedMoviesBundle = new Bundle();
+        watchedMoviesBundle.putInt("watched", 1);
+        MovieWatchListFragment watchedMovies = new MovieWatchListFragment();
+        watchedMovies.setArguments(watchedMoviesBundle);
 
-        Bundle popularBundle = new Bundle();
-        popularBundle.putInt("movieType", BrowseMovieType.POPULAR);
-        MovieBrowseFragment popularMovies = new MovieBrowseFragment();
-        popularMovies.setArguments(popularBundle);
+        Bundle watchListMoviesBundle = new Bundle();
+        watchListMoviesBundle.putInt("watched", 0);
+        MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
+        watchListMovies.setArguments(watchListMoviesBundle);
 
-        Bundle topRatedBundle = new Bundle();
-        topRatedBundle.putInt("movieType", BrowseMovieType.TOP_RATED);
-        MovieBrowseFragment topRatedMovies = new MovieBrowseFragment();
-        topRatedMovies.setArguments(topRatedBundle);
-
-        mAdapterViewPager.addFragment(popularMovies, "Popular");
-        mAdapterViewPager.addFragment(nowShowingMovies, "In Theaters");
-        mAdapterViewPager.addFragment(topRatedMovies, "Top Rated");
-
+        mAdapterViewPager.addFragment(watchListMovies, "Watch List");
+        mAdapterViewPager.addFragment(watchedMovies, "Watched");
         viewPager.setAdapter(mAdapterViewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -147,7 +154,14 @@ public class MovieBrowseActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "onPageSelected()");
+                    Log.d(TAG, "position " + Integer.toString(position));
+                }
+
                 mViewPagerPosition = position;
+                MovieWatchListFragment movieWatchListFragment = (MovieWatchListFragment) mAdapterViewPager.getItem(position);
+                movieWatchListFragment.notifyAdapter();
             }
 
             @Override
@@ -204,15 +218,6 @@ public class MovieBrowseActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-        return super.onOptionsItemSelected(item);*/
     }
 
     @Override

@@ -43,6 +43,8 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.viewControllers.activities.CastActivity;
+import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.SimilarMoviesAdapter;
@@ -70,7 +72,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MovieWatchListDetailActivity extends AppCompatActivity {
+public class WatchlistDetailActivity extends AppCompatActivity {
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     private static final String TAG = "MovieWLDetailActivity";
     private static final int DEFAULT_COLOR = 0x000000;
@@ -200,30 +202,27 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
 
     @OnClick(R.id.see_more_cast)
     public void seeMoreCast(View view) {
-        Log.d(TAG, "seeMoreCast()");
-
-        Snackbar.make(view, "See more cast",
-                Snackbar.LENGTH_SHORT).show();
+        Intent intent = new Intent(getBaseContext(), CastActivity.class);
+        intent.putExtra("movieID", movieID);
+        startActivity(intent);
     }
 
     @OnClick(R.id.see_more_crew)
     public void seeMoreCrew(View view) {
-        Log.d(TAG, "seeMoreCrew()");
-
-        Snackbar.make(view, "See more crew",
-                Snackbar.LENGTH_SHORT).show();
+        Intent intent = new Intent(getBaseContext(), CrewActivity.class);
+        intent.putExtra("movieID", movieID);
+        startActivity(intent);
     }
 
     @OnClick(R.id.see_more_similar_movies)
     public void seeMoreSimilarMovies(View view) {
-        Snackbar.make(view, "See more similar movies",
-                Snackbar.LENGTH_SHORT).show();
+        Intent intent = new Intent(getBaseContext(), SimilarMoviesActivity.class);
+        intent.putExtra("movieID", movieID);
+        startActivity(intent);
     }
 
     @OnClick(R.id.imdb)
     public void setImdbLink(View view) {
-        Log.d(TAG, "setImdbLink()");
-
         Uri uri = Uri.parse("http://www.imdb.com/title/" + movie.getImdbId());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
@@ -263,8 +262,10 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
         movie = mUiRealm.where(Movie.class).equalTo("id", movieID).findFirst();
         mCredits = mUiRealm.where(Credits.class).equalTo("id", movieID).findFirst();
 
-        mCrew = mCredits.getCrew();
-        mCast = mCredits.getCast();
+        if (mCredits != null) {
+            mCrew = mCredits.getCrew();
+            mCast = mCredits.getCast();
+        }
 
         updateUI();
     }
@@ -292,14 +293,14 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
             Log.d(TAG, "setAdapters()");
         }
 
-        // Cast recycler view
+        // PersonCast recycler view
         castAdapter = new CastAdapter(mCast, mContext, NUMBER_OF_CREW_TO_DISPLAY);
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(mContext);
         castRecyclerView.setLayoutManager(castLayoutManager);
         castRecyclerView.setItemAnimator(new DefaultItemAnimator());
         castRecyclerView.setAdapter(castAdapter);
 
-        // Cast recycler view
+        // PersonCast recycler view
         crewAdapter = new CrewAdapter(mCrew, mContext, NUMBER_OF_CREW_TO_DISPLAY);
         RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(mContext);
         crewRecyclerView.setLayoutManager(crewLayoutManager);
@@ -419,8 +420,8 @@ public class MovieWatchListDetailActivity extends AppCompatActivity {
                 mCrew = mCredits.getCrew();
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "Credits - " + mCredits.toString());
-                    Log.d(TAG, "Cast - " + mCast.toString());
-                    Log.d(TAG, "Crew - " + mCrew.toString());
+                    Log.d(TAG, "PersonCast - " + mCast.toString());
+                    Log.d(TAG, "PersonCrew - " + mCrew.toString());
                 }
 
                 Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCast.size());

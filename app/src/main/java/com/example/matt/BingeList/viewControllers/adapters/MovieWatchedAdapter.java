@@ -21,9 +21,8 @@ import android.widget.TextView;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.Movie;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListDetailActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistDetailActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
@@ -79,7 +78,7 @@ public class MovieWatchedAdapter extends RecyclerView.Adapter<MovieWatchedAdapte
         holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16));
         holder.mMovieTitle.setText(mMovieList.get(position).getTitle());
         holder.mMovieDescription.setText(mMovieList.get(position).getOverview());
-        holder.mUnWatchButton.setText("{gmd_undo} Unwatch");
+        holder.mUnWatchButton.setText(mContext.getString(R.string.unwatch_button));
         holder.mUnWatchButton.setTextColor(ContextCompat.getColor(mContext, R.color.accent));
 
         holder.mUnWatchButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +86,6 @@ public class MovieWatchedAdapter extends RecyclerView.Adapter<MovieWatchedAdapte
             public void onClick(View v) {
                 Movie movie = mMovieList.get(position);
                 String movieTitle = movie.getTitle();
-                Integer movieID = movie.getId();
 
                 mUiRealm.beginTransaction();
                 movie.setOnWatchList(true);
@@ -164,7 +162,7 @@ public class MovieWatchedAdapter extends RecyclerView.Adapter<MovieWatchedAdapte
                 @Override
                 public void onClick(View v) {
                     Movie movie = mMovieList.get(getAdapterPosition());
-                    Intent intent = new Intent(mContext, MovieWatchListDetailActivity.class);
+                    Intent intent = new Intent(mContext, WatchlistDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     mContext.startActivity(intent);
                 }

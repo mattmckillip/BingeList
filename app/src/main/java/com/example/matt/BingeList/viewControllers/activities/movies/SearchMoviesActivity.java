@@ -32,15 +32,13 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by Matt on 6/7/2016.
- */
-public class MovieSearchActivity extends AppCompatActivity {
 
-    @BindView(R.id.search_recycler_view)
+public class SearchMoviesActivity extends AppCompatActivity {
+
+    @BindView(R.id.recycler_view)
     RecyclerView searchRecyclerView;
 
-    @BindView(R.id.search_toolber)
+    @BindView(R.id.toolber)
     Toolbar toolbar;
 
     private SearchAdapter searchAdapter;
@@ -49,7 +47,7 @@ public class MovieSearchActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_activity);
+        setContentView(R.layout.recyclerview_with_appbar);
 
         ButterKnife.bind(this);
 

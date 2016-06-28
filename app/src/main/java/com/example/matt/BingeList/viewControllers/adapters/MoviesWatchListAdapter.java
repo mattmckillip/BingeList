@@ -17,7 +17,7 @@ import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.Movie;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieWatchListDetailActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
 
 import java.util.List;
@@ -181,7 +181,7 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
                 @Override
                 public void onClick(View v) {
                     Movie movie = mMovieList.get(getAdapterPosition());
-                    Intent intent = new Intent(mContext, MovieWatchListDetailActivity.class);
+                    Intent intent = new Intent(mContext, WatchlistDetailActivity.class);
                     intent.putExtra("movieId", movie.getId());
                     mContext.startActivity(intent);
                 }

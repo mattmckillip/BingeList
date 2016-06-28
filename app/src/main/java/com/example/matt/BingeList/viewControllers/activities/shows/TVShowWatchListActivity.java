@@ -19,7 +19,7 @@ import android.view.View;
 
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.DrawerHelper;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchListFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -91,7 +91,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
         fab.setImageDrawable(search);
 
-        final Intent intent = new Intent(this, MovieBrowseActivity.class);
+        final Intent intent = new Intent(this, BrowseMoviesActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

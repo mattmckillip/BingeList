@@ -199,16 +199,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     List<Cast> cast = response.body().getCast();
                                     List<Crew> crew = response.body().getCrew();
 
-                                    RealmList<Cast> realmCast = new RealmList<>();
-                                    /*for (Cast castMember : cast) {
-                                        realmCast.add(castMember.convertToRealm());
-                                    }*/
-
-                                    RealmList<Cast> realmCrew = new RealmList<>();
-                                    /*for (Crew crewMember : crew) {
-                                        realmCrew.add(crewMember.convertToRealm());
-                                    }*/
-
                                     Target target = new Target() {
                                         @Override
                                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

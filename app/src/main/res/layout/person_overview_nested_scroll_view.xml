@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/cardview_light_background"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/more_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/md_keylines"
+        android:paddingRight="@dimen/md_keylines"
+        android:paddingTop="@dimen/md_keylines" >
+
+        <TextView
+            android:id="@+id/overview_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="?attr/colorAccent"
+            android:text="@string/overview_title"
+            android:textSize="@dimen/article_titles"
+            android:layout_marginBottom="@dimen/md_keylines" />
+
+        <TextView
+            android:text="@string/biography_header"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <com.ms.square.android.expandabletextview.ExpandableTextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/expand_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            expandableTextView:maxCollapsedLines="4"
+            expandableTextView:animDuration="200" >
+
+            <TextView
+                android:id="@id/expandable_text"
+                android:paddingLeft="@dimen/md_keylines"
+                android:paddingStart="@dimen/md_keylines"
+                android:paddingRight="@dimen/md_keylines"
+                android:paddingEnd="@dimen/md_keylines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@id/expand_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:layout_gravity="end|bottom"
+                android:contentDescription="@string/expand_collapse_description"
+                android:background="@android:color/transparent" />
+
+        </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+        <TextView
+            android:text="@string/born_header"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <TextView
+            android:id="@+id/born"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <TextView
+            android:id="@+id/died_header"
+            android:text="@string/died_header"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <TextView
+            android:id="@+id/died"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <com.mikepenz.iconics.view.IconicsButton
+            android:id="@+id/imdb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/imdb_button"
+            android:textColor="?attr/colorPrimary"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <TextView
+            android:id="@+id/known_for_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorAccent"
+            android:text="@string/known_for_header"
+            android:textSize="@dimen/article_titles"
+            android:layout_marginBottom="@dimen/md_keylines" />
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/known_for_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"/>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/see_more_known_for"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/see_more"
+            android:textColor="@color/colorPrimary"
+            style="?android:attr/borderlessButtonStyle"
+            />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

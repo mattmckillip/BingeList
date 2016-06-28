@@ -24,7 +24,7 @@ import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.viewControllers.activities.movies.MovieBrowseDetailActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
@@ -57,6 +57,13 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         mContext = context;
         mUiRealm = uiRealm;
         setHasStableIds(true);
+    }
+
+    public void addMoreMovies(RealmList<Movie> additionMovies){
+        for (Movie movieToAdd: additionMovies){
+            movieList.add(movieToAdd);
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -147,9 +154,6 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
 
         @BindView(R.id.watch_list_layout)
         RelativeLayout mWatchListLayout;
-
-        //@BindView(R.id.more_button)
-        //IconicsButton mMoreOptionsButton;
 
         @BindView(R.id.more_button)
         ImageButton mMoreOptionsButton;
@@ -320,7 +324,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
                     Log.d(TAG, "itemViewClick()");
                     Context context = v.getContext();
                     Integer movieId = mMovieList.get(getAdapterPosition()).getId();
-                    Intent intent = new Intent(context, MovieBrowseDetailActivity.class);
+                    Intent intent = new Intent(context, BrowseMovieDetailActivity.class);
                     intent.putExtra("movieId", movieId);
                     context.startActivity(intent);
                 }
