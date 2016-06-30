@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
@@ -92,7 +93,7 @@ public class WatchlistActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         tabs.setupWithViewPager(viewPager);
-        if( tabs.getTabAt(0) != null && tabs.getTabAt(1) !=null) {
+        if( tabs.getTabAt(0) != null && tabs.getTabAt(1) != null) {
             tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
             tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
         }
@@ -113,11 +114,12 @@ public class WatchlistActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
+
         Log.d(TAG, Integer.toString(mViewPagerPosition));
         Log.d(TAG, Integer.toString(mAdapterViewPager.getCount()));
+
         MovieWatchListFragment movieWatchListFragment = (MovieWatchListFragment) mAdapterViewPager.getItem(mViewPagerPosition);
         if (movieWatchListFragment != null) {
             movieWatchListFragment.notifyAdapter();
@@ -158,7 +160,6 @@ public class WatchlistActivity extends AppCompatActivity {
                     Log.d(TAG, "onPageSelected()");
                     Log.d(TAG, "position " + Integer.toString(position));
                 }
-
                 mViewPagerPosition = position;
                 MovieWatchListFragment movieWatchListFragment = (MovieWatchListFragment) mAdapterViewPager.getItem(position);
                 movieWatchListFragment.notifyAdapter();
@@ -173,7 +174,7 @@ public class WatchlistActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main_sort, menu);
         MenuItem sortItem = menu.findItem(R.id.action_sort);
         sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
         return true;

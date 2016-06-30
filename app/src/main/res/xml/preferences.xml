@@ -1,29 +1,39 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Section 1">
+        android:title="Movie Settings">
 
         <CheckBoxPreference
-            android:key="checkbox_preference"
-            android:title="Checkbox"
-            android:defaultValue="default_checkbox_preference"/>
-
-        <EditTextPreference
-            android:key="edittext_preference"
-            android:title="Edit Text"
+            android:key="hide_watched_movies_preference"
+            android:title="Hide watched movies"
             android:summary="Summary"
-            android:dialogTitle="Dialog"
-            android:dependency="checkbox_preference" />
-
+            android:defaultValue="false"/>
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Section 2">
+        android:title="TV Settings">
 
         <Preference
             android:title="Title">
             <intent android:action="android.intent.action.VIEW"
                 android:data="http://codepath.com/" />
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="General Settings">
+
+        <CheckBoxPreference
+            android:key="checkbox_preference"
+            android:title="Fetch HD Images"
+            android:summary="Summary"
+            android:defaultValue="false"/>
+
+        <Preference
+            android:title="View repository">
+            <intent android:action="android.intent.action.VIEW"
+                android:data="https://github.com/mattmckillip/BingeList" />
         </Preference>
 
     </PreferenceCategory>

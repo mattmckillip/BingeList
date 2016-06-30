@@ -2,6 +2,7 @@ package com.example.matt.bingeList.viewControllers.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.matt.bingeList.models.Credits;
+import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
@@ -32,13 +34,16 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,97 +52,86 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.BrowseMoviesViewHolder> {
-    private RealmList<Movie> movieList;
+    private RealmList<Movie> mMovieList;
     private static final String TAG = MovieBrowseAdapter.class.getSimpleName();
     private Context mContext;
     private Realm mUiRealm;
+    private Movie mMovie;
+    private int viewMode;
 
     public MovieBrowseAdapter(RealmList<Movie> movieList, Context context, Realm uiRealm) {
-        this.movieList = movieList;
+        mMovieList = movieList;
         mContext = context;
         mUiRealm = uiRealm;
         setHasStableIds(true);
+        viewMode = 0;
     }
 
     public void addMoreMovies(RealmList<Movie> additionMovies){
         for (Movie movieToAdd: additionMovies){
-            movieList.add(movieToAdd);
+            mMovieList.add(movieToAdd);
         }
         notifyDataSetChanged();
     }
 
     @Override
     public BrowseMoviesViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.
-                from(viewGroup.getContext()).
-                inflate(R.layout.item_more_options_card, viewGroup, false);
+        View itemView = null;
+        if (viewMode == 0) {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_card, viewGroup, false);
+        } else if (viewMode == 1){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_compact_card, viewGroup, false);
+        } else {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_card, viewGroup, false);
+        }
 
-        return new BrowseMoviesViewHolder(itemView, mContext, mUiRealm, movieList);
+        return new BrowseMoviesViewHolder(itemView, mContext, mUiRealm, mMovieList);
     }
 
     @Override
-    public void onBindViewHolder(final BrowseMoviesViewHolder holder, final int position) {
+    public void onBindViewHolder(BrowseMoviesViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder()");
-
         holder.mProgressSpinner.setVisibility(View.GONE);
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
         holder.mMovieTitle.setVisibility(View.GONE);
-        holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16));
 
-        holder.mMovieTitle.setText(movieList.get(position).getTitle());
-        holder.mMovieDescription.setText(movieList.get(position).getOverview());
+        holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16).color(ContextCompat.getColor(mContext, R.color.button_grey)));
+
+        holder.mMovieTitle.setText(mMovieList.get(position).getTitle());
+        holder.mMovieDescription.setText(mMovieList.get(position).getOverview());
 
         Picasso.with(mContext)
-                .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) +  movieList.get(position).getBackdropPath())
+                .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) +  mMovieList.get(position).getBackdropPath())
                 .error(R.drawable.generic_movie_background)
                 .into(holder.mMovieImage);
+
         holder.mMovieTitle.setVisibility(View.VISIBLE);
 
-        setActionButton(holder, movieList.get(position).getId());
+        setActionButton(holder, position);
+        setListeners(holder, position);
     }
 
-    private void setActionButton(BrowseMoviesViewHolder holder, Integer movieId) {
-        long watchedMovies = mUiRealm.where(Movie.class).equalTo("isWatched", true).equalTo("id", movieId).count();
-        long watchListMovies = mUiRealm.where(Movie.class).equalTo("onWatchList", true).equalTo("id", movieId).count();
-
-        if (watchListMovies > 0) {
-            holder.mWatchListLayout.setVisibility(View.VISIBLE);
-            holder.mAddToWatchListButton.setText(mContext.getString(R.string.watch_button));
-            holder.mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
-
-        } else if (watchedMovies > 0) {
-            holder.mWatchedLayout.setVisibility(View.VISIBLE);
-            holder.mWatchedIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
-            holder.mAddToWatchListButton.setText(mContext.getString(R.string.watched_button));
-            holder.mAddToWatchListButton.setEnabled(false);
-            holder.mAddToWatchListButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
-
-        } else {
-            holder.mWatchListLayout.setVisibility(View.GONE);
-            holder.mWatchedLayout.setVisibility(View.GONE);
-            holder.mAddToWatchListButton.setText(mContext.getString(R.string.add_to_watchlist_button));
-            holder.mAddToWatchListButton.setEnabled(true);
-            holder.mAddToWatchListButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
-        }
-    }
     @Override
     public long getItemId(int position){
-        return movieList.get(position).getId();
+        return mMovieList.get(position).getId();
     }
 
     @Override
     public int getItemCount() {
-        return movieList.size();
+        return mMovieList.size();
     }
 
+    // VIEW HOLDER
     public static class BrowseMoviesViewHolder extends RecyclerView.ViewHolder {
         private static final String TAG = BrowseMoviesViewHolder.class.getSimpleName();
-        private Movie mMovie;
-        private Integer mMovieId;
-        private Credits mCredits;
         private Context mContext;
-        private Realm mUiRealm;
         private List<Movie> mMovieList;
 
         @BindView(R.id.card_title)
@@ -159,7 +153,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         ImageButton mMoreOptionsButton;
 
         @BindView(R.id.action_button)
-        IconicsButton mAddToWatchListButton;
+        IconicsButton mActionButton;
 
         @BindView(R.id.progress_spinner)
         ProgressBar mProgressSpinner;
@@ -170,150 +164,10 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         @BindView(R.id.watchlist_icon)
         ImageView mWatchlistIcon;
 
-        @OnClick(R.id.action_button)
-        public void setmAddToWatchListButton(final View view) {
-            Log.d(TAG, "actionButtonClick()");
-            mProgressSpinner.setVisibility(View.VISIBLE);
-
-            int movieId = mMovieList.get(getAdapterPosition()).getId();
-            long movieIsWatched = mUiRealm.where(Movie.class).equalTo("onWatchList", true).equalTo("id", movieId).count();
-
-            if (movieIsWatched > 0) {
-                mMovie = mUiRealm.where(Movie.class).equalTo("id", mMovieList.get(getAdapterPosition()).getId()).findFirst();
-
-                Log.d(TAG, Integer.toString(mMovie.getBackdropBitmap().length));
-                mUiRealm.beginTransaction();
-                mMovie.setOnWatchList(false);
-                mMovie.setWatched(true);
-                mUiRealm.copyToRealmOrUpdate(mMovie);
-                mUiRealm.commitTransaction();
-
-                mWatchedLayout.setVisibility(View.VISIBLE);
-                mWatchedIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
-                mWatchListLayout.setVisibility(View.INVISIBLE);
-                mAddToWatchListButton.setText(mContext.getString(R.string.watched_button));
-                mAddToWatchListButton.setEnabled(false);
-                mAddToWatchListButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
-                mProgressSpinner.setVisibility(View.GONE);
-
-                Snackbar.make(view, "Watched!", Snackbar.LENGTH_LONG).show();
-            } else {
-                mMovieId = mMovieList.get(getAdapterPosition()).getId();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(mContext.getString(R.string.movie_base_url))
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                MovieAPI service = retrofit.create(MovieAPI.class);
-                Call<Movie> call = service.getMovie(Integer.toString(mMovieId));
-
-                call.enqueue(new Callback<Movie>() {
-                    @Override
-                    public void onResponse(Call<Movie> call, Response<Movie> response) {
-                        if (response.isSuccessful()){
-                            Log.d(TAG, "Movie Success");
-                            mMovie = response.body();
-                            mMovie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
-
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl(mContext.getString(R.string.movie_base_url))
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
-
-                            MovieAPI service = retrofit.create(MovieAPI.class);
-                            Call<Credits> creditsCall = service.getCredits(Integer.toString(mMovieId));
-
-                            creditsCall.enqueue(new Callback<Credits>() {
-                                @Override
-                                public void onResponse(Call<Credits> call, Response<Credits> response) {
-                                    if (response.isSuccessful()) {
-                                        mCredits = response.body();
-                                        Target target = new Target() {
-                                            @Override
-                                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                                Log.d(TAG, "onBitmapLoaded()");
-
-                                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                                Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
-
-                                                mUiRealm.beginTransaction();
-                                                mMovie.setBackdropBitmap(stream.toByteArray());
-                                                mMovie.setOnWatchList(true);
-                                                mUiRealm.copyToRealmOrUpdate(mMovie);
-                                                mUiRealm.copyToRealmOrUpdate(mCredits);
-                                                mUiRealm.commitTransaction();
-
-                                                mWatchListLayout.setVisibility(View.VISIBLE);
-                                                mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
-
-                                                Snackbar.make(view, "Added to watchlist!",
-                                                        Snackbar.LENGTH_LONG).show();
-
-                                                mProgressSpinner.setVisibility(View.GONE);
-
-                                                mAddToWatchListButton.setText(mContext.getString(R.string.watch_button));
-                                            }
-
-                                            @Override
-                                            public void onBitmapFailed(Drawable errorDrawable) {
-                                                Log.d(TAG, "onBitmapFailed()");
-                                            }
-
-                                            @Override
-                                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                                Log.d(TAG, "onPrepareLoad()");
-                                            }
-                                        };
-
-                                        Picasso.with(mContext)
-                                                .load(mMovie.getBackdropPath())
-                                                .into(target);
-                                    } else {
-                                        Log.d(TAG, "Bad credits call");
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<Credits> call, Throwable t) {
-                                    Snackbar.make(view, "Error accessing internet", Snackbar.LENGTH_LONG);
-                                    Log.d(TAG, "Credits - Failure");
-                                }
-                            });
-                        } else {
-                            Log.d(TAG, "Movie Bad Call");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Movie> call, Throwable t) {
-                        Snackbar.make(view, "Error accessing internet", Snackbar.LENGTH_LONG);
-                        Log.d(TAG, "Movie - Failure");
-                    }
-                });
-            }
-        }
-
-        @OnClick(R.id.more_button)
-        public void setmMoreOptionsButton(View view) {
-            Log.d(TAG, "moreOptionsButtonClick()");
-
-            PopupMenu popup = new PopupMenu(mContext, mMoreOptionsButton);
-            popup.getMenuInflater().inflate(R.menu.menu_main, popup.getMenu());
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    Log.d("More options", "clicked");
-                    return true;
-                }
-            });
-            popup.show();
-        }
 
         public BrowseMoviesViewHolder(View v, Context context, final Realm uiRealm, final List<Movie> movieList) {
             super(v);
             mContext = context;
-            mUiRealm = uiRealm;
             mMovieList = movieList;
 
             ButterKnife.bind(this, v);
@@ -325,10 +179,427 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
                     Context context = v.getContext();
                     Integer movieId = mMovieList.get(getAdapterPosition()).getId();
                     Intent intent = new Intent(context, BrowseMovieDetailActivity.class);
-                    intent.putExtra("movieId", movieId);
+                    intent.putExtra(mContext.getString(R.string.movieId), movieId);
                     context.startActivity(intent);
                 }
             });
         }
+    }
+
+    //HELPERS
+    public boolean isOnWatchList(int position){
+        return mUiRealm.where(Movie.class).equalTo("onWatchList", true).equalTo("id", mMovieList.get(position).getId()).count() > 0;
+    }
+
+    public boolean isWatched(int position){
+        return mUiRealm.where(Movie.class).equalTo("isWatched", true).equalTo("id", mMovieList.get(position).getId()).count() > 0;
+    }
+
+    private void setListeners(final BrowseMoviesViewHolder holder, final int position){
+        holder.mMoreOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Log.d(TAG, "moreOptionsButtonClick()");
+                if (isOnWatchList(position)) { // Movie is on the users watchlist
+                    PopupMenu popup = new PopupMenu(mContext, v);
+                    popup.getMenuInflater().inflate(R.menu.menu_watchlist, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_archive:
+                                    archiveHandler(mMovieList.get(position), position, v);
+                                    return true;
+
+                                case R.id.action_remove:
+                                    moveFromWatchListToBrowse(mMovieList.get(position).getId());
+                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " removed from watchlist", Snackbar.LENGTH_LONG).show();
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+
+                } else if (isWatched(position)) { // Movie has been watched
+                    PopupMenu popup = new PopupMenu(mContext, v);
+                    popup.getMenuInflater().inflate(R.menu.menu_watched, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_archive:
+                                    archiveHandler(mMovieList.get(position), position, v);
+                                    return true;
+
+                                case R.id.action_remove:
+                                    moveFromWatchListToBrowse(mMovieList.get(position).getId());
+                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " removed from watchlist", Snackbar.LENGTH_LONG).show();
+                                    return true;
+
+                                case R.id.action_move_to_watchlist:
+                                    moveFromWatchedToWatchList(position, holder);
+                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " unwatched", Snackbar.LENGTH_LONG).show();
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+                } else { // Movie is not on watchlist or watched
+                    PopupMenu popup = new PopupMenu(mContext, v);
+                    popup.getMenuInflater().inflate(R.menu.menu_browse, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_archive:
+                                    archiveHandler(mMovieList.get(position), position, v);
+                                    return true;
+
+                                case R.id.action_watch:
+                                    moveFromBrowseToWatched(position, holder, v);
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+                }
+            }
+        });
+
+        holder.mActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                holder.mProgressSpinner.setVisibility(View.VISIBLE);
+
+                if (isOnWatchList(position)) {
+                    moveFromWatchlistToWatched(position, holder);
+                    Snackbar.make(v, "Watched!", Snackbar.LENGTH_LONG).show();
+
+                } else if (!isWatched(position)){
+                    moveFromBrowseToWatchList(position, holder, v);
+                }
+            }
+        });
+    }
+
+    private void archiveHandler(final Movie movie, final int position, View v){
+        archiveMovie(movie.getId(), position);
+
+        Snackbar snackbar = Snackbar
+                .make(v, movie.getTitle() + " hidden", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        unArchiveMovie(movie, position);
+                        Snackbar.make(view, movie.getTitle() + " is restored", Snackbar.LENGTH_SHORT).show();
+                    }
+                });
+
+        snackbar.show();
+    }
+
+    private void moveFromWatchlistToWatched(int position, BrowseMoviesViewHolder holder){
+        Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieList.get(position).getId()).findFirst();
+
+        mUiRealm.beginTransaction();
+        movie.setOnWatchList(false);
+        movie.setWatched(true);
+        movie.setWatchedDate(new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date()));
+        mUiRealm.copyToRealmOrUpdate(movie);
+        mUiRealm.commitTransaction();
+
+        notifyDataSetChanged();
+    }
+
+    private void moveFromWatchedToWatchList(int position, BrowseMoviesViewHolder holder){
+        Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieList.get(position).getId()).findFirst();
+
+        mUiRealm.beginTransaction();
+        movie.setOnWatchList(true);
+        movie.setWatched(false);
+        movie.setWatchedDate("");
+        mUiRealm.copyToRealmOrUpdate(movie);
+        mUiRealm.commitTransaction();
+
+        notifyDataSetChanged();
+
+    }
+
+    private void moveFromBrowseToWatchList(final int position, final BrowseMoviesViewHolder holder, final View v) {
+        Log.d(TAG, "moveFromBrowseToWatchList()");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(mContext.getString(R.string.movie_base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieAPI service = retrofit.create(MovieAPI.class);
+        Call<Movie> call = service.getMovie(Integer.toString(mMovieList.get(position).getId()));
+
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                if (response.isSuccessful()){
+                    Log.d(TAG, "Movie Success");
+                    final Movie movie = response.body();
+                    movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + movie.getBackdropPath());
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(mContext.getString(R.string.movie_base_url))
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    MovieAPI service = retrofit.create(MovieAPI.class);
+                    Call<Credits> creditsCall = service.getCredits(Integer.toString(movie.getId()));
+
+                    creditsCall.enqueue(new Callback<Credits>() {
+                        @Override
+                        public void onResponse(Call<Credits> call, Response<Credits> response) {
+                            if (response.isSuccessful()) {
+                                final Credits credits = response.body();
+                                Target target = new Target() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                        Log.d(TAG, "onBitmapLoaded()");
+
+                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                        Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
+
+                                        mUiRealm.beginTransaction();
+                                        movie.setBackdropBitmap(stream.toByteArray());
+                                        movie.setOnWatchList(true);
+                                        mUiRealm.copyToRealmOrUpdate(movie);
+                                        mUiRealm.copyToRealmOrUpdate(credits);
+                                        mUiRealm.commitTransaction();
+
+                                        //setWatchedOverlay(holder);
+                                        //setActionButton(holder, position, movie.getWatchedDate());
+                                        notifyDataSetChanged();
+                                        Snackbar.make(v, "Added to watchlist!", Snackbar.LENGTH_LONG).show();
+
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Drawable errorDrawable) {
+                                        Log.d(TAG, "onBitmapFailed()");
+                                    }
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                        Log.d(TAG, "onPrepareLoad()");
+                                    }
+                                };
+
+                                Picasso.with(mContext)
+                                        .load(movie.getBackdropPath())
+                                        .into(target);
+                            } else {
+                                Log.d(TAG, "Bad credits call");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Credits> call, Throwable t) {
+                            Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
+                            Log.d(TAG, "Credits - Failure");
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "Movie Bad Call");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
+                Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
+                Log.d(TAG, "Movie - Failure");
+            }
+        });
+    }
+
+    private void moveFromBrowseToWatched(final int position, final BrowseMoviesViewHolder holder, final View v) {
+        Log.d(TAG, "moveFromBrowseToWatchList()");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(mContext.getString(R.string.movie_base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        MovieAPI service = retrofit.create(MovieAPI.class);
+        Call<Movie> call = service.getMovie(Integer.toString(mMovieList.get(position).getId()));
+
+        call.enqueue(new Callback<Movie>() {
+            @Override
+            public void onResponse(Call<Movie> call, Response<Movie> response) {
+                if (response.isSuccessful()){
+                    Log.d(TAG, "Movie Success");
+                    mMovie = response.body();
+                    mMovie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(mContext.getString(R.string.movie_base_url))
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    MovieAPI service = retrofit.create(MovieAPI.class);
+                    Call<Credits> creditsCall = service.getCredits(Integer.toString(mMovie.getId()));
+
+                    creditsCall.enqueue(new Callback<Credits>() {
+                        @Override
+                        public void onResponse(Call<Credits> call, Response<Credits> response) {
+                            if (response.isSuccessful()) {
+                                final Credits credits = response.body();
+                                Target target = new Target() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                        Log.d(TAG, "onBitmapLoaded()");
+
+                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                        Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
+
+                                        mUiRealm.beginTransaction();
+                                        mMovie.setBackdropBitmap(stream.toByteArray());
+                                        mMovie.setOnWatchList(false);
+                                        mMovie.setWatched(true);
+                                        mMovie.setWatchedDate(new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date()));
+                                        mUiRealm.copyToRealmOrUpdate(mMovie);
+                                        mUiRealm.copyToRealmOrUpdate(credits);
+                                        mUiRealm.commitTransaction();
+
+                                        notifyDataSetChanged();
+                                        Snackbar.make(v, mMovie.getTitle() + " Watched!", Snackbar.LENGTH_LONG).show();
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Drawable errorDrawable) {
+                                        Log.d(TAG, "onBitmapFailed()");
+                                    }
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                        Log.d(TAG, "onPrepareLoad()");
+                                    }
+                                };
+
+                                Picasso.with(mContext)
+                                        .load(mMovie.getBackdropPath())
+                                        .into(target);
+                            } else {
+                                Log.d(TAG, "Bad credits call");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Credits> call, Throwable t) {
+                            Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
+                            Log.d(TAG, "Credits - Failure");
+                        }
+                    });
+                } else {
+                    Log.d(TAG, "Movie Bad Call");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Movie> call, Throwable t) {
+                Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
+                Log.d(TAG, "Movie - Failure");
+            }
+        });
+    }
+
+    private void moveFromWatchListToBrowse(int movieId) {
+        Log.d(TAG, "moveFromWatchListToBrowse()");
+
+        mUiRealm.beginTransaction();
+        // Find and remove the movie
+        Movie movie = mUiRealm.where(Movie.class).equalTo("id", movieId).findFirst();
+        movie.deleteFromRealm();
+
+        // Find and remove all credits
+        RealmResults<Credits> creditsResults = mUiRealm.where(Credits.class)
+                .equalTo("id", movieId)
+                .findAll();
+
+        for (int i = 0; i < creditsResults.size(); i++) {
+            creditsResults.get(i).deleteFromRealm();
+        }
+
+        mUiRealm.commitTransaction();
+        notifyDataSetChanged();
+    }
+
+    private void unArchiveMovie(Movie movie, int position) {
+        Log.d(TAG, "unArchiveMovie()");
+
+        mUiRealm.beginTransaction();
+        ArchivedMovies archivedMovies = mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movie.getId()).findFirst();
+        archivedMovies.deleteFromRealm();
+        mUiRealm.commitTransaction();
+
+        mMovieList.add(position, movie);
+        notifyDataSetChanged();
+    }
+
+    private void archiveMovie(Integer id, int position) {
+        Log.d(TAG, "archiveMovie()");
+
+        mUiRealm.beginTransaction();
+        ArchivedMovies archivedMovies = new ArchivedMovies();
+        archivedMovies.setMovieId(id);
+        mUiRealm.copyToRealmOrUpdate(archivedMovies);
+        mUiRealm.commitTransaction();
+
+        mMovieList.remove(position);
+        notifyDataSetChanged();
+    }
+
+    private void setActionButton(BrowseMoviesViewHolder holder, int position) {
+        Log.d(TAG, "setActionButton()");
+
+        if (isOnWatchList(position)) {
+            setWatchlistOverlay(holder);
+            holder.mActionButton.setText(mContext.getString(R.string.watch_button));
+            holder.mActionButton.setEnabled(true);
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+
+        } else if (isWatched(position)) {
+            setWatchedOverlay(holder);
+            String watchedDate = mUiRealm.where(Movie.class).equalTo("id", mMovieList.get(position).getId()).findFirst().getWatchedDate();
+            holder.mActionButton.setText("Watched on " + watchedDate);
+            holder.mActionButton.setEnabled(false);
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
+
+        } else {
+            setNoOverlay(holder);
+            holder.mActionButton.setText(mContext.getString(R.string.add_to_watchlist_button));
+            holder.mActionButton.setEnabled(true);
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+        }
+    }
+
+    private void setWatchedOverlay(BrowseMoviesViewHolder holder){
+        holder.mWatchedLayout.setVisibility(View.VISIBLE);
+        holder.mWatchedIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
+        holder.mWatchListLayout.setVisibility(View.INVISIBLE);
+        holder.mProgressSpinner.setVisibility(View.GONE);
+    }
+
+    private void setWatchlistOverlay(BrowseMoviesViewHolder holder){
+        holder.mWatchListLayout.setVisibility(View.VISIBLE);
+        holder.mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
+        holder.mWatchedLayout.setVisibility(View.INVISIBLE);
+        holder.mProgressSpinner.setVisibility(View.GONE);
+    }
+
+    private void setNoOverlay(BrowseMoviesViewHolder holder){
+        holder.mWatchedLayout.setVisibility(View.INVISIBLE);
+        holder.mWatchListLayout.setVisibility(View.INVISIBLE);
+        holder.mProgressSpinner.setVisibility(View.GONE);
     }
 }

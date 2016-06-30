@@ -83,6 +83,7 @@ public class TVShowBrowseActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        setTheme(R.style.DarkAppTheme_Base);
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Browse Shows");
@@ -155,8 +156,6 @@ public class TVShowBrowseActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem sortItem = menu.findItem(R.id.action_sort);
-        sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
         return true;
     }
 

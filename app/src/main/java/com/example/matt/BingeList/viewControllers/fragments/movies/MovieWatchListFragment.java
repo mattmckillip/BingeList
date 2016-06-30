@@ -20,23 +20,29 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.viewControllers.adapters.MovieWatchedAdapter;
+import com.example.matt.bingeList.models.movies.MovieResult;
+import com.example.matt.bingeList.viewControllers.adapters.WatchedListMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.MoviesWatchListAdapter;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class MovieWatchListFragment extends Fragment {
     MoviesWatchListAdapter mWatchListAdapter;
-    MovieWatchedAdapter mWatchedAdapter;
+    WatchedListMoviesAdapter mWatchedAdapter;
+    Realm mUiRealm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +52,7 @@ public class MovieWatchListFragment extends Fragment {
                 R.layout.recycler_view, container, false);
 
         boolean isWatched;
+        mUiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
 
         if (getArguments().getInt("watched") == 1) {
             isWatched = true;
@@ -56,17 +63,21 @@ public class MovieWatchListFragment extends Fragment {
         Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
         RealmQuery<Movie> query = uiRealm.where(Movie.class);
 
-        // Execute the query:
         if (isWatched) {
-            RealmResults<Movie> movies = query.equalTo("isWatched", true).findAll();
-            mWatchedAdapter = new MovieWatchedAdapter(movies, getContext(), uiRealm);
+            RealmResults<Movie> movieRealmResults = query.equalTo("isWatched", true).findAll();
+            RealmList<Movie> movies = new RealmList<>();
+            for (Movie movieResult : movieRealmResults) {
+                if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
+                    movies.add(movieResult);
+                }
+            }
+            mWatchedAdapter = new WatchedListMoviesAdapter(movies, getContext(), uiRealm);
             recyclerView.setAdapter(mWatchedAdapter);
 
         } else {
             RealmResults<Movie> movies = query.equalTo("onWatchList", true).findAll();
             mWatchListAdapter = new MoviesWatchListAdapter(movies, getContext(), uiRealm);
             recyclerView.setAdapter(mWatchListAdapter);
-
         }
 
         recyclerView.setHasFixedSize(true);
@@ -80,7 +91,15 @@ public class MovieWatchListFragment extends Fragment {
         }
 
         if (mWatchedAdapter != null) {
-            mWatchedAdapter.notifyDataSetChanged();
+            RealmResults<Movie> movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
+            RealmList<Movie> movies = new RealmList<>();
+            for (Movie movieResult : movieRealmResults) {
+                if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
+                    movies.add(movieResult);
+                }
+            }
+            mWatchedAdapter.UpdateData(movies);
+            Log.d("MovieWatchListFragment", "mWatchedAdapter.notifyDataSetChanged()");
         }
     }
 }

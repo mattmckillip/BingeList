@@ -4,14 +4,14 @@
     tools:context=".viewControllers.activities.movies.WatchlistActivity">
 
     <item
-        android:id="@+id/action_remove"
-        android:title="Remove from watchlist"
-        android:orderInCategory="100"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_archive"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:title="Archive"/>
+
+    <item
+        android:id="@+id/action_watch"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="Watch"/>
 </menu>

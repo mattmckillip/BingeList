@@ -36,6 +36,9 @@
     <!-- API Strings -->
     <string name="image_base_url">https://image.tmdb.org/t/p/</string>
     <string name="movie_base_url">http://api.themoviedb.org/3/movie/</string>
+    <string name="imdb_person_base_url">http://www.imdb.com/title/</string>
+
+
 
     <!-- UI Strings -->
     <string name="overview_title">Overview</string>
@@ -50,22 +53,29 @@
     <string name="biography_header">Biography</string>
     <string name="born_header">Born</string>
     <string name="died_header">Died</string>
-    <string name="known_for_header">Known For</string>
-
-
+    <string name="known_for_header">Credits</string>
+    <string name="similar_movies_header">Similar Movies</string>
 
     <string name="see_more">See more</string>
 
     <string name="expand_collapse_description">ExpandCollapseArrow</string>
     <string name="movie_backdrop_description">MovieDetailBackdrop</string>
 
+    <!-- intent data strings -->
+    <string name="movieId">movieId</string>
+    <string name="movieTitle">movieTitle</string>
+    <string name="showId">showId</string>
+    <string name="showTitle">showTitle</string>
+
 
     <!-- button image text -->
-    <string name="add_to_watchlist_button">{gmd_add_to_queue} add to watchlist!</string>
-    <string name="watch_button">{gmd_ondemand_video} watch!</string>
-    <string name="watched_button">{gmd_done} watched!</string>
+    <string name="add_to_watchlist_button">{gmd_add} add to watchlist!</string>
+    <string name="watch_button">{gmd_done} watch!</string>
+    <string name="watched_button">{gmd_playlist_add_check} watched!</string>
     <string name="imdb_button">{gmd_exit_to_app} IMDb</string>
     <string name="unwatch_button">{gmd_undo} Unwatch</string>
+    <string name="remove_button"> {gmd_clear} Remove</string>
+
 
 
     <!-- Drawer Items -->

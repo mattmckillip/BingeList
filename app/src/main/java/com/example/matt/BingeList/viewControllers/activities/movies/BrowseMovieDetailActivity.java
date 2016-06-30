@@ -79,6 +79,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BrowseMovieDetailActivity extends AppCompatActivity {
     private static final String TAG = "MovieBDetailActivity";
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
+    private static final int NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY = 10;
+
     private static final int DEFAULT_COLOR = 0x000000;
     private Integer movieID;
     private Movie movie;
@@ -221,27 +223,29 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     @OnClick(R.id.see_more_cast)
     public void seeMoreCast(View view) {
         Intent intent = new Intent(getBaseContext(), CastActivity.class);
-        intent.putExtra("movieID", movieID);
+        intent.putExtra(mContext.getString(R.string.movieId), movieID);
+        intent.putExtra(mContext.getString(R.string.movieTitle), movie.getTitle());
         startActivity(intent);
     }
 
     @OnClick(R.id.see_more_crew)
     public void seeMoreCrew(View view) {
         Intent intent = new Intent(getBaseContext(), CrewActivity.class);
-        intent.putExtra("movieID", movieID);
+        intent.putExtra(mContext.getString(R.string.movieId), movieID);
+        intent.putExtra(mContext.getString(R.string.movieTitle), movie.getTitle());
         startActivity(intent);
     }
 
     @OnClick(R.id.see_more_similar_movies)
     public void seeMoreSimilarMovies(View view) {
         Intent intent = new Intent(getBaseContext(), SimilarMoviesActivity.class);
-        intent.putExtra("movieID", movieID);
+        intent.putExtra(mContext.getString(R.string.movieId), movieID);
         startActivity(intent);
     }
 
     @OnClick(R.id.imdb)
     public void openIMDbPage(View view) {
-        Uri uri = Uri.parse("http://www.imdb.com/title/" + movie.getImdbId());
+        Uri uri = Uri.parse(mContext.getString(R.string.imdb_person_base_url) + movie.getImdbId());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
@@ -256,7 +260,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mContext = getApplicationContext();
-        movieID = getIntent().getIntExtra("movieId", 0);
+        movieID = getIntent().getIntExtra(mContext.getString(R.string.movieId), 0);
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
 
         SlidrConfig config = new SlidrConfig.Builder()
@@ -314,7 +318,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -328,7 +332,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
                 List<MovieResult> similarMovies = response.body().getMovieResults();
 
                 // Populate cast and crew recycler views
-                similarMovieRecyclerView.setAdapter(new SimilarMoviesAdapter(similarMovies, mContext, NUMBER_OF_CREW_TO_DISPLAY));
+                similarMovieRecyclerView.setAdapter(new SimilarMoviesAdapter(similarMovies, mContext, NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY));
                 similarMovieRecyclerView.setFocusable(false);
             }
 
@@ -347,7 +351,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -397,6 +401,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(movie.getBackdropPath())
                 .fit().centerCrop()
+                .error(R.drawable.generic_movie_background)
                 .transform(PaletteTransformation.instance())
                 .into(backdrop, new PaletteTransformation.PaletteCallback(backdrop) {
                     @Override
@@ -430,6 +435,18 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
                         if (BuildConfig.DEBUG) {
                             Log.d(TAG, "onError()");
                         }
+                        Bitmap bitmap = ((BitmapDrawable) backdrop.getDrawable()).getBitmap(); // Ew!
+
+                        int vibrantColor = ContextCompat.getColor(mContext, R.color.colorAccent);
+                        int mutedColor = ContextCompat.getColor(mContext, R.color.colorPrimary);
+
+                        setColors(vibrantColor, mutedColor);
+                        setViewsVisible();
+
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                        addByteArray(stream.toByteArray());
                     }
                 });
     }
@@ -439,7 +456,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
             Log.d(TAG, "getMovie()");
         }
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -493,7 +510,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
 
         // Similar Moves recycler view
-        similarMovieAdapter = new SimilarMoviesAdapter(similarMovieList, mContext, NUMBER_OF_CREW_TO_DISPLAY);
+        similarMovieAdapter = new SimilarMoviesAdapter(similarMovieList, mContext, NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY);
         RecyclerView.LayoutManager similaryMovieLayoutManager = new LinearLayoutManager(mContext);
         similarMovieRecyclerView.setLayoutManager(similaryMovieLayoutManager);
         similarMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());

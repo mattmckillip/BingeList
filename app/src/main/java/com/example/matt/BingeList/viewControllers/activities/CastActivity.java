@@ -41,8 +41,8 @@ public class CastActivity extends AppCompatActivity {
     private static final Integer NUMBER_OF_CREW_TO_DISPLAY = 25;
 
     private CastAdapter mAdapter;
-    private Integer mMovieId;
-    private Realm mUiRealm;
+    private Integer mId;
+    private String mTitle;
     private RealmList<Cast> mCastList;
     private Context mContext;
     private Credits mCredits;
@@ -70,24 +70,15 @@ public class CastActivity extends AppCompatActivity {
         Slidr.attach(this, config);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            mMovieId = extras.getInt("movieID");
-            //The key argument here must match that used in the other activity
-        }
-        mUiRealm = ((MyApplication) getApplication()).getUiRealm();
+
         mContext = getApplicationContext();
 
-        Credits credits = mUiRealm.where(Credits.class).equalTo("id", mMovieId).findFirst();
-        if (credits == null){
-            if (BuildConfig.DEBUG){
-                Log.d(TAG, "Credits is null");
-            }
-            Snackbar.make(getCurrentFocus(), "Bad mCastList", Snackbar.LENGTH_INDEFINITE);
-            return;
+        if (extras != null) {
+            mId = extras.getInt(mContext.getString(R.string.movieId));
+            mTitle = extras.getString(mContext.getString(R.string.movieTitle));
         }
 
-        Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieId).findFirst();
-        toolbar.setTitle(movie.getTitle() + " PersonCast");
+        toolbar.setTitle(mTitle + " Cast");
 
         mCastList = new RealmList<>();
         mAdapter = new CastAdapter(mCastList, mContext, NUMBER_OF_CREW_TO_DISPLAY);
@@ -102,7 +93,6 @@ public class CastActivity extends AppCompatActivity {
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            //supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_b).color(Color.WHITE).sizeDp(24));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
@@ -130,7 +120,7 @@ public class CastActivity extends AppCompatActivity {
 
         MovieAPI service = retrofit.create(MovieAPI.class);
 
-        Call<Credits> call = service.getCredits(Integer.toString(mMovieId));
+        Call<Credits> call = service.getCredits(Integer.toString(mId));
         call.enqueue(new Callback<Credits>() {
             @Override
             public void onResponse(Call<Credits> call, Response<Credits> response) {
@@ -149,7 +139,7 @@ public class CastActivity extends AppCompatActivity {
                     mCastRecyclerView.setAdapter(new CastAdapter(mCastList, mContext, castSize));
                     mCastRecyclerView.setFocusable(false);
                 } else {
-                    Snackbar.make(getCurrentFocus(), "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
                             .setAction("RETRY", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -166,7 +156,7 @@ public class CastActivity extends AppCompatActivity {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "GetCredits() Callback Failure");
 
-                    Snackbar.make(getCurrentFocus(), "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
                             .setAction("RETRY", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {

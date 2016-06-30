@@ -3,6 +3,7 @@ package com.example.matt.bingeList.viewControllers.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,6 +35,8 @@ import com.example.matt.bingeList.models.PersonCredits;
 import com.example.matt.bingeList.uitls.API.PersonAPI;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
 import com.example.matt.bingeList.viewControllers.adapters.KnownForAdapter;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
@@ -66,7 +69,6 @@ public class PersonActivity  extends AppCompatActivity {
     private Integer mPersonId;
     private Person mPerson;
     private KnownForAdapter mKnownForAdapter;
-    private Realm mUiRealm;
     private Context mContext;
 
     @BindView(R.id.appbar)
@@ -143,7 +145,6 @@ public class PersonActivity  extends AppCompatActivity {
 
         mContext = getApplicationContext();
         mPersonId = getIntent().getIntExtra("personId", 0);
-        mUiRealm = ((MyApplication) getApplication()).getUiRealm();
 
         SlidrConfig config = new SlidrConfig.Builder()
                 .position(SlidrPosition.LEFT)
@@ -216,7 +217,7 @@ public class PersonActivity  extends AppCompatActivity {
                     mKnownForRecyclerView.setAdapter(new KnownForAdapter(personCredits, mContext, NUMBER_KNOWN_FOR_TO_DISPLAY));
                     mKnownForRecyclerView.setFocusable(false);
                 } else {
-                    Snackbar.make(getCurrentFocus(), "bad call", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(mKnownForRecyclerView, "bad call", Snackbar.LENGTH_SHORT).show();
                 }
             }
 
@@ -237,15 +238,14 @@ public class PersonActivity  extends AppCompatActivity {
         Picasso.with(this)
                 .load(mPerson.getProfilePath())
                 .fit().centerCrop()
+                .error(R.drawable.unkown_person)
                 .transform(PaletteTransformation.instance())
                 .into(mBackdrop, new PaletteTransformation.PaletteCallback(mBackdrop) {
                     @Override
                     public void onSuccess(Palette palette) {
                         if (BuildConfig.DEBUG) {
-                            Log.d(TAG, "onSuccess()");
+                            Log.d(TAG, "Palette Transform onSuccess()");
                         }
-
-                        Bitmap bitmap = ((BitmapDrawable) mBackdrop.getDrawable()).getBitmap(); // Ew!
 
                         int vibrantColor = palette.getVibrantColor(DEFAULT_COLOR);
                         int mutedColor = palette.getMutedColor(DEFAULT_COLOR);
@@ -263,8 +263,14 @@ public class PersonActivity  extends AppCompatActivity {
                     @Override
                     public void onError() {
                         if (BuildConfig.DEBUG) {
-                            Log.d(TAG, "onError()");
+                            Log.d(TAG, "Palette Transform onError()");
                         }
+
+                        int vibrantColor = ContextCompat.getColor(mContext, R.color.colorAccent);
+                        int mutedColor = ContextCompat.getColor(mContext, R.color.colorPrimary);
+
+                        setColors(vibrantColor, mutedColor);
+                        setViewsVisible();
                     }
                 });
     }
@@ -324,9 +330,15 @@ public class PersonActivity  extends AppCompatActivity {
         }
 
         mCollapsingToolbar.setTitle(mPerson.getName());
-        mBorn.setText(formateDate(mPerson.getBirthday()));
 
-        if (mPerson.getDeathday().isEmpty()){
+        if (mPerson.getBirthday() == null || mPerson.getBirthday().isEmpty()){
+            mBorn.setVisibility(View.GONE);
+            //mDiedHeader.setVisibility(View.GONE);
+        } else{
+            mBorn.setText(formateDate(mPerson.getBirthday()));
+        }
+
+        if (mPerson.getDeathday() == null || mPerson.getDeathday().isEmpty()){
             mDied.setVisibility(View.GONE);
             mDiedHeader.setVisibility(View.GONE);
         } else{
@@ -379,7 +391,7 @@ public class PersonActivity  extends AppCompatActivity {
         String retrunDate = null;
         try {
             newDate = dateFormater.parse(date);
-            dateFormater = new SimpleDateFormat("MM/dd/yy");
+            dateFormater = new SimpleDateFormat("MM/dd/yyyy");
             retrunDate = dateFormater.format(newDate);
         } catch (ParseException e) {
             e.printStackTrace();

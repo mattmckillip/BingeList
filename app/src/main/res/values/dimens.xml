@@ -42,6 +42,17 @@
     <dimen name="toolbar_scrim_height">100dp</dimen>
     <dimen name="card_scrim_height">75dp</dimen>
 
+    <dimen name="compact_card_overlay_image_height">40dp</dimen>
+    <dimen name="compact_card_image_height">90dp</dimen>
+    <dimen name="compact_card_image_width">58dp</dimen>
+    <dimen name="compact_card_image_margin">5dp</dimen>
+    <dimen name="compact_card_height">100dp</dimen>
+
+
+
+
+
+
     <!-- Expandable Recycler View -->
     <dimen name="list_item_elevation">2dp</dimen>
     <dimen name="list_item_height">96dp</dimen>

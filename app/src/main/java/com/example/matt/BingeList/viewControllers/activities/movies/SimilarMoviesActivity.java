@@ -73,7 +73,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mMovieId = extras.getInt("movieID");
+            mMovieId = extras.getInt(mContext.getString(R.string.movieId));
             //The key argument here must match that used in the other activity
         }
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
@@ -125,7 +125,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -144,7 +144,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
                         movie.setTitle(movieResult.getTitle());
                         movie.setId(movieResult.getId());
                         movie.setOverview(movieResult.getOverview());
-                        movie.setBackdropPath("https://image.tmdb.org/t/p/" + mContext.getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                        movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + movieResult.getBackdropPath());
                         data.add(movie);
                     }
                     // Populate cast and crew recycler views

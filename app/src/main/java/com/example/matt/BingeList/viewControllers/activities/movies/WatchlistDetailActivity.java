@@ -203,27 +203,29 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     @OnClick(R.id.see_more_cast)
     public void seeMoreCast(View view) {
         Intent intent = new Intent(getBaseContext(), CastActivity.class);
-        intent.putExtra("movieID", movieID);
+        intent.putExtra(mContext.getString(R.string.movieId), movieID);
+        intent.putExtra(mContext.getString(R.string.movieTitle), movie.getTitle());
         startActivity(intent);
     }
 
     @OnClick(R.id.see_more_crew)
     public void seeMoreCrew(View view) {
         Intent intent = new Intent(getBaseContext(), CrewActivity.class);
-        intent.putExtra("movieID", movieID);
+        intent.putExtra(mContext.getString(R.string.movieId), movieID);
+        intent.putExtra(mContext.getString(R.string.movieTitle), movie.getTitle());
         startActivity(intent);
     }
 
     @OnClick(R.id.see_more_similar_movies)
     public void seeMoreSimilarMovies(View view) {
         Intent intent = new Intent(getBaseContext(), SimilarMoviesActivity.class);
-        intent.putExtra("movieID", movieID);
+        intent.putExtra(mContext.getString(R.string.movieId), movieID);
         startActivity(intent);
     }
 
     @OnClick(R.id.imdb)
     public void setImdbLink(View view) {
-        Uri uri = Uri.parse("http://www.imdb.com/title/" + movie.getImdbId());
+        Uri uri = Uri.parse(mContext.getString(R.string.imdb_person_base_url) + movie.getImdbId());
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
@@ -234,7 +236,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate()");
 
         super.onCreate(savedInstanceState);
-        movieID = getIntent().getIntExtra("movieId", 0);
+
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
         setContentView(R.layout.movie_detail_activity);
 
@@ -248,6 +250,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
 
         Slidr.attach(this, config);
         mContext = getApplicationContext();
+        movieID = getIntent().getIntExtra(mContext.getString(R.string.movieId), 0);
 
         ButterKnife.bind(this);
 
@@ -372,7 +375,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -405,7 +408,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

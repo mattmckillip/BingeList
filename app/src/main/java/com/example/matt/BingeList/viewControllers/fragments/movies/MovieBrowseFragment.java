@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.matt.bingeList.MyApplication;
+import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
@@ -54,12 +55,15 @@ public class MovieBrowseFragment extends Fragment {
     private MovieBrowseAdapter mBrowseMoviesAdapter;
     private Integer movieType;
     private Integer mPage;
+    private Realm mUiRealm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         movieType = getArguments().getInt("movieType");
         Log.d(TAG, "onCreateView() - movieType: " + Integer.toString(movieType));
+
+        mUiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
 
         recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
@@ -156,12 +160,14 @@ public class MovieBrowseFragment extends Fragment {
                     List<MovieResult> movieResults = response.body().getMovieResults();
                     data = new RealmList<>();
                     for (MovieResult movieResult : movieResults) {
-                        Movie movie = new Movie();
-                        movie.setTitle(movieResult.getTitle());
-                        movie.setId(movieResult.getId());
-                        movie.setOverview(movieResult.getOverview());
-                        movie.setBackdropPath("https://image.tmdb.org/t/p/" + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
-                        data.add(movie);
+                        if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
+                            Movie movie = new Movie();
+                            movie.setTitle(movieResult.getTitle());
+                            movie.setId(movieResult.getId());
+                            movie.setOverview(movieResult.getOverview());
+                            movie.setBackdropPath("https://image.tmdb.org/t/p/" + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                            data.add(movie);
+                        }
                     }
                     Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
                     mBrowseMoviesAdapter = new MovieBrowseAdapter(data, getContext(), uiRealm);

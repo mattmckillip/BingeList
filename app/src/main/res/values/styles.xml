@@ -23,6 +23,13 @@
 
     <style name="AppTheme" parent="AppTheme.Base"></style>
 
+    <style name="DarkAppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#727272</item>
+        <item name="colorPrimaryDark">#212121</item>
+        <item name="colorAccent">#B6B6B6</item>
+    </style>
+
+
     <style name="FabStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

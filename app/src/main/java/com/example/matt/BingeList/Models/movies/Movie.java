@@ -120,6 +120,8 @@ public class Movie extends RealmObject{
 
     private byte[] backdropBitmap;
 
+    private String watchedDate;
+
     /**
      * @return The adult
      */
@@ -486,5 +488,13 @@ public class Movie extends RealmObject{
 
     public void setBackdropBitmap(byte[] backdropBitmap) {
         this.backdropBitmap = backdropBitmap;
+    }
+
+    public String getWatchedDate() {
+        return watchedDate;
+    }
+
+    public void setWatchedDate(String watchedDate) {
+        this.watchedDate = watchedDate;
     }
 }

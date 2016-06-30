@@ -10,6 +10,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_move_to_watchlist"
+        android:title="Unwatch"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_archive"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView"

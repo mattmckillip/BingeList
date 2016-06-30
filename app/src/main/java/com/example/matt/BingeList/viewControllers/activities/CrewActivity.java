@@ -18,9 +18,7 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
-import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
@@ -28,7 +26,6 @@ import com.r0adkll.slidr.model.SlidrPosition;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +39,8 @@ public class CrewActivity extends AppCompatActivity {
     private static final Integer NUMBER_OF_CREW_TO_DISPLAY = 25;
 
     private CrewAdapter mAdapter;
-    private Integer mMovieId;
-    private Realm mUiRealm;
+    private Integer mId;
+    private String mTitle;
     private RealmList<Crew> mCrewList;
     private Context mContext;
     private Credits mCredits;
@@ -70,25 +67,15 @@ public class CrewActivity extends AppCompatActivity {
 
         Slidr.attach(this, config);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            mMovieId = extras.getInt("movieID");
-            //The key argument here must match that used in the other activity
-        }
-        mUiRealm = ((MyApplication) getApplication()).getUiRealm();
         mContext = getApplicationContext();
 
-        Credits credits = mUiRealm.where(Credits.class).equalTo("id", mMovieId).findFirst();
-        if (credits == null){
-            if (BuildConfig.DEBUG){
-                Log.d(TAG, "Credits is null");
-            }
-            Snackbar.make(getCurrentFocus(), "Bad crew list", Snackbar.LENGTH_INDEFINITE);
-            return;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            mId = extras.getInt(mContext.getString(R.string.movieId));
+            mTitle = extras.getString(mContext.getString(R.string.movieTitle));
         }
 
-        Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieId).findFirst();
-        toolbar.setTitle(movie.getTitle() + " PersonCrew");
+        toolbar.setTitle(mTitle + " Crew");
 
         mCrewList = new RealmList<>();
         mAdapter = new CrewAdapter(mCrewList, mContext, NUMBER_OF_CREW_TO_DISPLAY);
@@ -125,13 +112,13 @@ public class CrewActivity extends AppCompatActivity {
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
+                .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         MovieAPI service = retrofit.create(MovieAPI.class);
 
-        Call<Credits> call = service.getCredits(Integer.toString(mMovieId));
+        Call<Credits> call = service.getCredits(Integer.toString(mId));
         call.enqueue(new Callback<Credits>() {
             @Override
             public void onResponse(Call<Credits> call, Response<Credits> response) {
@@ -150,7 +137,7 @@ public class CrewActivity extends AppCompatActivity {
                     mCrewRecyclerView.setAdapter(new CrewAdapter(mCrewList, mContext, crewSize));
                     mCrewRecyclerView.setFocusable(false);
                 } else {
-                    Snackbar.make(getCurrentFocus(), "Error fetching crew", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(mCrewRecyclerView, "Error fetching crew", Snackbar.LENGTH_INDEFINITE)
                             .setAction("RETRY", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -167,7 +154,7 @@ public class CrewActivity extends AppCompatActivity {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "GetCredits() Callback Failure");
 
-                    Snackbar.make(getCurrentFocus(), "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(mCrewRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
                             .setAction("RETRY", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {

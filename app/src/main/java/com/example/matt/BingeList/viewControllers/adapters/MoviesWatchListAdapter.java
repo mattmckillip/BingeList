@@ -20,7 +20,11 @@ import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,11 +73,11 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
                 .findAll();
 
         if (watchedMovie.size() > 0){
-            holder.mRemoveButton.setText("{gmd_undo} Unwatch");
+            holder.mRemoveButton.setText(mContext.getString(R.string.unwatch_button));
             holder.mWatchButton.setVisibility(View.INVISIBLE);
         } else {
-            holder.mRemoveButton.setText("{gmd_clear} Remove");
-            holder.mWatchButton.setText("{gmd_done} Watch");
+            holder.mRemoveButton.setText(mContext.getString(R.string.remove_button));
+            holder.mWatchButton.setText(mContext.getString(R.string.watch_button));
             holder.mWatchButton.setVisibility(View.VISIBLE);
 
         }
@@ -88,54 +92,41 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
                 String movieTitle = movie.getTitle();
                 Integer movieID = movie.getId();
 
-                RealmResults<Movie> watchedMovie = mUiRealm.where(Movie.class).equalTo("isWatched", true).equalTo("id", movieID).findAll();
+                mUiRealm.beginTransaction();
+                RealmResults<Movie> movieResults = mUiRealm.where(Movie.class)
+                        .equalTo("id", movieID)
+                        .findAll();
 
-                if (watchedMovie.size() == 1){
-                    mUiRealm.beginTransaction();
-                    movie.setOnWatchList(true);
-                    movie.setWatched(false);
-                    mUiRealm.copyToRealmOrUpdate(movie);
-                    mUiRealm.commitTransaction();
-
-                    notifyDataSetChanged();
-
-                    Snackbar.make(v, movie.getTitle() + " moved to watchlist!",
-                            Snackbar.LENGTH_LONG).show();
-                } else {
-                    mUiRealm.beginTransaction();
-                    //Movie movieToAdd = uiRealm.createObject(movie);
-                    RealmResults<Movie> movieResults = mUiRealm.where(Movie.class)
-                            .equalTo("id", movieID)
-                            .findAll();
-
-                    for (int i = 0; i < movieResults.size(); i++) {
-                        movieResults.get(i).deleteFromRealm();
-                    }
-
-                    RealmResults<Credits> creditsResults = mUiRealm.where(Credits.class)
-                            .equalTo("id", movieID)
-                            .findAll();
-
-                    for (int i = 0; i < creditsResults.size(); i++) {
-                        creditsResults.get(i).deleteFromRealm();
-                    }
-
-                    mUiRealm.commitTransaction();
-                    notifyDataSetChanged();
-
-                    Snackbar.make(v, "Removed " + movieTitle + " from watchlist", Snackbar.LENGTH_LONG).show();
+                for (int i = 0; i < movieResults.size(); i++) {
+                    movieResults.get(i).deleteFromRealm();
                 }
+
+                RealmResults<Credits> creditsResults = mUiRealm.where(Credits.class)
+                        .equalTo("id", movieID)
+                        .findAll();
+
+                for (int i = 0; i < creditsResults.size(); i++) {
+                    creditsResults.get(i).deleteFromRealm();
+                }
+                mUiRealm.commitTransaction();
+
+                notifyDataSetChanged();
+                Snackbar.make(v, "Removed " + movieTitle + " from watchlist", Snackbar.LENGTH_LONG).show();
             }
         });
 
         holder.mWatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Calendar c = Calendar.getInstance();
+                System.out.println("Current time => " + c.getTime());
+
                 Movie movie = mMovieList.get(position);
                 String movieTitle = movie.getTitle();
                 mUiRealm.beginTransaction();
                 movie.setWatched(true);
                 movie.setOnWatchList(false);
+                movie.setWatchedDate(new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date()));
                 mUiRealm.commitTransaction();
 
                 notifyDataSetChanged();
@@ -182,7 +173,7 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
                 public void onClick(View v) {
                     Movie movie = mMovieList.get(getAdapterPosition());
                     Intent intent = new Intent(mContext, WatchlistDetailActivity.class);
-                    intent.putExtra("movieId", movie.getId());
+                    intent.putExtra(mContext.getString(R.string.movieId), movie.getId());
                     mContext.startActivity(intent);
                 }
             });

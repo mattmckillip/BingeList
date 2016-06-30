@@ -47,14 +47,16 @@
             android:id="@+id/card_title"
             android:textSize="32sp"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/card_title_height"
+            android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/card_image"
             android:layout_marginLeft="@dimen/md_keylines"
             android:textColor="#FFFFFF"
             android:shadowColor="#000000"
             android:shadowDx="1.0"
             android:shadowDy="1.0"
-            android:shadowRadius="5.0" />
+            android:shadowRadius="5.0"
+            android:ellipsize="end"
+            android:maxLines="2" />
 
         <!-- Watchlist overlay -->
         <include layout="@layout/movie_watchlist_overlay" />
@@ -93,16 +95,6 @@
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
             android:tint="@color/button_grey"/>
-
-        <!--<com.mikepenz.iconics.view.IconicsButton
-            android:id="@+id/more_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="{gmd_more_vert}"
-            android:layout_below="@+id/card_text"
-            style="?android:attr/borderlessButtonStyle"
-            android:tint="@color/button_grey"/>-->
 
         <ProgressBar
             android:id="@+id/progress_spinner"
