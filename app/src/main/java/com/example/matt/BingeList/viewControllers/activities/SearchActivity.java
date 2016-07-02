@@ -20,6 +20,8 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MultiSearchAPI;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.adapters.MultiSearchAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.SearchAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -52,6 +54,10 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview_with_appbar);
 

@@ -30,7 +30,7 @@ import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
 import com.example.matt.bingeList.models.shows.TVShowResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.BrowseTVShowsAPI;
-import com.example.matt.bingeList.uitls.BrowseMovieType;
+import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
 
 import java.util.List;

@@ -19,6 +19,7 @@ import android.view.View;
 
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchListFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
@@ -56,10 +57,14 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
         ButterKnife.bind(this);
+
+        PreferencesHelper.setViewAndThemeSharedPreferencesDefault(getApplicationContext());
+        PreferencesHelper.printValues(getApplicationContext());
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
@@ -139,12 +144,12 @@ public class TVShowWatchListActivity extends AppCompatActivity {
 
                 return true;
 
-            case R.id.action_sort:
+            /*case R.id.action_sort:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Log.d("onOptionsItemSelected()", "Sort");
 
-                return true;
+                return true;*/
 
             case android.R.id.home:
                 // User chose the "Favorite" action, mark the current item

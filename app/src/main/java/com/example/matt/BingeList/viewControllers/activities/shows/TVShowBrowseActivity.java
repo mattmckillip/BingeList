@@ -34,8 +34,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.uitls.BrowseMovieType;
+import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.SearchActivity;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowBrowseFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;

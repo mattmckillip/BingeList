@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.fragments.SettingsFragment;
 import com.r0adkll.slidr.Slidr;
 
@@ -15,6 +17,10 @@ import com.r0adkll.slidr.Slidr;
 public class SettingsActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
+
         super.onCreate(savedInstanceState);
 
         // Attach the Slidr Mechanism to this activity

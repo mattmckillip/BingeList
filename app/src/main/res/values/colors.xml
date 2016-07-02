@@ -54,7 +54,6 @@
     <color name="highlighted_text_material_light">#6640c4ff</color> <!-- TODO: This is 40% alpha on the default accent color. -->
 
     <!-- Text & foreground colors -->
-
     <color name="primary_text_default_material_light">#de000000</color> <!-- Black 87% -->
     <color name="secondary_text_material_light">#8a000000</color> <!-- Black 54% -->
     <color name="tertiary_text_material_light">#8a000000</color> <!-- Black 54% (TODO: same as secondary?) -->
@@ -64,7 +63,6 @@
     <color name="tertiary_text_material_dark">#61ffffff</color> <!-- White 38% (TODO: same as secondary?) -->
 
     <!-- Primary & accent colors -->
-
     <color name="material_red_100">#fff4c7c3</color>
     <color name="material_red_300">#ffe67c73</color>
     <color name="material_red_500">#ffdb4437</color>

@@ -20,6 +20,8 @@ import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
@@ -55,6 +57,10 @@ public class CastActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recyclerview_with_appbar);
         ButterKnife.bind(this);

@@ -32,7 +32,7 @@ import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.uitls.BrowseMovieType;
+import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.uitls.EndlessRecyclerOnScrollListener;
 import com.example.matt.bingeList.viewControllers.adapters.MovieBrowseAdapter;
 

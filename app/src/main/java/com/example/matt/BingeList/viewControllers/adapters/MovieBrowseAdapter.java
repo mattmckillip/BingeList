@@ -2,7 +2,6 @@ package com.example.matt.bingeList.viewControllers.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -26,6 +25,8 @@ import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -64,7 +65,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         mContext = context;
         mUiRealm = uiRealm;
         setHasStableIds(true);
-        viewMode = 0;
+        viewMode = PreferencesHelper.getRecyclerviewViewType(mContext);
     }
 
     public void addMoreMovies(RealmList<Movie> additionMovies){
@@ -76,15 +77,22 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
 
     @Override
     public BrowseMoviesViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        Log.d(TAG, "onCreateViewHolder()");
+        PreferencesHelper.printValues(mContext);
+
         View itemView = null;
-        if (viewMode == 0) {
+        if (viewMode == ViewType.CARD) {
             itemView = LayoutInflater.
                     from(viewGroup.getContext()).
                     inflate(R.layout.item_more_options_card, viewGroup, false);
-        } else if (viewMode == 1){
+        } else if (viewMode == ViewType.COMPACT_CARD){
             itemView = LayoutInflater.
                     from(viewGroup.getContext()).
                     inflate(R.layout.item_more_options_compact_card, viewGroup, false);
+        } else if (viewMode == ViewType.LIST){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_list, viewGroup, false);
         } else {
             itemView = LayoutInflater.
                     from(viewGroup.getContext()).
@@ -103,8 +111,26 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         holder.mMovieTitle.setVisibility(View.GONE);
 
         holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16).color(ContextCompat.getColor(mContext, R.color.button_grey)));
-
         holder.mMovieTitle.setText(mMovieList.get(position).getTitle());
+
+        // Check the case where the title is too long
+        if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
+            final TextView title = holder.mMovieTitle;
+            final TextView description = holder.mMovieDescription;
+
+            final String titleString = mMovieList.get(position).getTitle();
+            holder.mMovieTitle.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "Number of lines in " + titleString + ": " + Integer.toString(title.getLineCount()));
+                    if (title.getLineCount() > 1) {
+                        description.setSingleLine();
+                    }
+                    // Perform any actions you want based on the line count here.
+                }
+            });
+        }
+
         holder.mMovieDescription.setText(mMovieList.get(position).getOverview());
 
         Picasso.with(mContext)
@@ -238,7 +264,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
                                     return true;
 
                                 case R.id.action_move_to_watchlist:
-                                    moveFromWatchedToWatchList(position, holder);
+                                    moveFromWatchedToWatchList(position);
                                     Snackbar.make(v, mMovieList.get(position).getTitle() + " unwatched", Snackbar.LENGTH_LONG).show();
                                     return true;
                             }
@@ -258,7 +284,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
                                     return true;
 
                                 case R.id.action_watch:
-                                    moveFromBrowseToWatched(position, holder, v);
+                                    moveFromBrowseToWatched(position, v);
                                     return true;
                             }
                             return false;
@@ -275,11 +301,11 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
                 holder.mProgressSpinner.setVisibility(View.VISIBLE);
 
                 if (isOnWatchList(position)) {
-                    moveFromWatchlistToWatched(position, holder);
+                    moveFromWatchlistToWatched(position);
                     Snackbar.make(v, "Watched!", Snackbar.LENGTH_LONG).show();
 
                 } else if (!isWatched(position)){
-                    moveFromBrowseToWatchList(position, holder, v);
+                    moveFromBrowseToWatchList(position, v);
                 }
             }
         });
@@ -301,7 +327,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         snackbar.show();
     }
 
-    private void moveFromWatchlistToWatched(int position, BrowseMoviesViewHolder holder){
+    private void moveFromWatchlistToWatched(int position){
         Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieList.get(position).getId()).findFirst();
 
         mUiRealm.beginTransaction();
@@ -314,7 +340,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         notifyDataSetChanged();
     }
 
-    private void moveFromWatchedToWatchList(int position, BrowseMoviesViewHolder holder){
+    private void moveFromWatchedToWatchList(int position){
         Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieList.get(position).getId()).findFirst();
 
         mUiRealm.beginTransaction();
@@ -328,7 +354,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
 
     }
 
-    private void moveFromBrowseToWatchList(final int position, final BrowseMoviesViewHolder holder, final View v) {
+    private void moveFromBrowseToWatchList(final int position, final View v) {
         Log.d(TAG, "moveFromBrowseToWatchList()");
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -421,7 +447,7 @@ public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.
         });
     }
 
-    private void moveFromBrowseToWatched(final int position, final BrowseMoviesViewHolder holder, final View v) {
+    private void moveFromBrowseToWatched(final int position, final View v) {
         Log.d(TAG, "moveFromBrowseToWatchList()");
 
         Retrofit retrofit = new Retrofit.Builder()

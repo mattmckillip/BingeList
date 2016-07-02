@@ -3,6 +3,7 @@ package com.example.matt.bingeList.viewControllers.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,9 +52,8 @@ public class SimilarMoviesAdapter extends RecyclerView.Adapter<SimilarMoviesAdap
         contactViewHolder.mMovieDescription.setText(similarMovie.getOverview());
 
         Picasso.with(mContext)
-                .load("https://image.tmdb.org/t/p/"+ mContext.getString(R.string.image_size_w92) + "/" + similarMovie.getPosterPath())
-                .placeholder(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_person_outline).sizeDp(16).color(Color.GRAY))
-                .error(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_person_outline).sizeDp(16).color(Color.GRAY))
+                .load("https://image.tmdb.org/t/p/"+ mContext.getString(R.string.image_size_w500) + similarMovie.getBackdropPath())
+                .error(ContextCompat.getDrawable(mContext, R.drawable.generic_movie_background))
                 .into(contactViewHolder.mMoviePoster);
     }
 

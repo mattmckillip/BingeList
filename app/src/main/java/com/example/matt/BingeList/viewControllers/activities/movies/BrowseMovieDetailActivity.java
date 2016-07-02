@@ -43,7 +43,9 @@ import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
@@ -254,6 +256,10 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);

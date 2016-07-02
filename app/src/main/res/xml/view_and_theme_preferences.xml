@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:defaultValue="1"
+        android:key="@string/recyclerview_view_type_preference"/>
+
+    <Preference
+        android:defaultValue="1"
+        android:key="@string/theme_preference"/>
+
+</PreferenceScreen>

@@ -37,6 +37,9 @@ import android.widget.Toast;
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.fragments.movies.MovieWatchListFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
@@ -76,7 +79,9 @@ public class WatchlistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
-
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
@@ -173,10 +178,27 @@ public class WatchlistActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu()");
+
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_sort, menu);
-        MenuItem sortItem = menu.findItem(R.id.action_sort);
-        sortItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        int viewMode = PreferencesHelper.getRecyclerviewViewType(getApplicationContext());
+        if (viewMode == ViewType.CARD){
+            menu.findItem(R.id.card_view).setChecked(true);
+        } else if (viewMode == ViewType.COMPACT_CARD){
+            menu.findItem(R.id.compact_view).setChecked(true);
+        } else if (viewMode == ViewType.LIST){
+            menu.findItem(R.id.list_view).setChecked(true);
+        }
+
+        int theme = PreferencesHelper.getTheme(getApplicationContext());
+        if (theme == ThemeEnum.DAY_THEME){
+            menu.findItem(R.id.light_theme).setChecked(true);
+        } else if (theme == ThemeEnum.NIGHT_THEME){
+            menu.findItem(R.id.dark_theme).setChecked(true);
+        }
+
         return true;
     }
 
@@ -194,12 +216,75 @@ public class WatchlistActivity extends AppCompatActivity {
 
                 return true;
 
+            case R.id.card_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "card_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
+                viewPager.setCurrentItem(mViewPagerPosition);
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.compact_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "compact_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
+                viewPager.setCurrentItem(mViewPagerPosition);
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.list_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "list_view");
+                }
+
+                PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
+                mAdapterViewPager.notifyDataSetChanged();
+                viewPager.setAdapter(mAdapterViewPager);
+                viewPager.setCurrentItem(mViewPagerPosition);
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
             case R.id.action_sort:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 if (BuildConfig.DEBUG) {
                     Log.d("onOptionsItemSelected()", "Sort");
                 }
+
+                return true;
+
+            case R.id.light_theme:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "light_theme");
+                }
+                PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
+                item.setChecked(true);
+                finish();
+                startActivity(getIntent());;
+
+                return true;
+
+            case R.id.dark_theme:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "dark_theme");
+                }
+                PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
+                item.setChecked(true);
+                finish();
+                startActivity(getIntent());;
 
                 return true;
 
@@ -218,6 +303,14 @@ public class WatchlistActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
 
+        }
+    }
+
+    private void setTabDrawables() {
+        // Set Tabs inside Toolbar
+        if( tabs.getTabAt(0) != null && tabs.getTabAt(1) != null) {
+            tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
+            tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
         }
     }
 

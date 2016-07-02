@@ -17,6 +17,8 @@ import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.Movie;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
 
@@ -32,29 +34,48 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 
-public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchListAdapter.BrowseMoviesViewHolder> {
+public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAdapter.WatchlistViewHolder> {
     private RealmResults<Movie> mMovieList;
-    private static final String TAG = MoviesWatchListAdapter.class.getSimpleName();
+    private static final String TAG = MovieWatchlistAdapter.class.getSimpleName();
     private Context mContext;
     private Realm mUiRealm;
+    private int viewMode;
 
-    public MoviesWatchListAdapter(RealmResults movieList, Context context, Realm uiRealm) {
+    public MovieWatchlistAdapter(RealmResults movieList, Context context, Realm uiRealm) {
         mContext = context;
         mUiRealm = uiRealm;
         mMovieList = movieList;
+        viewMode = PreferencesHelper.getRecyclerviewViewType(mContext);
     }
 
     @Override
-    public BrowseMoviesViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.
-                from(viewGroup.getContext()).
-                inflate(R.layout.item_two_button_card, viewGroup, false);
+    public WatchlistViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        PreferencesHelper.printValues(mContext);
 
-        return new BrowseMoviesViewHolder(itemView, mContext, mMovieList);
+        View itemView = null;
+        if (viewMode == ViewType.CARD) {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_two_button_card, viewGroup, false);
+        } else if (viewMode == ViewType.COMPACT_CARD){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_two_button_compact_card, viewGroup, false);
+        } else if (viewMode == ViewType.LIST){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_two_button_list, viewGroup, false);
+        } else {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_two_button_card, viewGroup, false);
+        }
+
+        return new WatchlistViewHolder(itemView, mContext, mMovieList);
     }
 
     @Override
-    public void onBindViewHolder(BrowseMoviesViewHolder holder, final int position) {
+    public void onBindViewHolder(WatchlistViewHolder holder, final int position) {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onBindViewHolder()");
         }
@@ -83,6 +104,24 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
         }
         holder.mMovieTitle.setText(mMovieList.get(position).getTitle());
         holder.mMovieDescription.setText(mMovieList.get(position).getOverview());
+
+        // Check the case where the title is too long
+        if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
+            final TextView title = holder.mMovieTitle;
+            final TextView description = holder.mMovieDescription;
+
+            final String titleString = mMovieList.get(position).getTitle();
+            holder.mMovieTitle.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "Number of lines in " + titleString + ": " + Integer.toString(title.getLineCount()));
+                    if (title.getLineCount() > 1) {
+                        description.setSingleLine();
+                    }
+                    // Perform any actions you want based on the line count here.
+                }
+            });
+        }
 
 
         holder.mRemoveButton.setOnClickListener(new View.OnClickListener() {
@@ -141,8 +180,8 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
         return mMovieList.size();
     }
 
-    public static class BrowseMoviesViewHolder extends RecyclerView.ViewHolder {
-        private static final String TAG = BrowseMoviesViewHolder.class.getSimpleName();
+    public static class WatchlistViewHolder extends RecyclerView.ViewHolder {
+        private static final String TAG = WatchlistViewHolder.class.getSimpleName();
         private Context mContext;
         private List<Movie> mMovieList;
 
@@ -161,7 +200,7 @@ public class MoviesWatchListAdapter extends RecyclerView.Adapter<MoviesWatchList
         @BindView(R.id.watch_button)
         IconicsButton mWatchButton;
 
-        public BrowseMoviesViewHolder(View v, Context context, final List<Movie> movieList) {
+        public WatchlistViewHolder(View v, Context context, final List<Movie> movieList) {
             super(v);
             mContext = context;
             mMovieList = movieList;

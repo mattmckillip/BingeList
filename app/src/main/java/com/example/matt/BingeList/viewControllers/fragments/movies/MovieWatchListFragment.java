@@ -24,15 +24,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.models.movies.MovieResult;
-import com.example.matt.bingeList.viewControllers.adapters.WatchedListMoviesAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.MoviesWatchListAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.MovieWatchlistAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.WatchedMoviesAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -40,8 +38,8 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 public class MovieWatchListFragment extends Fragment {
-    MoviesWatchListAdapter mWatchListAdapter;
-    WatchedListMoviesAdapter mWatchedAdapter;
+    MovieWatchlistAdapter mWatchListAdapter;
+    WatchedMoviesAdapter mWatchedAdapter;
     Realm mUiRealm;
 
     @Override
@@ -71,12 +69,12 @@ public class MovieWatchListFragment extends Fragment {
                     movies.add(movieResult);
                 }
             }
-            mWatchedAdapter = new WatchedListMoviesAdapter(movies, getContext(), uiRealm);
+            mWatchedAdapter = new WatchedMoviesAdapter(movies, getContext(), uiRealm);
             recyclerView.setAdapter(mWatchedAdapter);
 
         } else {
             RealmResults<Movie> movies = query.equalTo("onWatchList", true).findAll();
-            mWatchListAdapter = new MoviesWatchListAdapter(movies, getContext(), uiRealm);
+            mWatchListAdapter = new MovieWatchlistAdapter(movies, getContext(), uiRealm);
             recyclerView.setAdapter(mWatchListAdapter);
         }
 

@@ -43,6 +43,8 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
@@ -234,7 +236,9 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate()");
-
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
         super.onCreate(savedInstanceState);
 
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();

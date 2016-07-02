@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:background="@color/cardview_light_background"
+    android:background="?android:colorBackground"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -30,6 +30,7 @@
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:textColorPrimary"
             android:paddingLeft="@dimen/md_keylines"
             android:paddingStart="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"
@@ -50,6 +51,7 @@
                 android:paddingStart="@dimen/md_keylines"
                 android:paddingRight="@dimen/md_keylines"
                 android:paddingEnd="@dimen/md_keylines"
+                android:textColor="?android:textColorSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -69,6 +71,7 @@
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:textColorPrimary"
             android:paddingLeft="@dimen/md_keylines"
             android:paddingStart="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"
@@ -78,6 +81,7 @@
             android:id="@+id/born"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:textColorSecondary"
             android:paddingLeft="@dimen/md_keylines"
             android:paddingStart="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"
@@ -89,6 +93,7 @@
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:textColorPrimary"
             android:paddingLeft="@dimen/md_keylines"
             android:paddingStart="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"
@@ -98,6 +103,7 @@
             android:id="@+id/died"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:textColorSecondary"
             android:paddingLeft="@dimen/md_keylines"
             android:paddingStart="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"
