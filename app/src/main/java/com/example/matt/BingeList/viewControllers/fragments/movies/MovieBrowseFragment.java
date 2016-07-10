@@ -34,7 +34,7 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.uitls.EndlessRecyclerOnScrollListener;
-import com.example.matt.bingeList.viewControllers.adapters.MovieBrowseAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
 
 import java.util.List;
 
@@ -52,26 +52,25 @@ public class MovieBrowseFragment extends Fragment {
     private static final String TAG = MovieBrowseFragment.class.getSimpleName();
     private RealmList<Movie> data;
     private RecyclerView recyclerView;
-    private MovieBrowseAdapter mBrowseMoviesAdapter;
+    private BrowseMoviesAdapter mBrowseMoviesAdapter;
     private Integer movieType;
     private Integer mPage;
     private Realm mUiRealm;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         movieType = getArguments().getInt("movieType");
-        Log.d(TAG, "onCreateView() - movieType: " + Integer.toString(movieType));
 
         mUiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
 
-        recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
+        recyclerView = (RecyclerView) inflater.inflate(R.layout.recycler_view, container, false);
         recyclerView.setAdapter(mBrowseMoviesAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+
         loadData();
+
         recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int current_page) {
@@ -79,7 +78,7 @@ public class MovieBrowseFragment extends Fragment {
                 Log.d(TAG, "loadData()");
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://api.themoviedb.org/3/movie/")
+                        .baseUrl(getContext().getString(R.string.movie_base_url))
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -110,7 +109,7 @@ public class MovieBrowseFragment extends Fragment {
                                     movie.setTitle(movieResult.getTitle());
                                     movie.setId(movieResult.getId());
                                     movie.setOverview(movieResult.getOverview());
-                                    movie.setBackdropPath("https://image.tmdb.org/t/p/" + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                                    movie.setBackdropPath(getContext().getString(R.string.image_base_url) + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
                                     data.add(movie);
                                 }
                                 mBrowseMoviesAdapter.addMoreMovies(data);
@@ -165,12 +164,12 @@ public class MovieBrowseFragment extends Fragment {
                             movie.setTitle(movieResult.getTitle());
                             movie.setId(movieResult.getId());
                             movie.setOverview(movieResult.getOverview());
-                            movie.setBackdropPath("https://image.tmdb.org/t/p/" + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                            movie.setBackdropPath(getContext().getString(R.string.image_base_url) + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
                             data.add(movie);
                         }
                     }
                     Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
-                    mBrowseMoviesAdapter = new MovieBrowseAdapter(data, getContext(), uiRealm);
+                    mBrowseMoviesAdapter = new BrowseMoviesAdapter(data, getContext(), uiRealm);
                     recyclerView.setAdapter(mBrowseMoviesAdapter);
                 }
 

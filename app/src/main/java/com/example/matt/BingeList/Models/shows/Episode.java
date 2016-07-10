@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class Episode extends RealmObject{
     @SerializedName("air_date")
@@ -33,6 +34,7 @@ public class Episode extends RealmObject{
     @Expose
     private String overview;
 
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private Integer id;

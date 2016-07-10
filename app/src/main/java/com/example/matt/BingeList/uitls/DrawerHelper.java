@@ -2,17 +2,19 @@ package com.example.matt.bingeList.uitls;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.viewControllers.activities.SearchActivity;
 import com.example.matt.bingeList.viewControllers.activities.SettingsActivity;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseActivity;
-import com.example.matt.bingeList.viewControllers.activities.shows.TVShowWatchListActivity;
+import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsActivity;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
@@ -40,6 +42,18 @@ public class DrawerHelper {
         // Create the AccountHeader
         final IProfile profile = new ProfileDrawerItem().withName("Matt McKillip").withEmail("mattmckillip@gmail.com").withIcon(R.drawable.matt).withIdentifier(100);
 
+        int backgroundColor = Color.WHITE;
+        int primaryTextColor = Color.DKGRAY;
+        int secondaryTextColor = Color.GRAY;
+        int iconColor = Color.GRAY;
+
+        if(PreferencesHelper.getTheme(currentActivity.getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            backgroundColor = Color.DKGRAY;
+            primaryTextColor = Color.LTGRAY;
+            secondaryTextColor = Color.GRAY;
+            iconColor = Color.GRAY;
+        }
+
         headerResult = new AccountHeaderBuilder()
                 .withActivity(currentActivity)
                 .withTranslucentStatusBar(true)
@@ -56,18 +70,18 @@ public class DrawerHelper {
                 //.withItemAnimator(new AlphaCrossFadeAnimator())
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new ExpandableDrawerItem().withName(R.string.drawer_item_show_header).withIcon(MaterialDesignIconic.Icon.gmi_tv_alt_play).withIdentifier(1).withSelectable(false).withSubItems(
-                                new SecondaryDrawerItem().withName(R.string.drawer_item_show_watchlist).withLevel(2).withIcon(CommunityMaterial.Icon.cmd_television_guide).withIdentifier(1000),
-                                new SecondaryDrawerItem().withName(R.string.drawer_item_show_browse).withLevel(2).withIcon(GoogleMaterial.Icon.gmd_whatshot).withIdentifier(1001)
+                        new ExpandableDrawerItem().withName(R.string.drawer_item_show_header).withIcon(MaterialDesignIconic.Icon.gmi_tv_alt_play).withIdentifier(1).withSelectable(false).withTextColor(primaryTextColor).withIconColor(iconColor).withSubItems(
+                                new SecondaryDrawerItem().withName(R.string.drawer_item_show_watchlist).withLevel(2).withIcon(CommunityMaterial.Icon.cmd_television_guide).withIdentifier(1000).withTextColor(secondaryTextColor).withIconColor(iconColor),
+                                new SecondaryDrawerItem().withName(R.string.drawer_item_show_browse).withLevel(2).withIcon(GoogleMaterial.Icon.gmd_whatshot).withIdentifier(1001).withTextColor(secondaryTextColor).withIconColor(iconColor)
                         ),
-                        new ExpandableDrawerItem().withName(R.string.drawer_item_movie_header).withIcon(CommunityMaterial.Icon.cmd_movie).withIdentifier(2).withSelectable(false).withSubItems(
-                                new SecondaryDrawerItem().withName(R.string.drawer_item_movie_watchlist).withLevel(2).withIcon(MaterialDesignIconic.Icon.gmi_tv_list).withIdentifier(2000),
-                                new SecondaryDrawerItem().withName(R.string.drawer_item_movie_browse).withLevel(2).withIcon(GoogleMaterial.Icon.gmd_whatshot).withIdentifier(2001)
+                        new ExpandableDrawerItem().withName(R.string.drawer_item_movie_header).withIcon(CommunityMaterial.Icon.cmd_movie).withIdentifier(2).withSelectable(false).withTextColor(primaryTextColor).withIconColor(iconColor).withSubItems(
+                                new SecondaryDrawerItem().withName(R.string.drawer_item_movie_watchlist).withLevel(2).withIcon(MaterialDesignIconic.Icon.gmi_tv_list).withIdentifier(2000).withTextColor(secondaryTextColor).withIconColor(iconColor),
+                                new SecondaryDrawerItem().withName(R.string.drawer_item_movie_browse).withLevel(2).withIcon(GoogleMaterial.Icon.gmd_whatshot).withIdentifier(2001).withTextColor(secondaryTextColor).withIconColor(iconColor)
                         ),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_search).withIcon(GoogleMaterial.Icon.gmd_search).withIdentifier(3000),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_search).withIcon(GoogleMaterial.Icon.gmd_search).withTextColor(primaryTextColor).withIdentifier(3000).withIconColor(iconColor),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_about).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(4000).withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(4001)
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_about).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(4000).withSelectable(false).withTextColor(secondaryTextColor).withIconColor(iconColor),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(4001).withTextColor(secondaryTextColor).withIconColor(iconColor)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -81,7 +95,7 @@ public class DrawerHelper {
                         if (drawerItem != null) {
                             Intent intent = null;
                             if (drawerItem.getIdentifier() == 1000) {
-                                intent = new Intent(currentActivity, TVShowWatchListActivity.class);
+                                intent = new Intent(currentActivity, YourShowsActivity.class);
                             } else if (drawerItem.getIdentifier() == 1001) {
                                 intent = new Intent(currentActivity, TVShowBrowseActivity.class);
                             } else if (drawerItem.getIdentifier() == 2000) {
@@ -107,12 +121,13 @@ public class DrawerHelper {
                 })
                 .withSavedInstance(savedInstanceState)
                 .withShowDrawerOnFirstLaunch(true)
+                .withSliderBackgroundColor(backgroundColor)
                 .build();
 
         result.getAdapter().expand(1);
         result.getAdapter().expand(4);
 
-        if (currentActivity.getClass().equals(TVShowWatchListActivity.class)) {
+        if (currentActivity.getClass().equals(YourShowsActivity.class)) {
             result.setSelection(1000, false);
         } else if (currentActivity.getClass().equals(TVShowBrowseActivity.class)) {
             result.setSelection(1001, false);

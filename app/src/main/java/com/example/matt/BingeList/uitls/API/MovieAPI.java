@@ -13,7 +13,7 @@ import retrofit2.http.Query;
  * Created by Matt on 6/7/2016.
  */
 public interface MovieAPI {
-    @GET("{movieID}?api_key=788bf2d4d9f5db03979efed58cbf6713")
+    @GET("{movieID}?api_key=788bf2d4d9f5db03979efed58cbf6713&append_to_response=releases")
     Call<Movie> getMovie(@Path("movieID") String movieID);
 
     @GET("{movieID}/credits?api_key=788bf2d4d9f5db03979efed58cbf6713")

@@ -57,8 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/compact_card_image_margin"
             android:layout_toRightOf="@+id/card_image"
-            android:text="{gmd_add_to_queue}"
-            android:textColor="?attr/colorPrimary"
+            android:text="{gmd_add}"
+            android:textColor="@color/colorPrimary"
             android:layout_alignParentBottom="true"
             style="?android:attr/borderlessButtonStyle" />
 

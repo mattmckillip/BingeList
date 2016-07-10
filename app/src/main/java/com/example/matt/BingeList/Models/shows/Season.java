@@ -4,21 +4,27 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class Season extends RealmObject{
 
     @SerializedName("air_date")
     @Expose
     private String airDate;
+
     @SerializedName("episode_count")
     @Expose
     private Integer episodeCount;
+
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("season_number")
     @Expose
     private Integer seasonNumber;

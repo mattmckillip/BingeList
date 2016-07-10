@@ -67,7 +67,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:lines="2"
-            android:textColor="@color/dark_grey"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="@dimen/article_subheading" />
 
         <!--<ImageButton
@@ -90,7 +90,7 @@
             android:layout_marginTop="@dimen/md_keylines"
             android:layout_marginLeft="@dimen/md_keylines"
             android:layout_below="@+id/card_text"
-            android:textColor="@color/dark_grey"
+            android:textColor="@android:color/primary_text_dark"
             android:textSize="@dimen/article_subheading" />
 
         <com.mikepenz.iconics.view.IconicsButton

@@ -31,6 +31,8 @@ import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -49,7 +51,7 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 
-public class TVShowWatchListDetailActivity extends AppCompatActivity {
+public class YourShowsDetailActivity extends AppCompatActivity {
     private Integer mShowID;
     private Adapter mAdapterViewPager;
     private SlidrInterface mSlidrInterface;
@@ -84,13 +86,16 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
         mShowID = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
         mSelectedTab = 0;
 
-        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_remove_circle_outline).sizeDp(16).color(Color.WHITE));
+        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear).sizeDp(16).color(Color.WHITE));
         mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_done_all).sizeDp(16).color(Color.WHITE));
 
         Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
@@ -105,7 +110,7 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        fab.setImageDrawable(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_remove_circle_outline).sizeDp(16).color(Color.WHITE));
+        fab.setImageDrawable(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear).sizeDp(16).color(Color.WHITE));
 
         // Set title of Detail page
         collapsingToolbar.setTitle(ShowName);
@@ -144,11 +149,11 @@ public class TVShowWatchListDetailActivity extends AppCompatActivity {
             int mutedColor = palette.getLightMutedColor(defaultColor);
 
             if (vibrantColor == 0) {
-                vibrantColor = getResources().getColor(R.color.colorPrimary);
+                vibrantColor = getResources().getColor(R.color.lightColorPrimary);
             }
 
             if (mutedColor == 0) {
-                mutedColor = getResources().getColor(R.color.colorAccent);
+                mutedColor = getResources().getColor(R.color.lightColorAccent);
             }
 
             collapsingToolbar.setBackgroundColor(vibrantColor);

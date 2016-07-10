@@ -36,6 +36,7 @@
     <!-- API Strings -->
     <string name="image_base_url">https://image.tmdb.org/t/p/</string>
     <string name="movie_base_url">http://api.themoviedb.org/3/movie/</string>
+    <string name="tv_show_base_url">http://api.themoviedb.org/3/tv/</string>
     <string name="imdb_person_base_url">http://www.imdb.com/title/</string>
 
     <!-- UI Strings -->
@@ -49,6 +50,7 @@
     <string name="name_header">Name</string>
     <string name="biography_header">Biography</string>
     <string name="born_header">Born</string>
+    <string name="mpaa_header">Rating</string>
     <string name="died_header">Died</string>
     <string name="known_for_header">Credits</string>
     <string name="similar_movies_header">Similar Movies</string>
@@ -69,6 +71,8 @@
     <string name="imdb_button">{gmd_exit_to_app} IMDb</string>
     <string name="unwatch_button">{gmd_undo} Unwatch</string>
     <string name="remove_button"> {gmd_clear} Remove</string>
+    <string name="your_shows_button">{cmd_television_guide} on your shows</string>
+    <string name="add_to_your_shows_button"> {gmd_add} add to your shows!</string>
 
     <!-- Drawer Items -->
     <string name="drawer_item_show_header">TV Shows</string>

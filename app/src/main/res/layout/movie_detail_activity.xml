@@ -9,11 +9,11 @@
     <!-- Collapsing Toolbar -->
     <include layout="@layout/collapsing_toolbar" />
 
-    <!-- loading panel -->
-    <include layout="@layout/loading_panel" />
-
     <!-- Movie overview newsted scroll view -->
     <include layout="@layout/movie_overview_nested_scroll_view" />
+
+    <!-- loading panel-->
+    <include layout="@layout/loading_panel" />
 
     <android.support.design.widget.FloatingActionButton
          android:id="@+id/fab"

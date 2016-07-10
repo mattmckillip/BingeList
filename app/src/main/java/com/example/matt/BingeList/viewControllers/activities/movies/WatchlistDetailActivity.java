@@ -349,10 +349,10 @@ public class WatchlistDetailActivity extends AppCompatActivity {
             int mutedColor = palette.getMutedColor(DEFAULT_COLOR);
 
             if (vibrantColor == DEFAULT_COLOR) {
-                vibrantColor = ContextCompat.getColor(mContext, R.color.colorAccent);
+                vibrantColor = ContextCompat.getColor(mContext, R.color.lightColorPrimary);
             }
             if (mutedColor == DEFAULT_COLOR) {
-                mutedColor = ContextCompat.getColor(mContext, R.color.colorPrimary);
+                mutedColor = ContextCompat.getColor(mContext, R.color.lightColorAccent);
             }
             setColors(vibrantColor, mutedColor);
             setViewsVisible();

@@ -29,13 +29,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.SearchActivity;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowBrowseFragment;
@@ -52,10 +56,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-/**
- * Provides UI for the main screen.
- */
 public class TVShowBrowseActivity extends AppCompatActivity {
     private static final String TAG = TVShowBrowseActivity.class.getSimpleName();
     private Adapter mAdapterViewPager;
@@ -78,13 +78,17 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
+        Iconics.registerFont(new CommunityMaterial());
+
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
         ButterKnife.bind(this);
 
-        setTheme(R.style.DarkAppTheme_Base);
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Browse Shows");
@@ -94,9 +98,8 @@ public class TVShowBrowseActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         tabs.setupWithViewPager(viewPager);
-        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
-        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_new_box).color(Color.WHITE));
-        tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
+        setTabDrawables();
+
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -144,19 +147,35 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         topRatedMovies.setArguments(topRatedBundle);
 
         mAdapterViewPager.addFragment(popularMovies, "Popular");
-        mAdapterViewPager.addFragment(nowShowingMovies, "Now Airing");
+        mAdapterViewPager.addFragment(nowShowingMovies, "This Week");
         mAdapterViewPager.addFragment(topRatedMovies, "Top Rated");
 
         viewPager.setAdapter(mAdapterViewPager);
     }
 
-    /*
-     * Drawer Functions
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu()");
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        int viewMode = PreferencesHelper.getRecyclerviewViewType(getApplicationContext());
+        if (viewMode == ViewType.CARD){
+            menu.findItem(R.id.card_view).setChecked(true);
+        } else if (viewMode == ViewType.COMPACT_CARD){
+            menu.findItem(R.id.compact_view).setChecked(true);
+        } else if (viewMode == ViewType.LIST){
+            menu.findItem(R.id.list_view).setChecked(true);
+        }
+
+        int theme = PreferencesHelper.getTheme(getApplicationContext());
+        if (theme == ThemeEnum.DAY_THEME){
+            menu.findItem(R.id.light_theme).setChecked(true);
+        } else if (theme == ThemeEnum.NIGHT_THEME){
+            menu.findItem(R.id.dark_theme).setChecked(true);
+        }
+
         return true;
     }
 
@@ -165,14 +184,103 @@ public class TVShowBrowseActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mNavigationDrawer.openDrawer();
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "settings");
+                }
+
+                return true;
+
+            case R.id.card_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "card_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
+                PreferencesHelper.printValues(getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
+
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.compact_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "compact_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
+                PreferencesHelper.printValues(getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
+
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.list_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "list_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
+                mAdapterViewPager.notifyDataSetChanged();
+                viewPager.setAdapter(mAdapterViewPager);
+
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.light_theme:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "light_theme");
+                }
+                PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
+                item.setChecked(true);
+                finish();
+                startActivity(getIntent());
+                ;
+
+                return true;
+
+            case R.id.dark_theme:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "dark_theme");
+                }
+                PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
+                item.setChecked(true);
+                finish();
+                startActivity(getIntent());
+                ;
+
+                return true;
+
+            case android.R.id.home:
+                // User chose the "Favorite" action, mark the current item
+                // as a favorite...
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "Sort");
+                }
+                mNavigationDrawer.openDrawer();
+
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    private void setTabDrawables(){
+        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
+        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_new_box).color(Color.WHITE));
+        tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
     }
 
     @Override

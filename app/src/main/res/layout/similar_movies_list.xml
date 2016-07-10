@@ -6,8 +6,6 @@
     android:layout_height="@dimen/compact_card_height"
     android:layout_gravity="center"
     android:layout_marginBottom="@dimen/md_keylines"
-    android:layout_marginLeft="@dimen/md_keylines"
-    android:layout_marginRight="@dimen/md_keylines"
     app:cardBackgroundColor="?android:colorBackground">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -40,7 +38,7 @@
             android:layout_toRightOf="@+id/list_image"
             android:textColor="?android:textColorSecondary"
             android:ellipsize="end"
-            android:maxLines="4"
+            android:maxLines="3"
             android:layout_marginLeft="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
             android:layout_marginBottom="@dimen/md_keylines" />

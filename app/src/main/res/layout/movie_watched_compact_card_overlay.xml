@@ -15,7 +15,7 @@
         android:id="@+id/watched_icon"
         android:layout_width="@dimen/compact_card_overlay_image_height"
         android:layout_height="@dimen/compact_card_overlay_image_height"
-        android:layout_marginLeft="14dp"
+        android:layout_marginLeft="@dimen/compact_card_overlay_margin"
         android:layout_centerVertical="true"/>
 
 </RelativeLayout>

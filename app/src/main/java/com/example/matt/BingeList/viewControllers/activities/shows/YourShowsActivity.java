@@ -17,11 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
-import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchListFragment;
+import com.example.matt.bingeList.viewControllers.fragments.shows.YourShowsFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
@@ -35,8 +38,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class TVShowWatchListActivity extends AppCompatActivity {
-    private static final String TAG = TVShowWatchListActivity.class.getSimpleName();
+public class YourShowsActivity extends AppCompatActivity {
+    private static final String TAG = YourShowsActivity.class.getSimpleName();
     private Adapter mAdapterViewPager;
     private Drawer mNavigationDrawer;
 
@@ -57,7 +60,9 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
 
-
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_activity);
 
@@ -75,12 +80,7 @@ public class TVShowWatchListActivity extends AppCompatActivity {
 
         // Set Tabs inside Toolbar
         tabs.setupWithViewPager(viewPager);
-        try {
-            tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
-            tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_new_box).sizeDp(24).color(Color.WHITE));
-        } catch (NullPointerException npe) {
-            //pass
-        }
+        setTabDrawables();
 
         // Create Navigation drawer
         mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
@@ -111,24 +111,43 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
         Bundle watchedMoviesBundle = new Bundle();
-        watchedMoviesBundle.putInt("watched", 1);
-        TVShowWatchListFragment watchedMovies = new TVShowWatchListFragment();
+        watchedMoviesBundle.putInt("watched", 0);
+        YourShowsFragment watchedMovies = new YourShowsFragment();
         watchedMovies.setArguments(watchedMoviesBundle);
 
         Bundle watchListMoviesBundle = new Bundle();
-        watchListMoviesBundle.putInt("watched", 0);
-        TVShowWatchListFragment watchListMovies = new TVShowWatchListFragment();
+        watchListMoviesBundle.putInt("watched", 1);
+        YourShowsFragment watchListMovies = new YourShowsFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
         mAdapterViewPager.addFragment(watchListMovies, "Your Shows");
-        mAdapterViewPager.addFragment(watchedMovies, "New Episodes");
+        mAdapterViewPager.addFragment(watchedMovies, "Unwatched");
         viewPager.setAdapter(mAdapterViewPager);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu()");
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        int viewMode = PreferencesHelper.getRecyclerviewViewType(getApplicationContext());
+        if (viewMode == ViewType.CARD){
+            menu.findItem(R.id.card_view).setChecked(true);
+        } else if (viewMode == ViewType.COMPACT_CARD){
+            menu.findItem(R.id.compact_view).setChecked(true);
+        } else if (viewMode == ViewType.LIST){
+            menu.findItem(R.id.list_view).setChecked(true);
+        }
+
+        int theme = PreferencesHelper.getTheme(getApplicationContext());
+        if (theme == ThemeEnum.DAY_THEME){
+            menu.findItem(R.id.light_theme).setChecked(true);
+        } else if (theme == ThemeEnum.NIGHT_THEME){
+            menu.findItem(R.id.dark_theme).setChecked(true);
+        }
+
         return true;
     }
 
@@ -140,21 +159,84 @@ public class TVShowWatchListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
-                Log.d("onOptionsItemSelected()", "settings");
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "settings");
+                }
 
                 return true;
 
-            /*case R.id.action_sort:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                Log.d("onOptionsItemSelected()", "Sort");
+            case R.id.card_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "card_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
+                PreferencesHelper.printValues(getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
 
-                return true;*/
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.compact_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "compact_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
+                PreferencesHelper.printValues(getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
+
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.list_view:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "list_view");
+                }
+                PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
+                mAdapterViewPager.notifyDataSetChanged();
+                viewPager.setAdapter(mAdapterViewPager);
+
+                item.setChecked(true);
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
+
+                return true;
+
+            case R.id.light_theme:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "light_theme");
+                }
+                PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
+                item.setChecked(true);
+                finish();
+                startActivity(getIntent());
+                ;
+
+                return true;
+
+            case R.id.dark_theme:
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "dark_theme");
+                }
+                PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
+                item.setChecked(true);
+                finish();
+                startActivity(getIntent());
+                ;
+
+                return true;
 
             case android.R.id.home:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
-                Log.d("onOptionsItemSelected()", "Sort");
+                if (BuildConfig.DEBUG) {
+                    Log.d("onOptionsItemSelected()", "Sort");
+                }
                 mNavigationDrawer.openDrawer();
 
                 return true;
@@ -165,15 +247,11 @@ public class TVShowWatchListActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
+    }
 
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-        return super.onOptionsItemSelected(item);*/
+    private void setTabDrawables(){
+        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
+        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_eye_off).sizeDp(24).color(Color.WHITE));
     }
 
     @Override

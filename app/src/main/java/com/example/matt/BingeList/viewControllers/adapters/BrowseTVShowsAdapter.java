@@ -1,33 +1,38 @@
 package com.example.matt.bingeList.viewControllers.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.bingeList.models.Cast;
-import com.example.matt.bingeList.models.Credits;
-import com.example.matt.bingeList.models.Crew;
+import com.example.matt.bingeList.models.movies.Movie;
+import com.example.matt.bingeList.models.shows.Episode;
+import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
-import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
+import com.mikepenz.community_material_typeface_library.CommunityMaterial;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -35,7 +40,6 @@ import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -43,7 +47,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,66 +59,75 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdapter.BrowseTVShowsViewHolder> {
     private static final String TAG = BrowseTVShowsAdapter.class.getSimpleName();
     private RealmList<TVShow> mShowList;
-    private Activity activity;
+    private Context mContext;
+    private Realm mUiRealm;
     private TVShow mShow;
+    private int mShowId;
+    private int viewMode;
 
-
-    public BrowseTVShowsAdapter(RealmList<TVShow> showList, Activity activity) {
+    public BrowseTVShowsAdapter(RealmList<TVShow> showList, Context context, Realm uiRealm) {
         this.mShowList = showList;
-        this.activity = activity;
+        mContext = context;
+        mUiRealm = uiRealm;
+        setHasStableIds(true);
+        viewMode = PreferencesHelper.getRecyclerviewViewType(mContext);
     }
-
+    public void addMoreShows(RealmList<TVShow> additionalShows){
+        for (TVShow showToAdd: additionalShows){
+            mShowList.add(showToAdd);
+        }
+        notifyDataSetChanged();
+    }
     @Override
     public BrowseTVShowsViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.
-                from(viewGroup.getContext()).
-                inflate(R.layout.item_more_options_card, viewGroup, false);
+        View itemView = null;
+        if (viewMode == ViewType.CARD) {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_card, viewGroup, false);
+        } else if (viewMode == ViewType.COMPACT_CARD){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_compact_card, viewGroup, false);
+        } else if (viewMode == ViewType.LIST){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_list, viewGroup, false);
+        } else {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_card, viewGroup, false);
+        }
+
 
         return new BrowseTVShowsViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final BrowseTVShowsViewHolder holder, final int position) {
-        holder.progressSpinner.setVisibility(View.GONE);
-        holder.watchedLayout.setVisibility(View.GONE);
-        holder.watchListLayout.setVisibility(View.GONE);
-        holder.showName.setVisibility(View.GONE);
+    public long getItemId(int position){
+        return mShowList.get(position).getId();
+    }
+
+    @Override
+    public void onBindViewHolder(final BrowseTVShowsViewHolder holder, int position) {
+        holder.mProgressSpinner.setVisibility(View.GONE);
+        holder.mWatchedLayout.setVisibility(View.GONE);
+        holder.mWatchListLayout.setVisibility(View.GONE);
+        holder.mShowName.setVisibility(View.GONE);
         String path = mShowList.get(position).getBackdropPath();
 
-        if (path != null) {
-            Picasso.with(activity.getApplicationContext()).load(path).into(holder.showImage, new com.squareup.picasso.Callback() {
-                @Override
-                public void onSuccess() {
-                    Bitmap bitmap = ((BitmapDrawable) holder.showImage.getDrawable()).getBitmap(); // Ew!
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    mShowList.get(position).setBackdropBitmap(stream.toByteArray());
-                }
+        holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16).color(ContextCompat.getColor(mContext, R.color.button_grey)));
 
-                @Override
-                public void onError() {
-                }
-            });
-            holder.showName.setVisibility(View.VISIBLE);
-        }
+        Picasso.with(mContext)
+                .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) +  mShowList.get(position).getBackdropPath())
+                .error(R.drawable.generic_movie_background)
+                .into(holder.mShowImage);
 
-        holder.showName.setText(mShowList.get(position).getName());
-        holder.showDescription.setText(mShowList.get(position).getOverview());
+        holder.mShowName.setText(mShowList.get(position).getName());
+        holder.mShowDescription.setText(mShowList.get(position).getOverview());
 
-        // Build the query looking at all users:
-        Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
-
-        RealmResults<TVShow> watchedShows = uiRealm.where(TVShow.class).equalTo("isWatched", true).equalTo("id", mShowList.get(position).getId()).findAll();
-        if (watchedShows.size() == 1) {
-            holder.watchedLayout.setVisibility(View.VISIBLE);
-            holder.actionButton.setVisibility(View.GONE);
-        }
-
-        RealmResults<TVShow> watchListShows = uiRealm.where(TVShow.class).equalTo("onWatchList", true).equalTo("id", mShowList.get(position).getId()).findAll();
-        if (watchListShows.size() == 1) {
-            holder.watchListLayout.setVisibility(View.VISIBLE);
-            holder.actionButton.setVisibility(View.GONE);
-        }
+        setActionButton(holder, position);
+        setListeners(holder, position);
     }
 
     @Override
@@ -125,26 +137,37 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
     public class BrowseTVShowsViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.card_title)
-        TextView showName;
+        TextView mShowName;
 
         @BindView(R.id.card_image)
-        ImageView showImage;
+        ImageView mShowImage;
 
         @BindView(R.id.card_text)
-        TextView showDescription;
+        TextView mShowDescription;
 
         @BindView(R.id.watched_layout)
-        RelativeLayout watchedLayout;
+        RelativeLayout mWatchedLayout;
 
         @BindView(R.id.watch_list_layout)
-        RelativeLayout watchListLayout;
+        RelativeLayout mWatchListLayout;
 
         @BindView(R.id.action_button)
-        IconicsButton actionButton;
+        IconicsButton mActionButton;
+
+        @BindView(R.id.more_button)
+        ImageButton mMoreOptionsButton;
 
         @BindView(R.id.progress_spinner)
-        ProgressBar progressSpinner;
+        ProgressBar mProgressSpinner;
 
+        @BindView(R.id.watched_icon)
+        ImageView mWatchedIcon;
+
+        @BindView(R.id.watchlist_icon)
+        ImageView mWatchlistIcon;
+
+        @BindView(R.id.overlay_text)
+        TextView mOverlaytext;
 
         public BrowseTVShowsViewHolder(View v) {
             super(v);
@@ -155,133 +178,236 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    TVShow selectedShow = mShowList.get(getAdapterPosition());
+                    mShow = mShowList.get(getAdapterPosition());
 
                     Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
-                    intent.putExtra("showID", selectedShow.getId());
-                    intent.putExtra("showName", selectedShow.getName());
+                    intent.putExtra("showID", mShow.getId());
+                    intent.putExtra("mShowName", mShow.getName());
                     context.startActivity(intent);
                 }
             });
-
-            actionButton.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(final View v) {
-                    progressSpinner.setVisibility(View.VISIBLE);
-
-                    final int showID = mShowList.get(getAdapterPosition()).getId();
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://api.themoviedb.org/3/tv/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    TVShowAPI service = retrofit.create(TVShowAPI.class);
-                    Call<TVShow> call = service.getTVShow(Integer.toString(showID));
-
-                    call.enqueue(new Callback<TVShow>() {
-                        @Override
-                        public void onResponse(Call<TVShow> call, Response<TVShow> response) {
-                            mShow = response.body();
-                            mShow.setBackdropPath("https://image.tmdb.org/t/p/w780" + mShow.getBackdropPath());
-
-                            Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://api.themoviedb.org/3/movie/")
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
-
-                            MovieAPI service = retrofit.create(MovieAPI.class);
-                            Call<Credits> creditsCall = service.getCredits(Integer.toString(showID));
-
-                            creditsCall.enqueue(new Callback<Credits>() {
-                                @Override
-                                public void onResponse(Call<Credits> call, Response<Credits> response) {
-                                    List<Cast> cast = response.body().getCast();
-                                    List<Crew> crew = response.body().getCrew();
-
-                                    Target target = new Target() {
-                                        @Override
-                                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                            mShow.setBackdropBitmap(stream.toByteArray());
-
-                                            Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();
-                                            uiRealm.beginTransaction();
-                                            mShow.setOnWatchList(true);
-
-                                            uiRealm.copyToRealm(mShow);
-                                            uiRealm.commitTransaction();
-
-                                            watchListLayout.setVisibility(View.VISIBLE);
-
-                                            FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
-                                            fetchSeasonsTask.execute(showID, mShow.getNumberOfSeasons());
-
-                                            Snackbar.make(v, "Added to your shows!",
-                                                    Snackbar.LENGTH_LONG).show();
-
-                                            progressSpinner.setVisibility(View.GONE);
-                                            actionButton.setVisibility(View.GONE);
-                                        }
-
-                                        @Override
-                                        public void onBitmapFailed(Drawable errorDrawable) {
-                                            Log.d("onBitmapFailed()", mShow.getBackdropPath());
-                                        }
-
-                                        @Override
-                                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                        }
-                                    };
-                                    /*realmShow.setCrew(realmCrew);
-                                    realmShow.setCast(realmCast);*/
-
-                                    Picasso.with(activity.getApplicationContext())
-                                            .load(mShow.getBackdropPath())
-                                            .into(target);
-                                }
-
-                                @Override
-                                public void onFailure(Call<Credits> call, Throwable t) {
-                                    Log.d("GetCredits()", "Callback Failure");
-                                }
-                            });
-                            //TODOgenre
-                        }
-
-                        @Override
-                        public void onFailure(Call<TVShow> call, Throwable t) {
-                            Log.d("getMovie()", "Callback Failure");
-                        }
-                    });
-                }
-            });
         }
     }
-    public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons, Integer showID) {
-        /*RealmList<JSONSeason> jsonSeasonRealmList = new RealmList<>();
-        for (TVShowSeasonResult season: seasons) {
-            JSONSeason realmSeason = season.convertToRealm();
-            jsonSeasonRealmList.add(realmSeason);
 
-            RealmList<JSONEpisode> jsonEpisodeRealmList = realmSeason.getEpisodes();
-            for (JSONEpisode episode: jsonEpisodeRealmList) {
-                episode.setShow_id(showID);
+    //HELPERS
+    public boolean isOnWatchList(int position){
+        return mUiRealm.where(TVShow.class).equalTo("onYourShows", true).equalTo("id", mShowList.get(position).getId()).count() > 0;
+    }
+
+    private void setListeners(final BrowseTVShowsViewHolder holder, final int position){
+        /*holder.mMoreOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                Log.d(TAG, "moreOptionsButtonClick()");
+                if (isOnWatchList(position)) { // Movie is on the users watchlist
+                    PopupMenu popup = new PopupMenu(mContext, v);
+                    popup.getMenuInflater().inflate(R.menu.menu_watchlist, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_archive:
+                                    archiveHandler(mMovieList.get(position), position, v);
+                                    return true;
+
+                                case R.id.action_remove:
+                                    moveFromWatchListToBrowse(mMovieList.get(position).getId());
+                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " removed from watchlist", Snackbar.LENGTH_LONG).show();
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+
+                } else if (isWatched(position)) { // Movie has been watched
+                    PopupMenu popup = new PopupMenu(mContext, v);
+                    popup.getMenuInflater().inflate(R.menu.menu_watched, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_archive:
+                                    archiveHandler(mMovieList.get(position), position, v);
+                                    return true;
+
+                                case R.id.action_remove:
+                                    moveFromWatchListToBrowse(mMovieList.get(position).getId());
+                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " removed from watchlist", Snackbar.LENGTH_LONG).show();
+                                    return true;
+
+                                case R.id.action_move_to_watchlist:
+                                    moveFromWatchedToWatchList(position);
+                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " unwatched", Snackbar.LENGTH_LONG).show();
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+                } else { // Movie is not on watchlist or watched
+                    PopupMenu popup = new PopupMenu(mContext, v);
+                    popup.getMenuInflater().inflate(R.menu.menu_browse, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.action_archive:
+                                    archiveHandler(mMovieList.get(position), position, v);
+                                    return true;
+
+                                case R.id.action_watch:
+                                    moveFromBrowseToWatched(position, v);
+                                    return true;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+                }
             }
-        }
+        });*/
 
-        Realm uiRealm = ((MyApplication) activity.getApplication()).getUiRealm();*/
-        /*uiRealm.beginTransaction();
-        realmShow.setSeasons(jsonSeasonRealmList);
-        uiRealm.copyToRealmOrUpdate(realmShow);
-        uiRealm.commitTransaction();*/
+        holder.mActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                holder.mProgressSpinner.setVisibility(View.VISIBLE);
+                mShowId = mShowList.get(position).getId();
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://api.themoviedb.org/3/tv/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                final TVShowAPI service = retrofit.create(TVShowAPI.class);
+
+                Call<TVShow> call = service.getTVShow(Integer.toString(mShowId));
+                call.enqueue(new Callback<TVShow>() {
+                    @Override
+                    public void onResponse(Call<TVShow> call, Response<TVShow> response) {
+                        if (response.isSuccessful()){
+                            mShow = response.body();
+                            Target target = new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    Log.d(TAG, "onBitmapLoaded()");
+
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                    Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
+
+                                    mUiRealm.beginTransaction();
+                                    mShow.setBackdropBitmap(stream.toByteArray());
+                                    mShow.setOnYourShows(true);
+                                    mUiRealm.copyToRealmOrUpdate(mShow);
+                                    mUiRealm.commitTransaction();
+
+                                    notifyDataSetChanged();
+
+                                    FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
+                                    Log.d(TAG, Integer.toString(mShowId));
+                                    Log.d(TAG, Integer.toString(mShow.getNumberOfSeasons()));
+                                    fetchSeasonsTask.execute(mShowId, mShow.getNumberOfSeasons());
+
+                                    Snackbar.make(v, mShow.getName() + " Added to your shows!",
+                                            Snackbar.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Drawable errorDrawable) {
+                                    Log.d(TAG, "onBitmapFailed()");
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                    Log.d(TAG, "onPrepareLoad()");
+                                }
+                            };
+
+                            Picasso.with(mContext)
+                                    .load("https://image.tmdb.org/t/p/w500/" + mShow.getBackdropPath())
+                                    .into(target);
+                        } else {
+                            Snackbar.make(v, "Unable to load movie...", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TVShow> call, Throwable t) {
+                        Snackbar.make(v, "Unable to connect to API..", Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+    }
+
+    private void setActionButton(BrowseTVShowsViewHolder holder, int position) {
+        Log.d(TAG, "setActionButton()");
+
+        if (isOnWatchList(position)) {
+            setWatchlistOverlay(holder);
+            holder.mActionButton.setText(mContext.getString(R.string.your_shows_button));
+            holder.mActionButton.setEnabled(false);
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+
+        } else {
+            setNoOverlay(holder);
+            holder.mActionButton.setText(mContext.getString(R.string.add_to_your_shows_button));
+            holder.mActionButton.setEnabled(true);
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+        }
+    }
+
+    private void setWatchlistOverlay(BrowseTVShowsViewHolder holder){
+        holder.mWatchListLayout.setVisibility(View.VISIBLE);
+        holder.mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
+        holder.mOverlaytext.setText("On your shows!");
+        holder.mWatchedLayout.setVisibility(View.INVISIBLE);
+        holder.mProgressSpinner.setVisibility(View.GONE);
+    }
+
+    private void setNoOverlay(BrowseTVShowsViewHolder holder){
+        holder.mWatchedLayout.setVisibility(View.INVISIBLE);
+        holder.mWatchListLayout.setVisibility(View.INVISIBLE);
+        holder.mProgressSpinner.setVisibility(View.GONE);
+    }
+
+    public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons) {
+        //add to realm
+        Log.d("realm transaction","attempting to add");
+
+        for (TVShowSeasonResult season: seasons) {
+            Season curSeason = new Season();
+            curSeason.setAirDate(season.getAirDate());
+            curSeason.setEpisodeCount(season.getEpisodes().size());
+            curSeason.setId(season.getId());
+            curSeason.setPosterPath(season.getPosterPath());
+            curSeason.setShow_id(mShowId);
+            curSeason.setSeasonNumber(season.getSeasonNumber());
+
+            mUiRealm.beginTransaction();
+            mUiRealm.copyToRealmOrUpdate(curSeason);
+            mUiRealm.commitTransaction();
+
+            RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
+            for (Episode episode: jsonEpisodeRealmList) {
+                mUiRealm.beginTransaction();
+                episode.setShow_id(mShowId);
+                episode.setIsWatched(false);
+                Log.d(TAG, "Current season number: " + curSeason.getSeasonNumber());
+                episode.setSeasonNumber(curSeason.getSeasonNumber());
+                mUiRealm.copyToRealmOrUpdate(episode);
+                mUiRealm.commitTransaction();
+            }
+
+            Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).count());
+            Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).equalTo("seasonNumber", 1).findAll().size());
+        }
     }
 
     private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
-        private Integer showID;
         protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
-            showID = params[0];
+            Integer showID = params[0];
             Integer numberOfSeasons = params[1];
 
             ExecutorService backgroundExecutor = Executors.newFixedThreadPool(numberOfSeasons);
@@ -308,7 +434,8 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         }
 
         protected void onPostExecute(ArrayList<TVShowSeasonResult> result) {
-            UpdateRealmSeasons(result, showID);
+            UpdateRealmSeasons(result);
         }
     }
+
 }

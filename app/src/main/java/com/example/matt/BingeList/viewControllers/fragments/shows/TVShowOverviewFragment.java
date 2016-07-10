@@ -9,22 +9,39 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
+import com.example.matt.bingeList.models.Credits;
+import com.example.matt.bingeList.models.Crew;
+import com.example.matt.bingeList.models.movies.MovieQueryReturn;
+import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
+import com.example.matt.bingeList.models.shows.TVShowResult;
+import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.SimilarMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.SimilarShowsAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,19 +57,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Matt on 6/14/2016.
  */
 public class TVShowOverviewFragment extends Fragment {
-    private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
+    private static final String TAG = TVShowOverviewFragment.class.getSimpleName();
+    private static final int NUMBER_OF_CREW_TO_DISPLAY = 5;
+    private static final int NUMBER_OF_SIMILAR_SHOWS_TO_DISPLAY = 5;
     private FragmentActivity listener;
-    private int showID;
+    private int mShowId;
     private int vibrantColor;
     private int mutedColor;
-    private Realm uiRealm;
-    private TVShow show;
-    private RealmList<Cast> castList = new RealmList<>();
-    private RecyclerView castRecyclerView;
+    private Realm mUiRealm;
+    private TVShow mShow;
+    private Context mContext;
+    private Credits mCredits;
+    private RealmList<Crew> mCrew = new RealmList<>();
+    private RealmList<Cast> mCast = new RealmList<>();
     private CastAdapter castAdapter;
-    private RealmList<Cast> crewList = new RealmList<>();
-    private RecyclerView crewRecyclerView;
-    private CastAdapter crewAdapter;
+    private CrewAdapter crewAdapter;
+    private ArrayList<MovieResult> similarMovieList = new ArrayList<>();
+    private SimilarMoviesAdapter similarMovieAdapter;
 
     @BindView(R.id.scroll_view)
     NestedScrollView scroll_view;
@@ -66,8 +87,8 @@ public class TVShowOverviewFragment extends Fragment {
     @BindView(R.id.cast_title)
     TextView castTitle;
 
-    @BindView(R.id.crew_title)
-    TextView crewTitle;
+    @BindView(R.id.similar_shows_title)
+    TextView similarShowsTitle;
 
     @BindView(R.id.overview_title)
     TextView overviewTitle;
@@ -83,6 +104,18 @@ public class TVShowOverviewFragment extends Fragment {
 
     @BindView(R.id.expand_text_view)
     ExpandableTextView plot;
+
+    @BindView(R.id.cast_recycler_view)
+    RecyclerView castRecyclerView;
+
+    @BindView(R.id.similar_shows_recycler_view)
+    RecyclerView similarShowsRecyclerView;
+
+    @BindView(R.id.see_more_cast)
+    Button seeMoreCastButton;
+
+    @BindView(R.id.see_more_shows)
+    Button seeMoreShowsButton;
 
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
@@ -102,12 +135,10 @@ public class TVShowOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showID = getArguments().getInt("showID", 0);
+        mShowId = getArguments().getInt("showID", 0);
+        Log.d(TAG, "Show id: " + Integer.toString(mShowId));
         vibrantColor = getArguments().getInt("vibrantColor", 0);
         mutedColor = getArguments().getInt("mutedColor", 0);
-
-        /*ArrayList<Thing> things = new ArrayList<Thing>();
-        adapter = new ThingsAdapter(getActivity(), things);*/
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -133,28 +164,33 @@ public class TVShowOverviewFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
-        show = uiRealm.where(TVShow.class).equalTo("id", showID).findFirst();
+        mUiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
+        mShow = mUiRealm.where(TVShow.class).equalTo("id", mShowId).findFirst();
+        mContext = getContext();
 
-        if (show == null) {
+        setAdapters();
+
+        if (mShow == null) {
+
+
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://api.themoviedb.org/3/tv/")
+                    .baseUrl(mContext.getString(R.string.tv_show_base_url))
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-            Call<TVShow> call = service.getTVShow(Integer.toString(showID));
+            Call<TVShow> call = service.getTVShow(Integer.toString(mShowId));
 
             call.enqueue(new Callback<TVShow>() {
                 @Override
                 public void onResponse(Call<TVShow> call, Response<TVShow> response) {
-                    show = response.body();
-                    //show.setBackdropPath("https://image.tmdb.org/t/p/w500//" + show.getBackdropPath());
-                    if (show != null) {
+                    mShow = response.body();
+                    //mShow.setBackdropPath("https://image.tmdb.org/t/p/w500//" + mShow.getBackdropPath());
+                    if (mShow != null) {
                         updateUI();
                     } else {
-                        Snackbar.make(getView(), "Error loading data", Snackbar.LENGTH_SHORT);
+                        Snackbar.make(castRecyclerView, "Error loading data", Snackbar.LENGTH_SHORT);
                     }
                 }
 
@@ -176,65 +212,126 @@ public class TVShowOverviewFragment extends Fragment {
             }
         });
 
+        setData();
+        setColors();
+        loadCredits();
+        loadSimilarShows();
+    }
+
+    //HELPER METHODS
+    private void setColors() {
         //Color titles
         overviewTitle.setTextColor(vibrantColor);
         plotTitle.setTextColor(vibrantColor);
         castTitle.setTextColor(vibrantColor);
-        crewTitle.setTextColor(vibrantColor);
+        similarShowsTitle.setTextColor(vibrantColor);
         LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
         starProgressDrawable.getDrawable(2).setColorFilter(mutedColor, PorterDuff.Mode.SRC_ATOP);
         starProgressDrawable.getDrawable(1).setColorFilter(mutedColor, PorterDuff.Mode.SRC_ATOP);
+        seeMoreCastButton.setTextColor(mutedColor);
+        seeMoreShowsButton.setTextColor(mutedColor);
+    }
 
+    private void setData() {
         // Add data
-        plot.setText(show.getOverview());
-        stars.setRating(show.getVoteAverage().floatValue());
-        runtime.setText(Integer.toString(show.getNumberOfSeasons()) + " seasons");
-        userRating.setText(Double.toString(show.getVoteAverage()) + "/10");
+        plot.setText(mShow.getOverview());
+        stars.setRating(mShow.getVoteAverage().floatValue());
+        runtime.setText(Integer.toString(mShow.getNumberOfSeasons()) + " seasons");
+        userRating.setText(Double.toString(mShow.getVoteAverage()) + "/10");
+    }
 
-        /*Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/tv/")
+    private void loadSimilarShows() {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "loadSimilarShows()");
+        }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(mContext.getString(R.string.tv_show_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         TVShowAPI service = retrofit.create(TVShowAPI.class);
-        Call<Credits> call = service.getCredits(Integer.toString(showID));
 
-        call.enqueue(new Callback<Credits>() {
+        final Call<TVShowQueryReturn> similarMoviesCall = service.getSimilarShows(Integer.toString(mShowId));
+
+        similarMoviesCall.enqueue(new Callback<TVShowQueryReturn>() {
             @Override
-            public void onResponse(retrofit.Response<Credits> response, Retrofit retrofit) {
-                Log.d("GetCredits()", "Callback Success");
-                List<PersonCast> cast = response.body().getCast();
-                List<PersonCrew> crew = response.body().getCrew();
-
-                RealmList<JSONCast> realmCast = new RealmList<>();
-                for( int i = 0; i <= 3; i++) {
-                    realmCast.add(cast.get(i).convertToRealm());
-                }
-
-                RealmList<JSONCast> realmCrew = new RealmList<>();
-                for( int i = 0; i <= 3; i++) {
-                    realmCrew.add(crew.get(i).convertToRealm());
-                }
-
-                realmShow.setCrew(realmCrew);
-                realmShow.setCast(realmCast);
+            public void onResponse(Call<TVShowQueryReturn> call, Response<TVShowQueryReturn> response) {
+                List<TVShowResult> similarShows = response.body().getResults();
 
                 // Populate cast and crew recycler views
-                castRecyclerView.setAdapter( new CastAdapter(realmShow.getCast(), getContext(), NUMBER_OF_CREW_TO_DISPLAY));
-                crewRecyclerView.setAdapter( new CastAdapter(realmShow.getCrew(), getContext(), NUMBER_OF_CREW_TO_DISPLAY));
-                castRecyclerView.setFocusable(false);
-                crewRecyclerView.setFocusable(false);
-
+                similarShowsRecyclerView.setAdapter(new SimilarShowsAdapter(similarShows, mContext, NUMBER_OF_SIMILAR_SHOWS_TO_DISPLAY));
+                similarShowsRecyclerView.setFocusable(false);
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                Log.d("GetCredits()", "Callback Failure");
+            public void onFailure(Call<TVShowQueryReturn> call, Throwable t) {
+                if (BuildConfig.DEBUG) {
+                    Log.d("getSimilarMovies()", "No Response");
+                }
             }
-        });*/
+        });
     }
 
-    private void addByteArray(byte[] image) {
-        show.setBackdropBitmap(image);
+    private void loadCredits() {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "loadCredits()");
+        }
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(mContext.getString(R.string.tv_show_base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        TVShowAPI service = retrofit.create(TVShowAPI.class);
+
+        Call<Credits> call = service.getCredits(Integer.toString(mShowId));
+        call.enqueue(new Callback<Credits>() {
+            @Override
+            public void onResponse(Call<Credits> call, Response<Credits> response) {
+                mCredits = response.body();
+                mCast = mCredits.getCast();
+
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Credits - " + mCredits.toString());
+                    Log.d(TAG, "PersonCast - " + mCast.toString());
+                }
+
+                Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCast.size());
+
+                // Populate cast and crew recycler views
+                castRecyclerView.setAdapter(new CastAdapter(mCast, mContext, castSize));
+
+                castRecyclerView.setFocusable(false);
+            }
+
+            @Override
+            public void onFailure(Call<Credits> call, Throwable t) {
+                if (BuildConfig.DEBUG) {
+                    Log.d("GetCredits()", "Callback Failure");
+                }
+            }
+        });
     }
+
+    private void setAdapters() {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "setAdapters()");
+        }
+
+        // PersonCast recycler view
+        castAdapter = new CastAdapter(mCast, mContext, NUMBER_OF_CREW_TO_DISPLAY);
+        RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(mContext);
+        castRecyclerView.setLayoutManager(castLayoutManager);
+        castRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        castRecyclerView.setAdapter(castAdapter);
+
+        // Similar Moves recycler view
+        similarMovieAdapter = new SimilarMoviesAdapter(similarMovieList, mContext, NUMBER_OF_SIMILAR_SHOWS_TO_DISPLAY);
+        RecyclerView.LayoutManager similaryMovieLayoutManager = new LinearLayoutManager(mContext);
+        similarShowsRecyclerView.setLayoutManager(similaryMovieLayoutManager);
+        similarShowsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        similarShowsRecyclerView.setAdapter(similarMovieAdapter);
+    }
+
 }

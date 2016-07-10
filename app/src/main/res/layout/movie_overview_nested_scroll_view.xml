@@ -105,6 +105,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?android:textColorSecondary"
+            android:layout_marginBottom="@dimen/md_keylines"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <TextView
+            android:text="@string/mpaa_header"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:textColorPrimary"
+            android:paddingLeft="@dimen/md_keylines"
+            android:paddingStart="@dimen/md_keylines"
+            android:paddingRight="@dimen/md_keylines"
+            android:paddingEnd="@dimen/md_keylines" />
+
+        <TextView
+            android:id="@+id/mpaa_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:textColorSecondary"
             android:paddingLeft="@dimen/md_keylines"
             android:paddingStart="@dimen/md_keylines"
             android:paddingRight="@dimen/md_keylines"

@@ -19,7 +19,7 @@ import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.viewControllers.adapters.MovieBrowseAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrConfig;
 import com.r0adkll.slidr.model.SlidrPosition;
@@ -42,7 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class SimilarMoviesActivity extends AppCompatActivity {
     private static final String TAG = SimilarMoviesActivity.class.getName();
-    private MovieBrowseAdapter mAdapter;
+    private BrowseMoviesAdapter mAdapter;
     private List<MovieResult> mSimilarMoviesList;
     private Integer mMovieId;
     private Realm mUiRealm;
@@ -91,7 +91,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
         toolbar.setTitle("Similar to " + movie.getTitle());
 
         data = new RealmList<>();
-        mAdapter = new MovieBrowseAdapter(data, mContext, mUiRealm);
+        mAdapter = new BrowseMoviesAdapter(data, mContext, mUiRealm);
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         searchRecyclerView.setLayoutManager(castLayoutManager);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -148,7 +148,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
                         data.add(movie);
                     }
                     // Populate cast and crew recycler views
-                    searchRecyclerView.setAdapter(new MovieBrowseAdapter(data, mContext, mUiRealm));
+                    searchRecyclerView.setAdapter(new BrowseMoviesAdapter(data, mContext, mUiRealm));
                     searchRecyclerView.setFocusable(false);
                 }
             }

@@ -2,6 +2,7 @@ package com.example.matt.bingeList.viewControllers.activities.shows;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,16 +24,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.matt.bingeList.models.shows.Episode;
+import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.context.IconicsLayoutInflater;
 import com.r0adkll.slidr.Slidr;
 import com.r0adkll.slidr.model.SlidrInterface;
@@ -48,6 +54,7 @@ import java.util.concurrent.Executors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,12 +63,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class TVShowBrowseDetailActivity extends AppCompatActivity {
+    private static final String TAG = TVShowBrowseDetailActivity.class.getName();
     private Adapter mAdapterViewPager;
-    private Integer mShowID;
+    private Integer mShowId;
     private int mVibrantColor;
     private int mMutedColor;
     private TVShow show;
     private SlidrInterface mSlidrInterface;
+    private Realm mUiRealm;
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -92,13 +101,19 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
         LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
-
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
-        mShowID = getIntent().getIntExtra("showID", 0);
+        mShowId = getIntent().getIntExtra("showID", 0);
         String ShowName = getIntent().getStringExtra("showName");
 
         ButterKnife.bind(this);
+
+        mUiRealm = ((MyApplication) getApplication()).getUiRealm();
+
+        fab.setImageDrawable(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE));
 
         appbar.setVisibility(View.GONE);
         collapsingToolbar.setVisibility(View.GONE);
@@ -116,7 +131,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
         final TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-        Call<TVShow> call = service.getTVShow(Integer.toString(mShowID));
+        Call<TVShow> call = service.getTVShow(Integer.toString(mShowId));
         call.enqueue(new Callback<TVShow>() {
             @Override
             public void onResponse(Call<TVShow> call, Response<TVShow> response) {
@@ -142,11 +157,11 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 mVibrantColor = palette.getVibrantColor(defaultColor);
                                 mMutedColor = palette.getLightMutedColor(defaultColor);
                                 if (mVibrantColor == 0) {
-                                    mVibrantColor = getResources().getColor(R.color.colorPrimary);
+                                    mVibrantColor = getResources().getColor(R.color.lightColorPrimary);
                                 }
 
                                 if (mMutedColor == 0) {
-                                    mMutedColor = getResources().getColor(R.color.colorAccent);
+                                    mMutedColor = getResources().getColor(R.color.lightColorAccent);
                                 }
 
                                 appbar.setBackgroundColor(mVibrantColor);
@@ -162,14 +177,15 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
                                 Bundle overviewBundle = new Bundle();
-                                overviewBundle.putInt("showID", mShowID);
+                                Log.d(TAG, Integer.toString(mShowId));
+                                overviewBundle.putInt("showID", mShowId);
                                 overviewBundle.putInt("vibrantColor", mVibrantColor);
                                 overviewBundle.putInt("mutedColor", mMutedColor);
                                 TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
                                 overviewFragment.setArguments(overviewBundle);
 
                                 Bundle seasonsBundle = new Bundle();
-                                seasonsBundle.putInt("showID", mShowID);
+                                seasonsBundle.putInt("showID", mShowId);
                                 seasonsBundle.putInt("vibrantColor", mVibrantColor);
                                 seasonsBundle.putInt("mutedColor", mMutedColor);
                                 TVShowBrowseSeasonFragment seasonsFragment = new TVShowBrowseSeasonFragment();
@@ -232,18 +248,19 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
                 uiRealm.beginTransaction();
-                show.setOnWatchList(true);
-                uiRealm.copyToRealm(show);
+                show.setOnYourShows(true);
+                uiRealm.copyToRealmOrUpdate(show);
                 uiRealm.commitTransaction();
                 Log.d("realm transaction","success");
                 FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
-                fetchSeasonsTask.execute(mShowID, show.getNumberOfSeasons());
+                fetchSeasonsTask.execute(mShowId, show.getNumberOfSeasons());
 
                 Snackbar.make(v, "Added to your shows!",
                         Snackbar.LENGTH_LONG).show();
             }
         });
     }
+
 
     private void addByteArray(byte[] image) {
         show.setBackdropBitmap(image);
@@ -280,24 +297,35 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
     public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons) {
         //add to realm
-        Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
         Log.d("realm transaction","attempting to add");
 
-        //TODO
-        /*RealmList<Season> jsonSeasonRealmList = new RealmList<>();
         for (TVShowSeasonResult season: seasons) {
-            JSONSeason realmSeason = season.convertToRealm();
-            jsonSeasonRealmList.add(realmSeason);
+            Season curSeason = new Season();
+            curSeason.setAirDate(season.getAirDate());
+            curSeason.setEpisodeCount(season.getEpisodes().size());
+            curSeason.setId(season.getId());
+            curSeason.setPosterPath(season.getPosterPath());
+            curSeason.setShow_id(mShowId);
+            curSeason.setSeasonNumber(season.getSeasonNumber());
 
-            RealmList<Episode> jsonEpisodeRealmList = realmSeason.getEpisodes();
+            mUiRealm.beginTransaction();
+            mUiRealm.copyToRealmOrUpdate(curSeason);
+            mUiRealm.commitTransaction();
+
+            RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
             for (Episode episode: jsonEpisodeRealmList) {
-                episode.setShow_id(mShowID);
+                mUiRealm.beginTransaction();
+                episode.setShow_id(mShowId);
+                episode.setIsWatched(false);
+                Log.d(TAG, "Current season number: " + curSeason.getSeasonNumber());
+                episode.setSeasonNumber(curSeason.getSeasonNumber());
+                mUiRealm.copyToRealmOrUpdate(episode);
+                mUiRealm.commitTransaction();
             }
-        }*/
 
-        /*uiRealm.beginTransaction();
-        uiRealm.copyToRealmOrUpdate(mRealmShow);
-        uiRealm.commitTransaction();*/
+            Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).count());
+            Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).equalTo("seasonNumber", 1).findAll().size());
+        }
     }
 
     private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {

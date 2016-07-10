@@ -45,7 +45,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
     private Drawer mNavigationDrawer;
     private int mViewPagerPosition;
 
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -303,9 +302,7 @@ public class BrowseMoviesActivity extends AppCompatActivity {
         tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_trending_up).color(Color.WHITE));
         tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_theater).color(Color.WHITE));
         tabs.getTabAt(2).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_thumb_up).color(Color.WHITE));
-
     }
-
 
     static class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

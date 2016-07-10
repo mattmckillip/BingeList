@@ -11,8 +11,8 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/material_grey_100" >
+        android:background="?android:windowBackground"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <LinearLayout
             android:id="@+id/more_info"
@@ -131,7 +131,7 @@
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <android.support.v7.widget.RecyclerView
@@ -142,12 +142,21 @@
 
             </RelativeLayout>
 
+            <Button
+                android:id="@+id/see_more_cast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/see_more"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/borderlessButtonStyle"
+                />
+
             <TextView
-                android:id="@+id/crew_title"
+                android:id="@+id/similar_shows_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorAccent"
-                android:text="Crew"
+                android:text="@string/similar_movies_header"
                 android:textSize="@dimen/article_titles"
                 android:layout_marginBottom="@dimen/md_keylines"
                 android:layout_marginTop="@dimen/md_keylines" />
@@ -156,15 +165,24 @@
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="220dp"
+                android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/crew_recycler_view"
+                    android:id="@+id/similar_shows_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"/>
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/see_more_shows"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/see_more"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/borderlessButtonStyle"
+                />
 
         </LinearLayout>
 

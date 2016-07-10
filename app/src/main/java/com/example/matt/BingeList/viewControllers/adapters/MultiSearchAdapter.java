@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +22,13 @@ import android.widget.TextView;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.MultiSearchResult;
 import com.example.matt.bingeList.models.movies.Movie;
+import com.example.matt.bingeList.models.shows.Episode;
+import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
@@ -31,12 +36,17 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.realm.Realm;
+import io.realm.RealmList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,17 +61,17 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
     private List<MultiSearchResult> mMultiSearchResults;
     private Context mContext;
-    private Realm mUIrealm;
+    private Realm mUiRealm;
 
     private Movie mMovie;
-    private TVShow mTvShow;
+    private TVShow mShow;
     private Credits mCredits;
 
 
     public MultiSearchAdapter(List<MultiSearchResult> results, Context context, Realm uiRealm) {
         mMultiSearchResults = results;
         mContext = context;
-        mUIrealm = uiRealm;
+        mUiRealm = uiRealm;
     }
 
     @Override
@@ -70,8 +80,8 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
     }
 
     @Override
-    public void onBindViewHolder(SearchViewHolder searchViewHolder, int i) {
-        MultiSearchResult result = mMultiSearchResults.get(i);
+    public void onBindViewHolder(SearchViewHolder searchViewHolder, int position) {
+        MultiSearchResult result = mMultiSearchResults.get(position);
 
         searchViewHolder.progressSpinner.setVisibility(View.GONE);
         searchViewHolder.watchedLayout.setVisibility(View.GONE);
@@ -79,23 +89,20 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
         if (result.getMediaType().equals(MOVIE_TYPE)) {
             searchViewHolder.mediaTitle.setText(result.getTitle());
-            searchViewHolder.actionButton.setText("{gmd_add_to_queue} add to watchlist");
+            searchViewHolder.actionButton.setText("{gmd_add} add to watchlist");
 
-            if (mUIrealm.where(Movie.class).equalTo("id", result.getId()).equalTo("isWatched", true).findAll().size() == 1) {
+            if (mUiRealm.where(Movie.class).equalTo("id", result.getId()).equalTo("isWatched", true).findAll().size() == 1) {
                 searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
                 searchViewHolder.actionButton.setVisibility(View.GONE);
-            } else if (mUIrealm.where(Movie.class).equalTo("id", result.getId()).equalTo("onWatchList", true).findAll().size() == 1) {
+            } else if (mUiRealm.where(Movie.class).equalTo("id", result.getId()).equalTo("onWatchList", true).findAll().size() == 1) {
                 searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
                 searchViewHolder.actionButton.setVisibility(View.GONE);
             }
         } else if (result.getMediaType().equals(SHOW_TYPE)) {
             searchViewHolder.mediaTitle.setText(result.getName());
-            searchViewHolder.actionButton.setText("{gmd_add_to_queue} add to your shows");
+            searchViewHolder.actionButton.setText("{gmd_add} add to your shows");
 
-            if (mUIrealm.where(TVShow.class).equalTo("id", result.getId()).equalTo("isWatched", true).findAll().size() == 1) {
-                searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
-                searchViewHolder.actionButton.setVisibility(View.GONE);
-            } else if (mUIrealm.where(TVShow.class).equalTo("id", result.getId()).equalTo("onWatchList", true).findAll().size() == 1) {
+            if (mUiRealm.where(TVShow.class).equalTo("id", result.getId()).equalTo("onYourShows", true).findAll().size() == 1) {
                 searchViewHolder.watchedLayout.setVisibility(View.VISIBLE);
                 searchViewHolder.actionButton.setVisibility(View.GONE);
             }
@@ -106,9 +113,167 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         }
 
         Picasso.with(mContext)
-                .load("https://image.tmdb.org/t/p/" + mContext.getString(R.string.image_size_w500) + result.getBackdropPath())
+                .load( mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + result.getBackdropPath())
                 .error(R.drawable.generic_movie_background)
                 .into(searchViewHolder.mediaImage);
+
+        setListeners(searchViewHolder, position);
+    }
+
+    private void setListeners(final SearchViewHolder holder, final int position) {
+        holder.actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                holder.progressSpinner.setVisibility(View.VISIBLE);
+                MultiSearchResult result = mMultiSearchResults.get(position);
+
+                if (result.getMediaType().equals(MOVIE_TYPE)) {
+                    final int movieID = result.getId();
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://api.themoviedb.org/3/movie/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    MovieAPI service = retrofit.create(MovieAPI.class);
+                    Call<Movie> call = service.getMovie(Integer.toString(movieID));
+
+                    call.enqueue(new Callback<Movie>() {
+                        @Override
+                        public void onResponse(Call<Movie> call, Response<Movie> response) {
+                            Log.d(TAG, "getMovie() Callback Success");
+                            mMovie = response.body();
+                            mMovie.setBackdropPath("https://image.tmdb.org/t/p/"  + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
+
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("http://api.themoviedb.org/3/movie/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+
+                            MovieAPI service = retrofit.create(MovieAPI.class);
+                            Call<Credits> creditsCall = service.getCredits(Integer.toString(movieID));
+
+                            creditsCall.enqueue(new Callback<Credits>() {
+                                @Override
+                                public void onResponse(Call<Credits> call, Response<Credits> response) {
+                                    Log.d(TAG, "GetCredits Callback Success");
+                                    mCredits = response.body();
+
+                                    Target target = new Target() {
+                                        @Override
+                                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                            mMovie.setBackdropBitmap(stream.toByteArray());
+
+                                            mUiRealm.beginTransaction();
+                                            mMovie.setOnWatchList(true);
+                                            mUiRealm.copyToRealmOrUpdate(mMovie);
+                                            mUiRealm.copyToRealmOrUpdate(mCredits);
+                                            mUiRealm.commitTransaction();
+
+                                            holder.watchListLayout.setVisibility(View.VISIBLE);
+                                            holder.progressSpinner.setVisibility(View.GONE);
+
+                                            Snackbar.make(v, "Added to watchlist!",
+                                                    Snackbar.LENGTH_LONG).show();
+                                        }
+
+                                        @Override
+                                        public void onBitmapFailed(Drawable errorDrawable) {
+                                        }
+
+                                        @Override
+                                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                        }
+                                    };
+
+                                    Picasso.with(mContext)
+                                            .load(mMovie.getBackdropPath())
+                                            .into(target);
+                                }
+
+                                @Override
+                                public void onFailure(Call<Credits> call, Throwable t) {
+                                    Log.d(TAG, "GetCredits() Callback Failure");
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Call<Movie> call, Throwable t) {
+                            Log.d(TAG, "getMovie() Callback Failure");
+                        }
+                    });
+                } else {
+                    final int showId = result.getId();
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://api.themoviedb.org/3/tv/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    final TVShowAPI service = retrofit.create(TVShowAPI.class);
+
+                    Call<TVShow> call = service.getTVShow(Integer.toString(showId));
+                    call.enqueue(new Callback<TVShow>() {
+                        @Override
+                        public void onResponse(Call<TVShow> call, Response<TVShow> response) {
+                            if (response.isSuccessful()){
+                                mShow = response.body();
+                                Target target = new Target() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                        Log.d(TAG, "onBitmapLoaded()");
+
+                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                        Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
+
+                                        mUiRealm.beginTransaction();
+                                        mShow.setBackdropBitmap(stream.toByteArray());
+                                        mShow.setOnYourShows(true);
+                                        mUiRealm.copyToRealmOrUpdate(mShow);
+                                        mUiRealm.commitTransaction();
+
+                                        notifyDataSetChanged();
+
+                                        FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
+                                        Log.d(TAG, Integer.toString(showId));
+                                        Log.d(TAG, Integer.toString(mShow.getNumberOfSeasons()));
+                                        fetchSeasonsTask.execute(showId, mShow.getNumberOfSeasons());
+
+                                        Snackbar.make(v, mShow.getName() + " Added to your shows!",
+                                                Snackbar.LENGTH_LONG).show();
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Drawable errorDrawable) {
+                                        Log.d(TAG, "onBitmapFailed()");
+                                    }
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                        Log.d(TAG, "onPrepareLoad()");
+                                    }
+                                };
+
+                                Picasso.with(mContext)
+                                        .load("https://image.tmdb.org/t/p/w500/" + mShow.getBackdropPath())
+                                        .into(target);
+                            } else {
+                                Snackbar.make(v, "Unable to load movie...", Snackbar.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<TVShow> call, Throwable t) {
+                            Snackbar.make(v, "Unable to connect to API..", Snackbar.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
@@ -179,101 +344,81 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                         Log.d(TAG, "showId" + Integer.toString(result.getId()));
                         Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
                         intent.putExtra("showID", result.getId());
-                        intent.putExtra("showName", result.getName());
+                        intent.putExtra("mShowName", result.getName());
                         context.startActivity(intent);
                     } else {
                         Log.d(TAG, "ERROR");
                     }
                 }
             });
+        }
+    }
 
-            actionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    progressSpinner.setVisibility(View.VISIBLE);
-                    MultiSearchResult result = mMultiSearchResults.get(getAdapterPosition());
+    public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons, int showId) {
+        //add to realm
+        Log.d("realm transaction","attempting to add");
 
-                    if (result.getMediaType().equals(MOVIE_TYPE)) {
-                        final int movieID = result.getId();
+        for (TVShowSeasonResult season: seasons) {
+            Season curSeason = new Season();
+            curSeason.setAirDate(season.getAirDate());
+            curSeason.setEpisodeCount(season.getEpisodes().size());
+            curSeason.setId(season.getId());
+            curSeason.setPosterPath(season.getPosterPath());
+            curSeason.setShow_id(showId);
+            curSeason.setSeasonNumber(season.getSeasonNumber());
 
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl("http://api.themoviedb.org/3/movie/")
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
+            mUiRealm.beginTransaction();
+            mUiRealm.copyToRealmOrUpdate(curSeason);
+            mUiRealm.commitTransaction();
 
-                        MovieAPI service = retrofit.create(MovieAPI.class);
-                        Call<Movie> call = service.getMovie(Integer.toString(movieID));
+            RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
+            for (Episode episode: jsonEpisodeRealmList) {
+                mUiRealm.beginTransaction();
+                episode.setShow_id(showId);
+                episode.setIsWatched(false);
+                Log.d(TAG, "Current season number: " + curSeason.getSeasonNumber());
+                episode.setSeasonNumber(curSeason.getSeasonNumber());
+                mUiRealm.copyToRealmOrUpdate(episode);
+                mUiRealm.commitTransaction();
+            }
 
-                        call.enqueue(new Callback<Movie>() {
-                            @Override
-                            public void onResponse(Call<Movie> call, Response<Movie> response) {
-                                Log.d(TAG, "getMovie() Callback Success");
-                                mMovie = response.body();
-                                mMovie.setBackdropPath("https://image.tmdb.org/t/p/"  + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
+            Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", showId).count());
+            Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", showId).equalTo("seasonNumber", 1).findAll().size());
+        }
+    }
 
-                                Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://api.themoviedb.org/3/movie/")
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .build();
+    private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {
+        private int mShowId;
 
-                                MovieAPI service = retrofit.create(MovieAPI.class);
-                                Call<Credits> creditsCall = service.getCredits(Integer.toString(movieID));
+        protected ArrayList<TVShowSeasonResult> doInBackground(Integer... params) {
+            mShowId = params[0];
+            Integer numberOfSeasons = params[1];
 
-                                creditsCall.enqueue(new Callback<Credits>() {
-                                    @Override
-                                    public void onResponse(Call<Credits> call, Response<Credits> response) {
-                                        Log.d(TAG, "GetCredits Callback Success");
-                                        mCredits = response.body();
+            ExecutorService backgroundExecutor = Executors.newFixedThreadPool(numberOfSeasons);
 
-                                        Target target = new Target() {
-                                            @Override
-                                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                                mMovie.setBackdropBitmap(stream.toByteArray());
+            ArrayList<TVShowSeasonResult> seasons = new ArrayList<>();
 
-                                                mUIrealm.beginTransaction();
-                                                mMovie.setOnWatchList(true);
-                                                mUIrealm.copyToRealmOrUpdate(mMovie);
-                                                mUIrealm.copyToRealmOrUpdate(mCredits);
-                                                mUIrealm.commitTransaction();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org/3/tv/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .callbackExecutor(backgroundExecutor)
+                    .build();
 
-                                                watchListLayout.setVisibility(View.VISIBLE);
-                                                progressSpinner.setVisibility(View.GONE);
+            final TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-                                                Snackbar.make(v, "Added to watchlist!",
-                                                        Snackbar.LENGTH_LONG).show();
-                                            }
-
-                                            @Override
-                                            public void onBitmapFailed(Drawable errorDrawable) {
-                                            }
-
-                                            @Override
-                                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                            }
-                                        };
-
-                                        Picasso.with(mContext)
-                                                .load(mMovie.getBackdropPath())
-                                                .into(target);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Credits> call, Throwable t) {
-                                        Log.d(TAG, "GetCredits() Callback Failure");
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onFailure(Call<Movie> call, Throwable t) {
-                                Log.d(TAG, "getMovie() Callback Failure");
-                            }
-                        });
-                    }
+            for (int i = 1; i <= numberOfSeasons; i++) {
+                Call<TVShowSeasonResult> call = service.getSeasons(Integer.toString(mShowId), Integer.toString(i));
+                try {
+                    seasons.add(call.execute().body());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+            return seasons;
+        }
+
+        protected void onPostExecute(ArrayList<TVShowSeasonResult> result) {
+            UpdateRealmSeasons(result, mShowId);
         }
     }
 }

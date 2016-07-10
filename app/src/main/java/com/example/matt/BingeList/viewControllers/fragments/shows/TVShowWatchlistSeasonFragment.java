@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
@@ -30,11 +32,8 @@ import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-public class TVShowWatchlistSeasonFragment
-        extends Fragment
-        implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
-        RecyclerViewExpandableItemManager.OnGroupExpandListener {
-
+public class TVShowWatchlistSeasonFragment extends Fragment implements RecyclerViewExpandableItemManager.OnGroupCollapseListener, RecyclerViewExpandableItemManager.OnGroupExpandListener {
+    private static final String TAG = TVShowWatchlistSeasonFragment.class.getName();
     private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -86,13 +85,17 @@ public class TVShowWatchlistSeasonFragment
     }
 
     public void updateSeasonRecyclerView(RealmList<Season> seasons) {
+        Log.d(TAG, "LOOOK");
+        Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
+        Log.d(TAG, Long.toString(uiRealm.where(Episode.class).equalTo("show_id", showID).count()));
         final WatchListSeasonAdapter myItemAdapter =
                 new WatchListSeasonAdapter(mRecyclerViewExpandableItemManager,
                         seasons,
                         vibrantColor,
                         mutedColor,
-                        ((MyApplication)getActivity().getApplication()).getUiRealm(),
-                        getContext()
+                        uiRealm,
+                        getContext(),
+                        showID
                 );
 
         mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding

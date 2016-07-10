@@ -4,7 +4,7 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="?android:colorBackground"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -49,7 +49,6 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom"
-            android:background="?attr/colorPrimary"
             app:tabMode="scrollable"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -74,7 +73,7 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         app:layout_anchor="@id/appbar"
-        app:layout_behavior="com.example.matt.movieWatchList.uitls.ScrollAwareFABBehavior"
+        app:layout_behavior="com.example.matt.bingeList.uitls.ScrollAwareFABBehavior"
         app:layout_anchorGravity="bottom|right|end"
         style="@style/FabStyle" />
 

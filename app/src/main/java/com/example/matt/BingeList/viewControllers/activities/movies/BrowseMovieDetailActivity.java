@@ -28,12 +28,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
+import com.example.matt.bingeList.models.Country;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
 import com.example.matt.bingeList.models.Genre;
@@ -79,7 +81,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class BrowseMovieDetailActivity extends AppCompatActivity {
-    private static final String TAG = "MovieBDetailActivity";
+    private static final String TAG = BrowseMovieDetailActivity.class.getSimpleName();
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
     private static final int NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY = 10;
 
@@ -134,6 +136,9 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.user_rating)
     TextView userRating;
+
+    @BindView(R.id.mpaa_rating)
+    TextView mpaaRating;
 
     @BindView(R.id.more_info)
     LinearLayout layout;
@@ -260,7 +265,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
             setTheme(R.style.DarkAppTheme_Base);
         }
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail_activity);
         ButterKnife.bind(this);
@@ -269,15 +273,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         movieID = getIntent().getIntExtra(mContext.getString(R.string.movieId), 0);
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
 
-        SlidrConfig config = new SlidrConfig.Builder()
-                                .position(SlidrPosition.LEFT)
-                                .sensitivity(1f)
-                                .velocityThreshold(2400)
-                                .distanceThreshold(0.25f)
-                                .edge(true)
-                                .build();
-
-        Slidr.attach(this, config);
+        Slidr.attach(this);
 
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
@@ -400,14 +396,12 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "loadMovieBackgroundImage()");
         }
-        //final ImageView image = (ImageView) findViewById(R.id.backdrop);
-        //setViewsVisible();
-        //setViewsInvisible();
 
         Picasso.with(this)
                 .load(movie.getBackdropPath())
                 .fit().centerCrop()
                 .error(R.drawable.generic_movie_background)
+                .placeholder(R.drawable.generic_movie_background)
                 .transform(PaletteTransformation.instance())
                 .into(backdrop, new PaletteTransformation.PaletteCallback(backdrop) {
                     @Override
@@ -422,10 +416,10 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
                         int mutedColor = palette.getMutedColor(DEFAULT_COLOR);
 
                         if (vibrantColor == DEFAULT_COLOR) {
-                            vibrantColor = ContextCompat.getColor(mContext, R.color.colorAccent);
+                            vibrantColor = ContextCompat.getColor(mContext, R.color.lightColorPrimary);
                         }
                         if (mutedColor == DEFAULT_COLOR) {
-                            mutedColor = ContextCompat.getColor(mContext, R.color.colorPrimary);
+                            mutedColor = ContextCompat.getColor(mContext, R.color.lightColorAccent);
                         }
                         setColors(vibrantColor, mutedColor);
                         setViewsVisible();
@@ -528,7 +522,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
             Log.d(TAG, "addByteArray()");
         }
         movie.setBackdropBitmap(image);
-        loadingPanel.setVisibility(View.GONE);
     }
 
     private void setData() {
@@ -541,10 +534,16 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         stars.setRating(movie.getVoteAverage().floatValue());
         runtime.setText(convertToReadableTime(movie.getRuntime()));
         userRating.setText(Double.toString(movie.getVoteAverage()) + "/10");
+        for (Country country : movie.getReleases().getCountries()){
+            if (country.getIso31661().equals("US")){
+                mpaaRating.setText(country.getCertification());
+            }
+        }
         String genreString = "";
         for (Genre genre : movie.getGenres()){
             genreString = genreString + genre.getName() + ", ";
         }
+        genreString = genreString.substring(0, genreString.length() - 2);
         genres.setText(genreString);
 
         RealmResults<Movie> watchListMovies = mUiRealm.where(Movie.class).equalTo("onWatchList", true).equalTo("id", movieID).findAll();
@@ -600,10 +599,8 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         collapsingToolbar.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.VISIBLE);
         fab.setVisibility(View.VISIBLE);
-        seeMoreCastButton.setVisibility(View.VISIBLE);
-        seeMoreCrewButton.setVisibility(View.VISIBLE);
-        seeMoreSimilarMoviesButton.setVisibility(View.VISIBLE);
         toolbar.setVisibility(View.VISIBLE);
+        loadingPanel.setVisibility(View.GONE);
     }
 
     private void setViewsInvisible(){
@@ -616,8 +613,5 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         collapsingToolbar.setVisibility(View.INVISIBLE);
         scrollView.setVisibility(View.INVISIBLE);
         fab.setVisibility(View.INVISIBLE);
-        seeMoreCastButton.setVisibility(View.INVISIBLE);
-        seeMoreCrewButton.setVisibility(View.INVISIBLE);
-        seeMoreSimilarMoviesButton.setVisibility(View.INVISIBLE);
     }
 }

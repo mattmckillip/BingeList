@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorAccent"
+            android:textColor="@color/lightColorPrimary"
             android:text="{gmd_clear} Remove"
             android:layout_alignParentLeft="true"/>
 
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_text"
             style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/colorPrimary"
             android:layout_alignParentRight="true"
             android:text="{gmd_add_to_queue} Watch" />
 

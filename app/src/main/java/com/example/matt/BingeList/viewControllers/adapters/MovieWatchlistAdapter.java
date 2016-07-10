@@ -123,7 +123,6 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
             });
         }
 
-
         holder.mRemoveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

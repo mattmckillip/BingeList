@@ -114,6 +114,10 @@ public class Movie extends RealmObject{
     @Expose
     private Integer voteCount;
 
+    @SerializedName("releases")
+    @Expose
+    private Releases releases;
+
     private boolean isWatched;
 
     private boolean onWatchList;
@@ -464,6 +468,24 @@ public class Movie extends RealmObject{
      */
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    /**
+     *
+     * @return
+     * The releases
+     */
+    public Releases getReleases() {
+        return releases;
+    }
+
+    /**
+     *
+     * @param releases
+     * The releases
+     */
+    public void setReleases(Releases releases) {
+        this.releases = releases;
     }
 
     public boolean getOnWatchList() {

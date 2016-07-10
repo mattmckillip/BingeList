@@ -83,8 +83,8 @@
             android:id="@+id/action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="{gmd_add_to_queue} add to watchlist!"
-            android:textColor="?attr/colorPrimary"
+            android:text="{gmd_add}"
+            android:textColor="@color/colorPrimary"
             android:layout_alignParentBottom="true"
             style="?android:attr/borderlessButtonStyle" />
 

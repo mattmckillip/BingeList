@@ -52,15 +52,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
-public class MovieBrowseAdapter extends RecyclerView.Adapter<MovieBrowseAdapter.BrowseMoviesViewHolder> {
+public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapter.BrowseMoviesViewHolder> {
     private RealmList<Movie> mMovieList;
-    private static final String TAG = MovieBrowseAdapter.class.getSimpleName();
+    private static final String TAG = BrowseMoviesAdapter.class.getSimpleName();
     private Context mContext;
     private Realm mUiRealm;
     private Movie mMovie;
     private int viewMode;
 
-    public MovieBrowseAdapter(RealmList<Movie> movieList, Context context, Realm uiRealm) {
+    public BrowseMoviesAdapter(RealmList<Movie> movieList, Context context, Realm uiRealm) {
         mMovieList = movieList;
         mContext = context;
         mUiRealm = uiRealm;

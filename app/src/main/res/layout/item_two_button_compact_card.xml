@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorAccent"
+            android:textColor="@color/lightColorPrimary"
             android:text="{gmd_clear} Remove"
             android:layout_toRightOf="@+id/card_image"/>
 
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/colorPrimary"
             android:layout_alignParentRight="true"
             android:text="{gmd_add_to_queue} Watch" />
 

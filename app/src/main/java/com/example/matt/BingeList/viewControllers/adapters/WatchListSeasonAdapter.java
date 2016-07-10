@@ -20,6 +20,7 @@ import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.ExpandableItemIndicator;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
+import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
@@ -39,13 +40,14 @@ import io.realm.RealmResults;
 
 
 public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchListSeasonAdapter.MyGroupViewHolder, WatchListSeasonAdapter.MyChildViewHolder> {
-    private RealmList<Season> seasons;
-    private Context context;
-    private int vibrantColor;
-    private int mutedColor;
-    private Realm uiRealm;
-    private Episode curEpisode;
-    private Integer showId;
+    private static final String TAG = WatchListSeasonAdapter.class.getName();
+    private RealmList<Season> mSeasons;
+    private Context mContext;
+    private int mVibrantColor;
+    private int mMutedColor;
+    private Realm mUiRealm;
+    private Episode mCurEpisode;
+    private Integer mShowId;
     private RecyclerViewExpandableItemManager mExpandableItemManager;
     private View.OnClickListener mItemOnClickListener = new View.OnClickListener() {
         @Override
@@ -54,14 +56,13 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
         }
     };
 
-    public WatchListSeasonAdapter(RecyclerViewExpandableItemManager expandableItemManager, RealmList<Season> seasons, int vibrantColor, int mutedColor, Realm uiRealm, Context context) {
-        this.seasons = seasons;
-        this.vibrantColor = vibrantColor;
-        this.mutedColor = mutedColor;
-        this.uiRealm = uiRealm;
-        this.context = context;
-        this.showId = seasons.get(0).getSeasonNumber();
-
+    public WatchListSeasonAdapter(RecyclerViewExpandableItemManager expandableItemManager, RealmList<Season> seasons, int vibrantColor, int mutedColor, Realm uiRealm, Context context, int showId) {
+        mSeasons = seasons;
+        mVibrantColor = vibrantColor;
+        mMutedColor = mutedColor;
+        mUiRealm = uiRealm;
+        mContext = context;
+        mShowId = showId;
         mExpandableItemManager = expandableItemManager;
 
         // ExpandableItemAdapter requires stable ID, and also
@@ -73,22 +74,22 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
 
     @Override
     public int getGroupCount() {
-        return seasons.size();
+        return mSeasons.size();
     }
 
     @Override
     public int getChildCount(int groupPosition) {
-        return seasons.get(groupPosition).getEpisodeCount();
+        return mSeasons.get(groupPosition).getEpisodeCount();
     }
 
     @Override
     public long getGroupId(int groupPosition) {
-        return seasons.get(groupPosition).getId();
+        return mSeasons.get(groupPosition).getId();
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return uiRealm.where(Episode.class).equalTo("show_id", showId).findAll().get(childPosition).getId();
+        return mUiRealm.where(Episode.class).equalTo("show_id", mShowId).findAll().get(childPosition).getId();
     }
 
     @Override
@@ -103,36 +104,40 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
 
     @Override
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
-        final LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(mContext);
         final View v = inflater.inflate(R.layout.season_group_item, parent, false);
         return new MyGroupViewHolder(v, mItemOnClickListener);
     }
 
     @Override
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
-        final LayoutInflater inflater = LayoutInflater.from(context);
+        final LayoutInflater inflater = LayoutInflater.from(mContext);
         final View v = inflater.inflate(R.layout.season_episode_item, parent, false);
         return new MyChildViewHolder(v, mItemOnClickListener);
     }
 
     @Override
     public void onBindGroupViewHolder(final MyGroupViewHolder holder, int groupPosition, int viewType) {
-        Season curSeason = seasons.get(groupPosition);
+        Season curSeason = mSeasons.get(groupPosition);
 
         // set text
         holder.mSeasonName.setText("Season" + curSeason.getSeasonNumber());
         holder.mNumberOfEpisodes.setText(curSeason.getEpisodeCount() + " Episodes");
         holder.mEpisodeProgress.getProgressDrawable().setColorFilter(
-                vibrantColor, android.graphics.PorterDuff.Mode.SRC_IN);
+                mVibrantColor, android.graphics.PorterDuff.Mode.SRC_IN);
         holder.mSeasonAirDate.setText(formatAirDate(curSeason.getAirDate()));
 
-        RealmQuery<Episode> query = uiRealm.where(Episode.class);
-        RealmResults<Episode> episodes =  query.equalTo("seasonNumber", curSeason.getSeasonNumber()).equalTo("isWatched", true).equalTo("season_id", curSeason.getId()).findAll();
+        RealmQuery<Episode> query = mUiRealm.where(Episode.class);
+
+        RealmResults<Episode> episodes =  query.equalTo("seasonNumber", curSeason.getSeasonNumber()).equalTo("show_id", mShowId).equalTo("isWatched", true).findAll();
+
+        Log.d(TAG, "Number of watched episodes: " + Integer.toString(episodes.size()));
+        Log.d(TAG, "Number of episodes: " + Integer.toString(curSeason.getEpisodeCount()));
 
         holder.mEpisodeProgress.setProgress((int) (((double) episodes.size()/(double) curSeason.getEpisodeCount()) * 100.0));
 
-        Picasso.with(context)
-                .load("https://image.tmdb.org/t/p/w92/" + curSeason.getPosterPath()) // w92, w154, w185
+        Picasso.with(mContext)
+                .load("https://image.tmdb.org/t/p/w154/" + curSeason.getPosterPath()) // w92, w154, w185
                 .fit().centerCrop()
                 .transform(PaletteTransformation.instance())
                 .into(holder.mSeasonPoster);
@@ -160,21 +165,25 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
 
     @Override
     public void onBindChildViewHolder(final MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
-        curEpisode =  uiRealm.where(Episode.class).equalTo("show_id", showId).findAll().get(childPosition);
-        holder.mEpisodeName.setText(curEpisode.getName());
-        holder.mEpisodeDescription.setText(curEpisode.getOverview());
-        holder.mEpisodeNumber.setText(formatEpisodeTitle(curEpisode.getSeasonNumber(), curEpisode.getEpisodeNumber()));
-        holder.mEpisodeNumber.setTextColor(vibrantColor);
-        holder.mEpisodeAirDate.setText("Aired on " + formatAirDate(curEpisode.getAirDate()));
+        mCurEpisode = TVShowRealmStaticHelper.getEpisode(mShowId, groupPosition + 1, childPosition + 1, mUiRealm);
 
-        if (curEpisode.getIsWatched()) {
-            holder.mWatchEpisode.setColor(vibrantColor);
+        holder.mEpisodeName.setText(mCurEpisode.getName());
+        holder.mEpisodeDescription.setText(mCurEpisode.getOverview());
+        holder.mEpisodeNumber.setText(formatEpisodeTitle(mCurEpisode.getSeasonNumber(), mCurEpisode.getEpisodeNumber()));
+        holder.mEpisodeNumber.setTextColor(mVibrantColor);
+        holder.mEpisodeAirDate.setText("Aired on " + formatAirDate(mCurEpisode.getAirDate()));
+
+        if (mCurEpisode.getIsWatched()) {
+            holder.mWatchEpisode.setColor(mVibrantColor);
         } else {
-            holder.mWatchEpisode.setColor(ContextCompat.getColor(context, R.color.button_grey));
+            holder.mWatchEpisode.setColor(ContextCompat.getColor(mContext, R.color.button_grey));
         }
     }
 
     private String formatAirDate(String airDate) {
+        if ( airDate == null || airDate.isEmpty()){
+            return "";
+        }
         SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd");
         Date newDate = null;
         String date = null;
@@ -250,26 +259,26 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
 
     private void handleOnClickGroupItemAddChild2BottomButton(final int groupPosition, final View v) {
         //Creating the instance of PopupMenu
-        PopupMenu popup = new PopupMenu(context, v);
+        PopupMenu popup = new PopupMenu(mContext, v);
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.menu_tv_season_group_options, popup.getMenu());
 
         //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                RealmQuery<Episode> query = uiRealm.where(Episode.class);
+                RealmQuery<Episode> query = mUiRealm.where(Episode.class);
                 RealmResults<Episode> episodes = null;
 
                 switch (item.getItemId()) {
 
                     case R.id.action_mark_watched:
-                        episodes =  query.equalTo("show_id", showId).equalTo("season_id", seasons.get(groupPosition).getId()).findAll();
+                        episodes =  query.equalTo("show_id", mShowId).equalTo("season_id", mSeasons.get(groupPosition).getId()).findAll();
 
-                        uiRealm.beginTransaction();
+                        mUiRealm.beginTransaction();
                         for (int i = 0; i < episodes.size(); i++) {
                             episodes.get(i).setIsWatched(true);
                         }
-                        uiRealm.commitTransaction();
+                        mUiRealm.commitTransaction();
 
                         if (isGroupExpanded(groupPosition)) {
                             for (int i = 0; i < episodes.size(); i++) {
@@ -282,13 +291,13 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
                         return true;
 
                     case R.id.action_mark_unwatched:
-                        episodes =  query.equalTo("show_id", showId).equalTo("season_id", seasons.get(groupPosition).getId()).findAll();
-                        uiRealm.beginTransaction();
+                        episodes =  query.equalTo("show_id", mShowId).equalTo("season_id", mSeasons.get(groupPosition).getId()).findAll();
+                        mUiRealm.beginTransaction();
 
                         for (int i = 0; i < episodes.size(); i++) {
                             episodes.get(i).setIsWatched(false);
                         }
-                        uiRealm.commitTransaction();
+                        mUiRealm.commitTransaction();
 
                         if (isGroupExpanded(groupPosition)) {
                             for (int i = 0; i < episodes.size(); i++) {
@@ -324,16 +333,20 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
 
 
     private void handleOnClickWatchEpisodeButton(int groupPosition, int childPosition) {
-        curEpisode =  uiRealm.where(Episode.class).equalTo("show_id", showId).findAll().get(childPosition);
+        Log.d(TAG, "handleOnClickWatchEpisodeButton()");
 
-        if (curEpisode.getIsWatched()) {
-            uiRealm.beginTransaction();
-            curEpisode.setIsWatched(false);
-            uiRealm.commitTransaction();
+        mCurEpisode = TVShowRealmStaticHelper.getEpisode(mShowId, groupPosition + 1, childPosition + 1, mUiRealm);
+
+        if (mCurEpisode.getIsWatched()) {
+            Log.d(TAG, "Unwatch episode");
+            mUiRealm.beginTransaction();
+            mCurEpisode.setIsWatched(false);
+            mUiRealm.commitTransaction();
         } else {
-            uiRealm.beginTransaction();
-            curEpisode.setIsWatched(true);
-            uiRealm.commitTransaction();
+            Log.d(TAG, "Watch episode");
+            mUiRealm.beginTransaction();
+            mCurEpisode.setIsWatched(true);
+            mUiRealm.commitTransaction();
         }
         mExpandableItemManager.notifyChildItemChanged(groupPosition, childPosition);
         mExpandableItemManager.notifyGroupItemChanged(groupPosition);

@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tile_height"
         android:alpha="0.3"
-        android:background="@color/dark_grey" />
+        android:background="@color/button_grey" />
 
     <TextView
         android:id="@+id/tile_title"
@@ -37,6 +37,6 @@
         android:layout_height="@dimen/tile_height"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/article_titles" />
 </RelativeLayout>

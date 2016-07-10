@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class TVShow extends RealmObject{
 
@@ -34,6 +35,7 @@ public class TVShow extends RealmObject{
     @Expose
     private String homepage;
 
+    @PrimaryKey
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -114,9 +116,7 @@ public class TVShow extends RealmObject{
     @Expose
     private Integer voteCount;
 
-    private boolean isWatched;
-
-    private boolean onWatchList;
+    private boolean onYourShows;
 
     private byte[] backdropBitmap;
 
@@ -484,20 +484,12 @@ public class TVShow extends RealmObject{
         this.voteCount = voteCount;
     }
 
-    public boolean getOnWatchList() {
-        return onWatchList;
+    public boolean getOnYourShows() {
+        return onYourShows;
     }
 
-    public void setOnWatchList(boolean onWatchList) {
-        this.onWatchList = onWatchList;
-    }
-
-    public boolean getIsWatched() {
-        return isWatched;
-    }
-
-    public void setWatched(boolean isWatched) {
-        this.isWatched = isWatched;
+    public void setOnYourShows(boolean onYourShows) {
+        this.onYourShows = onYourShows;
     }
 
     public byte[] getBackdropBitmap() {
