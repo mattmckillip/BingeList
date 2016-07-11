@@ -19,6 +19,18 @@ public class TVShowRealmStaticHelper {
     public static Episode getNextUnwatchedEpisode(int showId, Realm UIRealm) {
        return UIRealm.where(Episode.class).equalTo("show_id", showId).equalTo("isWatched", false).findFirst();
     }
+
+    public static RealmList<Episode> getAllEpisodes(int showId, Realm UIRealm) {
+        RealmResults<Episode> allEpisodes =  UIRealm.where(Episode.class).equalTo("show_id", showId).findAll();
+        RealmList<Episode> returnList = new RealmList<>();
+        returnList.addAll(allEpisodes.subList(0, allEpisodes.size()));
+        return returnList;
+    }
+
+    public static Episode getLastEpisode(int showId, Realm UIRealm) {
+        RealmList<Episode> allEpisodes = getAllEpisodes(showId, UIRealm);
+        return allEpisodes.get(allEpisodes.size() - 1);
+    }
     public static void watchEpisode(int showId, int seasonNumber, int episodeNumber, Realm UIRealm) {
         Episode episode = getEpisode(showId, seasonNumber, episodeNumber, UIRealm);
         UIRealm.beginTransaction();

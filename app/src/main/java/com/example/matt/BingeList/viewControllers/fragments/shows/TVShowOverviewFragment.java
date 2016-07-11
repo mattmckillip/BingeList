@@ -212,6 +212,9 @@ public class TVShowOverviewFragment extends Fragment {
             }
         });
 
+        castRecyclerView.setFocusable(false);
+        similarShowsRecyclerView.setFocusable(false);
+
         setData();
         setColors();
         loadCredits();

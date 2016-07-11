@@ -121,7 +121,7 @@ public class YourShowsActivity extends AppCompatActivity {
         watchListMovies.setArguments(watchListMoviesBundle);
 
         mAdapterViewPager.addFragment(watchListMovies, "Your Shows");
-        mAdapterViewPager.addFragment(watchedMovies, "Unwatched");
+        mAdapterViewPager.addFragment(watchedMovies, "Unwatched Episodes");
         viewPager.setAdapter(mAdapterViewPager);
     }
 

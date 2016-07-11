@@ -33,6 +33,7 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
+import com.example.matt.bingeList.viewControllers.fragments.shows.TVEpisodeFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -96,6 +97,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
         mSelectedTab = 0;
 
         mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear).sizeDp(16).color(Color.WHITE));
+        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE));
         mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_done_all).sizeDp(16).color(Color.WHITE));
 
         Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
@@ -119,9 +121,9 @@ public class YourShowsDetailActivity extends AppCompatActivity {
         mSlidrInterface = Slidr.attach(this);
 
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
+        tabLayout.addTab(tabLayout.newTab().setText("Next Episode"));
         tabLayout.addTab(tabLayout.newTab().setText("Seasons"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
@@ -174,6 +176,13 @@ public class YourShowsDetailActivity extends AppCompatActivity {
             TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
             overviewFragment.setArguments(overviewBundle);
 
+            Bundle nextEpisode = new Bundle();
+            nextEpisode.putInt("showID", mShowID);
+            nextEpisode.putInt("vibrantColor", vibrantColor);
+            nextEpisode.putInt("mutedColor", mutedColor);
+            TVEpisodeFragment nextEpisodeFragment = new TVEpisodeFragment();
+            nextEpisodeFragment.setArguments(overviewBundle);
+
             Bundle seasonsBundle = new Bundle();
             seasonsBundle.putInt("showID", mShowID);
             seasonsBundle.putInt("vibrantColor", vibrantColor);
@@ -182,6 +191,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
             seasonsFragment.setArguments(seasonsBundle);
 
             mAdapterViewPager.addFragment(overviewFragment, "");
+            mAdapterViewPager.addFragment(nextEpisodeFragment, "");
             mAdapterViewPager.addFragment(seasonsFragment, "");
             viewPager.setAdapter(mAdapterViewPager);
 
@@ -222,7 +232,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mSelectedTab == 0) {
                     //TODO Remove from your shows
-                } else if (mSelectedTab == 1) {
+                } else if (mSelectedTab == 2) {
                     Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
 
                     RealmQuery<Episode> query = uiRealm.where(Episode.class);

@@ -34,6 +34,7 @@ import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
+import com.example.matt.bingeList.viewControllers.fragments.shows.TVEpisodeFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -171,7 +172,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 tabLayout.setBackgroundColor(mVibrantColor);
                                 fab.setBackgroundTintList(ColorStateList.valueOf(mMutedColor));
                                 tabLayout.setSelectedTabIndicatorColor(mMutedColor);
-
 
                                 // Setting ViewPager for each Tabs
                                 mAdapterViewPager = new Adapter(getSupportFragmentManager());
