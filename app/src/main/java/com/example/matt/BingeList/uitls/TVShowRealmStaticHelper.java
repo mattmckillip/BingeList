@@ -1,6 +1,9 @@
 package com.example.matt.bingeList.uitls;
 
+import android.util.Log;
+
 import com.example.matt.bingeList.MyApplication;
+import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.TVShow;
 
@@ -17,7 +20,7 @@ public class TVShowRealmStaticHelper {
     }
 
     public static Episode getNextUnwatchedEpisode(int showId, Realm UIRealm) {
-       return UIRealm.where(Episode.class).equalTo("show_id", showId).equalTo("isWatched", false).findFirst();
+        return UIRealm.where(Episode.class).equalTo("show_id", showId).equalTo("isWatched", false).findFirst();
     }
 
     public static RealmList<Episode> getAllEpisodes(int showId, Realm UIRealm) {
@@ -53,6 +56,41 @@ public class TVShowRealmStaticHelper {
             }
         }
         return returnShows;
+    }
+
+    public static RealmList<Episode> getAllWatchedEpisodes(Realm UIRealm) {
+        RealmResults<Episode> allWatchedEpisodes =  UIRealm.where(Episode.class).equalTo("isWatched", true).findAll();
+        RealmList<Episode> returnList = new RealmList<>();
+        returnList.addAll(allWatchedEpisodes.subList(0, allWatchedEpisodes.size()));
+        return returnList;
+    }
+
+    public static RealmList<Episode> getAllEpisodes(Realm UIRealm) {
+        RealmResults<Episode> allEpisodes =  UIRealm.where(Episode.class).findAll();
+        RealmList<Episode> returnList = new RealmList<>();
+        returnList.addAll(allEpisodes.subList(0, allEpisodes.size()));
+        return returnList;
+    }
+
+    public static RealmList<TVShow> getAllWatchedShows(Realm UIRealm) {
+        RealmList<TVShow> allShowsList = getAllShows(UIRealm);
+        RealmList<TVShow> returnList = new RealmList<>();
+
+        for (TVShow show : allShowsList) {
+            Episode episode = getNextUnwatchedEpisode(show.getId(), UIRealm);
+            if (episode == null) {
+                returnList.add(show);
+            }
+        }
+
+        return returnList;
+    }
+
+    public static RealmList<TVShow> getAllShows(Realm UIRealm) {
+        RealmResults<TVShow> allEpisodes =  UIRealm.where(TVShow.class).equalTo("onYourShows", true).findAll();
+        RealmList<TVShow> returnList = new RealmList<>();
+        returnList.addAll(allEpisodes.subList(0, allEpisodes.size()));
+        return returnList;
     }
 
 }

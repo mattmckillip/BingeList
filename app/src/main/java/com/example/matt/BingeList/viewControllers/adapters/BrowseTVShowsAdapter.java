@@ -113,7 +113,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         holder.mProgressSpinner.setVisibility(View.GONE);
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
-        holder.mShowName.setVisibility(View.GONE);
         String path = mShowList.get(position).getBackdropPath();
 
         holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16).color(ContextCompat.getColor(mContext, R.color.button_grey)));
@@ -123,6 +122,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 .error(R.drawable.generic_movie_background)
                 .into(holder.mShowImage);
 
+        Log.d(TAG, mShowList.get(position).getName());
         holder.mShowName.setText(mShowList.get(position).getName());
         holder.mShowDescription.setText(mShowList.get(position).getOverview());
 
@@ -166,8 +166,8 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         @BindView(R.id.watchlist_icon)
         ImageView mWatchlistIcon;
 
-        @BindView(R.id.overlay_text)
-        TextView mOverlaytext;
+        /*@BindView(R.id.overlay_text)
+        TextView mOverlaytext;*/
 
         public BrowseTVShowsViewHolder(View v) {
             super(v);
@@ -361,7 +361,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     private void setWatchlistOverlay(BrowseTVShowsViewHolder holder){
         holder.mWatchListLayout.setVisibility(View.VISIBLE);
         holder.mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
-        holder.mOverlaytext.setText("On your shows!");
+        //holder.mOverlaytext.setText("On your shows!");
         holder.mWatchedLayout.setVisibility(View.INVISIBLE);
         holder.mProgressSpinner.setVisibility(View.GONE);
     }

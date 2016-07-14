@@ -1,9 +1,7 @@
-package com.example.matt.bingeList.viewControllers.activities.shows;
+package com.example.matt.bingeList.viewControllers.activities;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
@@ -23,12 +20,13 @@ import com.example.matt.bingeList.uitls.DrawerHelper;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
-import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
-import com.example.matt.bingeList.viewControllers.fragments.shows.YourShowsFragment;
+import com.example.matt.bingeList.viewControllers.fragments.movies.MovieStatsFragment;
+import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowStatsFragment;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
 import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.material_design_iconic_typeface_library.MaterialDesignIconic;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.ArrayList;
@@ -37,11 +35,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Created by Matt on 6/10/2016.
+ */
+public class StatisticsActivity extends AppCompatActivity {
+    private static final String TAG = StatisticsActivity.class.getSimpleName();
 
-public class YourShowsActivity extends AppCompatActivity {
-    private static final String TAG = YourShowsActivity.class.getSimpleName();
     private Adapter mAdapterViewPager;
     private Drawer mNavigationDrawer;
+    private int mViewPagerPosition;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -52,9 +54,6 @@ public class YourShowsActivity extends AppCompatActivity {
     @BindView(R.id.tabs)
     TabLayout tabs;
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
@@ -63,17 +62,17 @@ public class YourShowsActivity extends AppCompatActivity {
         if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
             setTheme(R.style.DarkAppTheme_Base);
         }
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.browse_activity);
+        setContentView(R.layout.statistics_tab_layout);
 
         ButterKnife.bind(this);
 
-        PreferencesHelper.setViewAndThemeSharedPreferencesDefault(getApplicationContext());
-        PreferencesHelper.printValues(getApplicationContext());
+        mViewPagerPosition = 0;
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.drawer_item_show_watchlist);
+        getSupportActionBar().setTitle("Stats");
 
         // Setting ViewPager for each Tabs
         setupViewPager(viewPager);
@@ -81,6 +80,7 @@ public class YourShowsActivity extends AppCompatActivity {
         // Set Tabs inside Toolbar
         tabs.setupWithViewPager(viewPager);
         setTabDrawables();
+
 
         // Create Navigation drawer
         mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
@@ -91,37 +91,23 @@ public class YourShowsActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).sizeDp(16).color(Color.WHITE));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        // Adding Floating Action Button to bottom right of main view
-        IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
-        fab.setImageDrawable(search);
-
-        final Intent intent = new Intent(this, BrowseMoviesActivity.class);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(intent);
-            }
-        });
     }
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
-        Bundle watchedMoviesBundle = new Bundle();
-        watchedMoviesBundle.putInt("watched", 0);
-        YourShowsFragment watchedMovies = new YourShowsFragment();
-        watchedMovies.setArguments(watchedMoviesBundle);
+        Bundle nowShowingBundle = new Bundle();
+        TVShowStatsFragment nowShowingMovies = new TVShowStatsFragment();
+        nowShowingMovies.setArguments(nowShowingBundle);
 
-        Bundle watchListMoviesBundle = new Bundle();
-        watchListMoviesBundle.putInt("watched", 1);
-        YourShowsFragment watchListMovies = new YourShowsFragment();
-        watchListMovies.setArguments(watchListMoviesBundle);
+        Bundle topRatedBundle = new Bundle();
+        MovieStatsFragment topRatedMovies = new MovieStatsFragment();
+        topRatedMovies.setArguments(topRatedBundle);
 
-        mAdapterViewPager.addFragment(watchListMovies, "Your Shows");
-        mAdapterViewPager.addFragment(watchedMovies, "Unwatched Episodes");
+        mAdapterViewPager.addFragment(nowShowingMovies, "TV Shows");
+        mAdapterViewPager.addFragment(topRatedMovies, "Movies");
+
         viewPager.setAdapter(mAdapterViewPager);
     }
 
@@ -170,11 +156,12 @@ public class YourShowsActivity extends AppCompatActivity {
                     Log.d("onOptionsItemSelected()", "card_view");
                 }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
-                //viewPager.setAdapter(mAdapterViewPager);
+                PreferencesHelper.printValues(getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
 
                 item.setChecked(true);
-                finish();
-                startActivity(getIntent());
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
 
                 return true;
 
@@ -183,11 +170,12 @@ public class YourShowsActivity extends AppCompatActivity {
                     Log.d("onOptionsItemSelected()", "compact_view");
                 }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
-                //viewPager.setAdapter(mAdapterViewPager);
+                PreferencesHelper.printValues(getApplicationContext());
+                viewPager.setAdapter(mAdapterViewPager);
 
                 item.setChecked(true);
-                finish();
-                startActivity(getIntent());
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
 
                 return true;
 
@@ -196,11 +184,12 @@ public class YourShowsActivity extends AppCompatActivity {
                     Log.d("onOptionsItemSelected()", "list_view");
                 }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
-                //setupViewPager(viewPager);
+                mAdapterViewPager.notifyDataSetChanged();
+                viewPager.setAdapter(mAdapterViewPager);
 
                 item.setChecked(true);
-                finish();
-                startActivity(getIntent());
+                tabs.setupWithViewPager(viewPager);
+                setTabDrawables();
 
                 return true;
 
@@ -211,8 +200,7 @@ public class YourShowsActivity extends AppCompatActivity {
                 PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
-                startActivity(getIntent());
-
+                startActivity(getIntent());;
 
                 return true;
 
@@ -223,8 +211,7 @@ public class YourShowsActivity extends AppCompatActivity {
                 PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
-                startActivity(getIntent());
-
+                startActivity(getIntent());;
 
                 return true;
 
@@ -244,11 +231,15 @@ public class YourShowsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-    }
 
-    private void setTabDrawables(){
-        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
-        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_eye_off).sizeDp(24).color(Color.WHITE));
+        /*int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        } else if (id == android.R.id.home) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
+        return super.onOptionsItemSelected(item);*/
     }
 
     @Override
@@ -258,6 +249,11 @@ public class YourShowsActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void setTabDrawables(){
+        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(MaterialDesignIconic.Icon.gmi_tv_alt_play).color(Color.WHITE));
+        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_movie).color(Color.WHITE));
     }
 
     static class Adapter extends FragmentPagerAdapter {

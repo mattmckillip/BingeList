@@ -2,6 +2,8 @@ package com.example.matt.bingeList.viewControllers.fragments.shows;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -30,6 +32,8 @@ import com.mikepenz.iconics.view.IconicsButton;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.squareup.picasso.Picasso;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -119,7 +123,7 @@ public class TVEpisodeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
-        return inflater.inflate(R.layout.tv_show_episode_overview, parent, false);
+        return inflater.inflate(R.layout.tvshow_episode_overview, parent, false);
     }
 
     // This event is triggered soon after onCreateView().
@@ -175,6 +179,10 @@ public class TVEpisodeFragment extends Fragment {
                 TVShowRealmStaticHelper.watchEpisode(mEpisode, mUiRealm);
                 Snackbar.make(scroll_view, "Watched " + formatEpisodeTitle(mEpisode.getSeasonNumber(), mEpisode.getEpisodeNumber()) + ": " + mEpisode.getName() + "!", Snackbar.LENGTH_SHORT).show();
                 mEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShowId, mUiRealm);
+                if (mEpisode == null) {
+                    mIsCaughtUp = true;
+                    mEpisode = TVShowRealmStaticHelper.getLastEpisode(mShowId, mUiRealm);
+                }
                 setData();
             }
         });
@@ -186,6 +194,12 @@ public class TVEpisodeFragment extends Fragment {
         //Color titles
         mEpisodeTitle.setTextColor(vibrantColor);
         crewTitle.setTextColor(vibrantColor);
+        seeMoreCrewButton.setTextColor(mutedColor);
+
+        LayerDrawable starProgressDrawable = (LayerDrawable) stars.getProgressDrawable();
+        starProgressDrawable.getDrawable(2).setColorFilter(mutedColor, PorterDuff.Mode.SRC_ATOP);
+        starProgressDrawable.getDrawable(1).setColorFilter(mutedColor, PorterDuff.Mode.SRC_ATOP);
+
     }
 
     private void setData() {
@@ -197,7 +211,9 @@ public class TVEpisodeFragment extends Fragment {
         mEpisodeTitle.setText(formatEpisodeTitle(mEpisode.getSeasonNumber(), mEpisode.getEpisodeNumber()) + ": " + mEpisode.getName());
         mAirDate.setText(formatAirDate(mEpisode.getAirDate()));
         stars.setRating(mEpisode.getVoteAverage().floatValue());
-        userRating.setText(Double.toString(mEpisode.getVoteAverage()) + "/10");
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.UP);
+        userRating.setText(df.format(mEpisode.getVoteAverage()) + "/10");
 
         mCrew = mEpisode.getCrew();
         Integer crewSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCrew.size());
@@ -213,7 +229,7 @@ public class TVEpisodeFragment extends Fragment {
         if (mIsCaughtUp) {
             mActionButton.setEnabled(false);
             mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
-            mActionButton.setText("{gmd_done} all caught up");
+            mActionButton.setText("{gmd_done_all} all caught up");
         } else {
             mActionButton.setEnabled(true);
             mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
@@ -221,7 +237,6 @@ public class TVEpisodeFragment extends Fragment {
         }
     }
 
-    // HELPERS
     private String formatEpisodeTitle(Integer seasonNumber, Integer episodeNumber) {
         String seasonText = "";
         String episodeText = "";

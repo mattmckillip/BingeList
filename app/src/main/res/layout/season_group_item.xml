@@ -34,8 +34,8 @@
         <ImageView
             android:id="@+id/season_poster"
             android:contentDescription="Season Poster"
-            android:layout_width="@dimen/compact_card_image_height"
             android:layout_height="@dimen/compact_card_image_height"
+            android:layout_width="67dp"
             android:scaleType="centerCrop" />
 
         <TextView

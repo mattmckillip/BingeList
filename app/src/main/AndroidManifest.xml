@@ -102,6 +102,10 @@
         <activity
             android:name=".viewControllers.activities.PersonActivity">
         </activity>
+
+        <activity
+            android:name=".viewControllers.activities.StatisticsActivity">
+        </activity>
     </application>
 
 </manifest>

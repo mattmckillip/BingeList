@@ -11,6 +11,7 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.viewControllers.activities.SearchActivity;
 import com.example.matt.bingeList.viewControllers.activities.SettingsActivity;
+import com.example.matt.bingeList.viewControllers.activities.StatisticsActivity;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMoviesActivity;
 import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseActivity;
@@ -39,9 +40,6 @@ public class DrawerHelper {
     private Drawer result = null;
 
     public Drawer GetDrawer(final Activity currentActivity, Toolbar toolbar, Bundle savedInstanceState) {
-        // Create the AccountHeader
-        final IProfile profile = new ProfileDrawerItem().withName("Matt McKillip").withEmail("mattmckillip@gmail.com").withIcon(R.drawable.matt).withIdentifier(100);
-
         int backgroundColor = Color.WHITE;
         int primaryTextColor = Color.DKGRAY;
         int secondaryTextColor = Color.GRAY;
@@ -53,20 +51,12 @@ public class DrawerHelper {
             secondaryTextColor = Color.GRAY;
             iconColor = Color.GRAY;
         }
-
-        headerResult = new AccountHeaderBuilder()
-                .withActivity(currentActivity)
-                .withTranslucentStatusBar(true)
-                .withHeaderBackground(R.drawable.nav_header1)
-                .withSavedInstance(savedInstanceState)
-                .addProfiles(profile)
-                .build();
-
         //Create the drawer
         result = new DrawerBuilder()
                 .withActivity(currentActivity)
                 .withToolbar(toolbar)
                 .withHasStableIds(true)
+                .withHeader(R.layout.nav_header)
                 //.withItemAnimator(new AlphaCrossFadeAnimator())
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
@@ -78,6 +68,7 @@ public class DrawerHelper {
                                 new SecondaryDrawerItem().withName(R.string.drawer_item_movie_watchlist).withLevel(2).withIcon(MaterialDesignIconic.Icon.gmi_tv_list).withIdentifier(2000).withTextColor(secondaryTextColor).withIconColor(iconColor),
                                 new SecondaryDrawerItem().withName(R.string.drawer_item_movie_browse).withLevel(2).withIcon(GoogleMaterial.Icon.gmd_whatshot).withIdentifier(2001).withTextColor(secondaryTextColor).withIconColor(iconColor)
                         ),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_stats).withIcon(GoogleMaterial.Icon.gmd_insert_chart).withTextColor(primaryTextColor).withIdentifier(3001).withIconColor(iconColor),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_search).withIcon(GoogleMaterial.Icon.gmd_search).withTextColor(primaryTextColor).withIdentifier(3000).withIconColor(iconColor),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_about).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(4000).withSelectable(false).withTextColor(secondaryTextColor).withIconColor(iconColor),
@@ -104,6 +95,8 @@ public class DrawerHelper {
                                 intent = new Intent(currentActivity, BrowseMoviesActivity.class);
                             } else if (drawerItem.getIdentifier() == 3000) {
                                 intent = new Intent(currentActivity, SearchActivity.class);
+                            } else if (drawerItem.getIdentifier() == 3001) {
+                                intent = new Intent(currentActivity, StatisticsActivity.class);
                             } else if (drawerItem.getIdentifier() == 4000) {
                                 intent = null;
                                 //intent = new Intent(currentActivity, ExpandableExampleActivity.class);
@@ -137,6 +130,8 @@ public class DrawerHelper {
             result.setSelection(2001, false);
         } else if (currentActivity.getClass().equals(SearchActivity.class)) {
             result.setSelection(3000, false);
+        } else if (currentActivity.getClass().equals(StatisticsActivity.class)) {
+            result.setSelection(3001, false);
         } else if (currentActivity.getClass().equals(SettingsActivity.class)) {
             result.setSelection(4001, false);
         }

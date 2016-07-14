@@ -284,7 +284,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                     return true;
 
                                 case R.id.action_watch:
-                                    moveFromBrowseToWatched(position, v);
+                                    holder.mProgressSpinner.setVisibility(View.VISIBLE);
+                                    moveFromBrowseToWatched(position, v, holder);
                                     return true;
                             }
                             return false;
@@ -447,7 +448,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         });
     }
 
-    private void moveFromBrowseToWatched(final int position, final View v) {
+    private void moveFromBrowseToWatched(final int position, final View v, final BrowseMoviesViewHolder holder) {
         Log.d(TAG, "moveFromBrowseToWatchList()");
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -499,6 +500,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
                                         notifyDataSetChanged();
                                         Snackbar.make(v, mMovie.getTitle() + " Watched!", Snackbar.LENGTH_LONG).show();
+                                        holder.mProgressSpinner.setVisibility(View.GONE);
+
                                     }
 
                                     @Override

@@ -46,4 +46,11 @@ dependencies {
     compile('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.9.1@aar') {
         transitive = true
     }
+    compile 'com.github.blackfizz:eazegraph:1.2.2@aar'
+    compile 'com.nineoldandroids:library:2.4.0'
+
+    compile 'com.diogobernardino:williamchart:2.2'
+
+
+
 }

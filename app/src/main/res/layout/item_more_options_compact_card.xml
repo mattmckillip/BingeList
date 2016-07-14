@@ -55,14 +55,16 @@
 
         <com.mikepenz.iconics.view.IconicsButton
             android:id="@+id/action_button"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/compact_card_image_margin"
             android:layout_toRightOf="@+id/card_image"
-            android:text="{gmd_add}"
             android:textColor="@color/colorPrimary"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:layout_alignParentBottom="true"
-            style="?android:attr/borderlessButtonStyle" />
+            style="?android:attr/borderlessButtonStyle"
+            android:gravity="left|center_vertical" />
 
         <ImageButton
             android:id="@+id/more_button"

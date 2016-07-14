@@ -32,6 +32,21 @@
                 android:textSize="@dimen/article_titles"
                 android:layout_marginBottom="@dimen/md_keylines" />
 
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/md_keylines"
+                android:layout_marginLeft="@dimen/md_keylines"
+                android:layout_marginRight="@dimen/md_keylines"
+                app:cardBackgroundColor="?android:colorBackground">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <ImageView
                     android:id="@+id/episode_image"
                     android:layout_width="match_parent"
@@ -42,10 +57,16 @@
                     android:id="@+id/action_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/episode_image"
                     android:text="{gmd_remove_red_eye} watch episode!"
                     android:textColor="@color/colorPrimary"
                     android:layout_alignParentBottom="true"
-                    style="?android:attr/borderlessButtonStyle" />
+                    style="?android:attr/borderlessButtonStyle"
+                    android:gravity="center" />
+
+            </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
 
             <RelativeLayout
                 android:id="@+id/rating_layout"

@@ -225,8 +225,10 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
 
                     TVShowRealmStaticHelper.watchEpisode(nextEpisode, mUiRealm);
                     setActionButton(holder);
-                    Snackbar.make(v, "Watched " + formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName() + "!", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(v, "Watched " + formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName() + "!", Snackbar.LENGTH_SHORT).show();
                 } else {
+                    Snackbar.make(v, "Error Null Show", Snackbar.LENGTH_LONG).show();
+
                     Log.d(TAG, "null");
                 }
             }

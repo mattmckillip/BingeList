@@ -51,7 +51,7 @@ public class TVShowWatchlistSeasonFragment extends Fragment implements RecyclerV
         vibrantColor = getArguments().getInt("vibrantColor", 0);
         mutedColor = getArguments().getInt("mutedColor", 0);
         showID = this.getArguments().getInt("showID");
-        return inflater.inflate(R.layout.tv_show_browse_season_recycler_view, container, false);
+        return inflater.inflate(R.layout.tvshow_browse_season_recycler_view, container, false);
     }
 
     @Override

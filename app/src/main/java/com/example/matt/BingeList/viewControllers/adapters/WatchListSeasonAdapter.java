@@ -258,6 +258,7 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
     }
 
     private void handleOnClickGroupItemAddChild2BottomButton(final int groupPosition, final View v) {
+        Log.d(TAG, "handleOnClickGroupItemAddChild2BottomButton()");
         //Creating the instance of PopupMenu
         PopupMenu popup = new PopupMenu(mContext, v);
         //Inflating the Popup using xml file
@@ -272,7 +273,7 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
                 switch (item.getItemId()) {
 
                     case R.id.action_mark_watched:
-                        episodes =  query.equalTo("show_id", mShowId).equalTo("season_id", mSeasons.get(groupPosition).getId()).findAll();
+                        episodes =  query.equalTo("show_id", mShowId).equalTo("seasonNumber", mSeasons.get(groupPosition).getSeasonNumber()).findAll();
 
                         mUiRealm.beginTransaction();
                         for (int i = 0; i < episodes.size(); i++) {
@@ -291,7 +292,8 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
                         return true;
 
                     case R.id.action_mark_unwatched:
-                        episodes =  query.equalTo("show_id", mShowId).equalTo("season_id", mSeasons.get(groupPosition).getId()).findAll();
+                        episodes =  query.equalTo("show_id", mShowId).equalTo("seasonNumber", mSeasons.get(groupPosition).getSeasonNumber()).findAll();
+
                         mUiRealm.beginTransaction();
 
                         for (int i = 0; i < episodes.size(); i++) {
@@ -315,8 +317,7 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
             }
         });
 
-        popup.show();//showing popup menu
-        //mExpandableItemManager.notifyChildItemRangeInserted(groupPosition, childCount, 2);
+        popup.show();
     }
 
     private void handleOnClickGroupItemContainerView(int groupPosition) {

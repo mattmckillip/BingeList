@@ -82,6 +82,7 @@
     <string name="drawer_item_movie_watchlist">Watchlist</string>
     <string name="drawer_item_movie_browse">Browse</string>
     <string name="drawer_item_search">Search</string>
+    <string name="drawer_item_stats">Stats</string>
     <string name="drawer_item_settings">Settings</string>
     <string name="drawer_item_open_source">Open Source</string>
     <string name="drawer_item_about">About</string>
@@ -98,5 +99,10 @@
     <string name="image_size_w1280">w1280</string>
     <string name="image_size_original">original</string>
     <string name="image_size_h632">h632</string>
+
+    <string-array name="stats_array">
+        <item>Time</item>
+        <item>Progress</item>
+    </string-array>
 
 </resources>

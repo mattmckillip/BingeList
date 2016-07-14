@@ -25,14 +25,12 @@ import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
-import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
 import com.example.matt.bingeList.models.shows.TVShowResult;
-import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
@@ -146,7 +144,7 @@ public class TVShowOverviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
-        return inflater.inflate(R.layout.tv_show_overview, parent, false);
+        return inflater.inflate(R.layout.tvshow_overview, parent, false);
     }
 
     // This event is triggered soon after onCreateView().
