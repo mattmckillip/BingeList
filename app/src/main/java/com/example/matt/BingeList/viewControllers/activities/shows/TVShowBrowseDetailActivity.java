@@ -48,6 +48,7 @@ import com.squareup.picasso.Picasso;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -249,9 +250,9 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                 Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
                 uiRealm.beginTransaction();
                 show.setOnYourShows(true);
+                show.setDate(new Date());
                 uiRealm.copyToRealmOrUpdate(show);
                 uiRealm.commitTransaction();
-                Log.d("realm transaction","success");
                 FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
                 fetchSeasonsTask.execute(mShowId, show.getNumberOfSeasons());
 

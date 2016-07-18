@@ -31,23 +31,28 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 
 public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAdapter.WatchlistViewHolder> {
-    private RealmResults<Movie> mMovieList;
+    private RealmList<Movie> mMovieList;
     private static final String TAG = MovieWatchlistAdapter.class.getSimpleName();
     private Context mContext;
     private Realm mUiRealm;
     private int viewMode;
 
-    public MovieWatchlistAdapter(RealmResults movieList, Context context, Realm uiRealm) {
+    public MovieWatchlistAdapter(RealmList movieList, Context context, Realm uiRealm) {
         mContext = context;
         mUiRealm = uiRealm;
         mMovieList = movieList;
         viewMode = PreferencesHelper.getRecyclerviewViewType(mContext);
     }
-
+    public void UpdateData(RealmList<Movie> movieRealmList){
+        Log.d(TAG, "UpdateData()");
+        mMovieList = movieRealmList;
+        notifyDataSetChanged();
+    }
     @Override
     public WatchlistViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         PreferencesHelper.printValues(mContext);
@@ -114,7 +119,6 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
             holder.mMovieTitle.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "Number of lines in " + titleString + ": " + Integer.toString(title.getLineCount()));
                     if (title.getLineCount() > 1) {
                         description.setSingleLine();
                     }
@@ -147,7 +151,7 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
                     creditsResults.get(i).deleteFromRealm();
                 }
                 mUiRealm.commitTransaction();
-
+                mMovieList.remove(position);
                 notifyDataSetChanged();
                 Snackbar.make(v, "Removed " + movieTitle + " from watchlist", Snackbar.LENGTH_LONG).show();
             }
@@ -166,6 +170,7 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
                 movie.setOnWatchList(false);
                 movie.setWatchedDate(new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date()));
                 mUiRealm.commitTransaction();
+                mMovieList.remove(position);
 
                 notifyDataSetChanged();
 

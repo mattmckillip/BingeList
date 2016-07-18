@@ -36,7 +36,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
  */
 public class DrawerHelper {
     //save our header or result
-    private AccountHeader headerResult = null;
     private Drawer result = null;
 
     public Drawer GetDrawer(final Activity currentActivity, Toolbar toolbar, Bundle savedInstanceState) {
@@ -51,14 +50,13 @@ public class DrawerHelper {
             secondaryTextColor = Color.GRAY;
             iconColor = Color.GRAY;
         }
+
         //Create the drawer
         result = new DrawerBuilder()
                 .withActivity(currentActivity)
                 .withToolbar(toolbar)
                 .withHasStableIds(true)
                 .withHeader(R.layout.nav_header)
-                //.withItemAnimator(new AlphaCrossFadeAnimator())
-                .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
                         new ExpandableDrawerItem().withName(R.string.drawer_item_show_header).withIcon(MaterialDesignIconic.Icon.gmi_tv_alt_play).withIdentifier(1).withSelectable(false).withTextColor(primaryTextColor).withIconColor(iconColor).withSubItems(
                                 new SecondaryDrawerItem().withName(R.string.drawer_item_show_watchlist).withLevel(2).withIcon(CommunityMaterial.Icon.cmd_television_guide).withIdentifier(1000).withTextColor(secondaryTextColor).withIconColor(iconColor),

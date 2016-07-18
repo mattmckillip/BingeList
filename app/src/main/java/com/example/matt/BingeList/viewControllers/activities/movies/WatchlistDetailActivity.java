@@ -368,6 +368,8 @@ public class WatchlistDetailActivity extends AppCompatActivity {
             }
         });
 
+        castRecyclerView.setFocusable(false);
+
         loadCredits();
         loadSimilarMovies();
 

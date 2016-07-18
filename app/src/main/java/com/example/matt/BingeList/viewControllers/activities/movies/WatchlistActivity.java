@@ -32,11 +32,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.DrawerHelper;
+import com.example.matt.bingeList.uitls.Enums.MovieSort;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
@@ -46,6 +46,7 @@ import com.mikepenz.iconics.Iconics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.Drawer;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,9 +123,6 @@ public class WatchlistActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Log.d(TAG, Integer.toString(mViewPagerPosition));
-        Log.d(TAG, Integer.toString(mAdapterViewPager.getCount()));
-
         MovieWatchListFragment movieWatchListFragment = (MovieWatchListFragment) mAdapterViewPager.getItem(mViewPagerPosition);
         if (movieWatchListFragment != null) {
             movieWatchListFragment.notifyAdapter();
@@ -181,7 +179,9 @@ public class WatchlistActivity extends AppCompatActivity {
         Log.d(TAG, "onCreateOptionsMenu()");
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_main_movie_sort, menu);
+
+        menu.findItem(R.id.action_sort).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_sort).sizeDp(16).color(Color.WHITE));
 
         int viewMode = PreferencesHelper.getRecyclerviewViewType(getApplicationContext());
         if (viewMode == ViewType.CARD){
@@ -199,6 +199,17 @@ public class WatchlistActivity extends AppCompatActivity {
             menu.findItem(R.id.dark_theme).setChecked(true);
         }
 
+        int movieSort = PreferencesHelper.getMovieSort(getApplicationContext());
+        if (movieSort == MovieSort.RECENTLY_ADDED){
+            menu.findItem(R.id.recently_added_sort).setChecked(true);
+        } else if (movieSort == MovieSort.TOP_RATED){
+            menu.findItem(R.id.top_rated_sort).setChecked(true);
+        } else if (movieSort == MovieSort.RUNTIME_DESCENDING){
+            menu.findItem(R.id.runtime_descending_sort).setChecked(true);
+        } else if (movieSort == MovieSort.RUNTIME_ASCENDING){
+            menu.findItem(R.id.runtime_ascending_sort).setChecked(true);
+        }
+
         return true;
     }
 
@@ -207,7 +218,13 @@ public class WatchlistActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        ArrayList<MovieWatchListFragment> movieWatchListFragments = new ArrayList<>();
+        movieWatchListFragments.add((MovieWatchListFragment) mAdapterViewPager.getItem(0));
+        movieWatchListFragments.add((MovieWatchListFragment) mAdapterViewPager.getItem(1));
+
         switch (item.getItemId()) {
+
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
                 if (BuildConfig.DEBUG) {
@@ -295,6 +312,58 @@ public class WatchlistActivity extends AppCompatActivity {
                     Log.d("onOptionsItemSelected()", "Sort");
                 }
                 mNavigationDrawer.openDrawer();
+
+                return true;
+
+            // Sorting
+            case R.id.recently_added_sort:
+                Log.d(TAG, "recently_added_sort: " + Integer.toString(movieWatchListFragments.size()));
+                PreferencesHelper.setMovieSort(MovieSort.RECENTLY_ADDED, getApplicationContext());
+                for (MovieWatchListFragment fragment : movieWatchListFragments) {
+                    if (fragment != null) {
+                        fragment.sort(MovieSort.RECENTLY_ADDED);
+                    }
+                }
+                item.setChecked(true);
+
+                return true;
+
+            case R.id.top_rated_sort:
+                Log.d(TAG, "top_rated_sort: " + Integer.toString(movieWatchListFragments.size()));
+                PreferencesHelper.setMovieSort(MovieSort.TOP_RATED, getApplicationContext());
+
+                for (MovieWatchListFragment fragment : movieWatchListFragments) {
+                    if (fragment != null) {
+                        fragment.sort(MovieSort.TOP_RATED);
+                    }
+                }
+                item.setChecked(true);
+
+                return true;
+
+            case R.id.runtime_descending_sort:
+                Log.d(TAG, "runtime_sort: " + Integer.toString(movieWatchListFragments.size()));
+                PreferencesHelper.setMovieSort(MovieSort.RUNTIME_DESCENDING, getApplicationContext());
+
+                for (MovieWatchListFragment fragment : movieWatchListFragments) {
+                    if (fragment != null) {
+                        fragment.sort(MovieSort.RUNTIME_DESCENDING);
+                    }
+                }
+                item.setChecked(true);
+
+                return true;
+
+            case R.id.runtime_ascending_sort:
+                Log.d(TAG, "runtime_sort: " + Integer.toString(movieWatchListFragments.size()));
+                PreferencesHelper.setMovieSort(MovieSort.RUNTIME_ASCENDING, getApplicationContext());
+
+                for (MovieWatchListFragment fragment : movieWatchListFragments) {
+                    if (fragment != null) {
+                        fragment.sort(MovieSort.RUNTIME_ASCENDING);
+                    }
+                }
+                item.setChecked(true);
 
                 return true;
 

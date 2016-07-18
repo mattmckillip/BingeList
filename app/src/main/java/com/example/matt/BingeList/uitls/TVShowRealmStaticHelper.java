@@ -6,10 +6,12 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.TVShow;
+import com.example.matt.bingeList.uitls.Enums.ShowSort;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by Matt on 7/10/2016.
@@ -48,7 +50,25 @@ public class TVShowRealmStaticHelper {
     }
 
     public static RealmList<TVShow> getShowsWithUnwatchedEpisodes(Realm UIRealm){
-        RealmResults<TVShow> tvShowRealmResults = UIRealm.where(TVShow.class).equalTo("onYourShows", true).findAll();
+        RealmResults<TVShow> tvShowRealmResults = UIRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+        RealmList<TVShow> returnShows = new RealmList<>();
+        for (TVShow show : tvShowRealmResults){
+            if (getNextUnwatchedEpisode(show.getId(), UIRealm) != null) {
+                returnShows.add(show);
+            }
+        }
+        return returnShows;
+    }
+
+    public static RealmList<TVShow> getSortedShowsWithUnwatchedEpisodes(Realm UIRealm, int showSort){
+        RealmResults<TVShow> tvShowRealmResults = null;
+        if (showSort == ShowSort.TOP_RATED){
+            tvShowRealmResults = UIRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("voteAverage", Sort.DESCENDING);
+        } else if (showSort == ShowSort.RECENTLY_ADDED){
+            tvShowRealmResults = UIRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+        } else if (showSort == ShowSort.ADDED_FIRST){
+            tvShowRealmResults = UIRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.ASCENDING);
+        }
         RealmList<TVShow> returnShows = new RealmList<>();
         for (TVShow show : tvShowRealmResults){
             if (getNextUnwatchedEpisode(show.getId(), UIRealm) != null) {
@@ -59,7 +79,7 @@ public class TVShowRealmStaticHelper {
     }
 
     public static RealmList<Episode> getAllWatchedEpisodes(Realm UIRealm) {
-        RealmResults<Episode> allWatchedEpisodes =  UIRealm.where(Episode.class).equalTo("isWatched", true).findAll();
+        RealmResults<Episode> allWatchedEpisodes =  UIRealm.where(Episode.class).equalTo("isWatched", true).findAllSorted("date", Sort.DESCENDING);
         RealmList<Episode> returnList = new RealmList<>();
         returnList.addAll(allWatchedEpisodes.subList(0, allWatchedEpisodes.size()));
         return returnList;

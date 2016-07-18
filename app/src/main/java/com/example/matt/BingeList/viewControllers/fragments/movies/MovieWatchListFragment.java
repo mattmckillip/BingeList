@@ -16,6 +16,7 @@
 
 package com.example.matt.bingeList.viewControllers.fragments.movies;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +30,8 @@ import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.Enums.MovieSort;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.adapters.MovieWatchlistAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.WatchedMoviesAdapter;
 
@@ -36,68 +39,101 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class MovieWatchListFragment extends Fragment {
-    MovieWatchlistAdapter mWatchListAdapter;
-    WatchedMoviesAdapter mWatchedAdapter;
-    Realm mUiRealm;
+    private static final String TAG = "MovieWLFragment";
+    private MovieWatchlistAdapter mWatchListAdapter;
+    private WatchedMoviesAdapter mWatchedAdapter;
+    private RecyclerView mRecyclerView;
+    private Realm mUiRealm;
+    private Context mContext;
+    boolean isWatched;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        mRecyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        boolean isWatched;
         mUiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
+        mContext = container.getContext();
 
         if (getArguments().getInt("watched") == 1) {
             isWatched = true;
+            mWatchedAdapter = new WatchedMoviesAdapter(new RealmList<Movie>(), getContext(), mUiRealm);
+
         } else {
             isWatched = false;
+            mWatchListAdapter = new MovieWatchlistAdapter(new RealmList(), getContext(), mUiRealm);
         }
+        
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(mWatchListAdapter);
 
-        Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
-        RealmQuery<Movie> query = uiRealm.where(Movie.class);
+        //TODO get from context
+        //int sortType = MovieSort.TOP_RATED;
+        //sort(sortType);
+        sort(PreferencesHelper.getMovieSort(getContext()));
 
-        if (isWatched) {
-            RealmResults<Movie> movieRealmResults = query.equalTo("isWatched", true).findAll();
-            RealmList<Movie> movies = new RealmList<>();
-            for (Movie movieResult : movieRealmResults) {
-                if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
-                    movies.add(movieResult);
-                }
-            }
-            mWatchedAdapter = new WatchedMoviesAdapter(movies, getContext(), uiRealm);
-            recyclerView.setAdapter(mWatchedAdapter);
 
-        } else {
-            RealmResults<Movie> movies = query.equalTo("onWatchList", true).findAll();
-            mWatchListAdapter = new MovieWatchlistAdapter(movies, getContext(), uiRealm);
-            recyclerView.setAdapter(mWatchListAdapter);
-        }
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+        return mRecyclerView;
     }
 
     public void notifyAdapter(){
-        if (mWatchListAdapter != null) {
-            mWatchListAdapter.notifyDataSetChanged();
+        if (mWatchListAdapter != null || mWatchedAdapter != null) {
+            int sortType = PreferencesHelper.getMovieSort(getContext());
+            sort(sortType);
         }
+    }
 
-        if (mWatchedAdapter != null) {
-            RealmResults<Movie> movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
+    public void sort(int sortType){
+        Log.d(TAG, Integer.toString(sortType));
+
+        if (mWatchListAdapter != null) {
+            RealmResults<Movie> movieRealmResults = null;
+            if (sortType == MovieSort.RECENTLY_ADDED){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAll();
+            } else if (sortType == MovieSort.TOP_RATED){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("voteAverage", Sort.DESCENDING);
+            } else if (sortType == MovieSort.RUNTIME_DESCENDING){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("runtime", Sort.DESCENDING);
+            } else if (sortType == MovieSort.RUNTIME_ASCENDING){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("runtime", Sort.ASCENDING);
+            }
+
             RealmList<Movie> movies = new RealmList<>();
             for (Movie movieResult : movieRealmResults) {
                 if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
                     movies.add(movieResult);
                 }
             }
-            mWatchedAdapter.UpdateData(movies);
-            Log.d("MovieWatchListFragment", "mWatchedAdapter.notifyDataSetChanged()");
+
+            mWatchListAdapter = new MovieWatchlistAdapter(movies, getContext(), mUiRealm);
+            mRecyclerView.setAdapter(mWatchListAdapter);
+        }
+        if (mWatchedAdapter != null) {
+            RealmResults<Movie> movieRealmResults = null;
+            if (sortType == MovieSort.RECENTLY_ADDED){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
+            } else if (sortType == MovieSort.TOP_RATED){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("voteAverage", Sort.DESCENDING);
+            }  else if (sortType == MovieSort.RUNTIME_DESCENDING){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.DESCENDING);
+            } else if (sortType == MovieSort.RUNTIME_ASCENDING){
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.ASCENDING);
+            }
+
+            RealmList<Movie> movies = new RealmList<>();
+            for (Movie movieResult : movieRealmResults) {
+                if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
+                    movies.add(movieResult);
+                }
+            }
+            mWatchedAdapter = new WatchedMoviesAdapter(movies, getContext(), mUiRealm);
+            mRecyclerView.setAdapter(mWatchedAdapter);
         }
     }
 }

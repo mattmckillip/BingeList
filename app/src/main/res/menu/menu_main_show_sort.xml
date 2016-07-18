@@ -4,15 +4,32 @@
     tools:context=".viewControllers.activities.movies.WatchlistActivity"
     android:popupMenuStyle="?android:colorBackground">
 
-<item
+    <item
         android:id="@+id/action_sort"
         android:title="@string/sort"
-        app:showAsAction="always"/>
+        app:showAsAction="always">
 
-    <item
-        android:id="@+id/action_settings"
-        android:title="@string/settings"
-        app:showAsAction="never" />
+        <menu>
+            <group android:id="@+id/movie_sort"
+                android:checkableBehavior="single">
+
+                <item android:id="@+id/recently_added_sort"
+                    android:title="Recently Added">
+                </item>
+
+                <item android:id="@+id/add_first_sort"
+                    android:title="Added First">
+                </item>
+
+                <item android:id="@+id/top_rated_sort"
+                    android:title="Top Rated">
+                </item>
+
+            </group>
+
+        </menu>
+
+    </item>
 
     <item
         android:id="@+id/action_theme"

@@ -40,6 +40,7 @@ import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -299,6 +300,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     mUiRealm.beginTransaction();
                                     mShow.setBackdropBitmap(stream.toByteArray());
                                     mShow.setOnYourShows(true);
+                                    mShow.setDate(new Date());
                                     mUiRealm.copyToRealmOrUpdate(mShow);
                                     mUiRealm.commitTransaction();
 

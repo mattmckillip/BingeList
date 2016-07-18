@@ -309,6 +309,9 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
             }
         });
+
+        castRecyclerView.setFocusable(false);
+
         loadCredits();
         loadSimilarMovies();
     }

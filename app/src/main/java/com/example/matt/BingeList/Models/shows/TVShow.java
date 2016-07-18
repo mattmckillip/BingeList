@@ -5,6 +5,9 @@ import com.example.matt.bingeList.models.movies.ProductionCompany;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
+import java.util.Date;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -119,6 +122,8 @@ public class TVShow extends RealmObject{
     private boolean onYourShows;
 
     private byte[] backdropBitmap;
+
+    private Date date;
 
     /**
      * @return The backdropPath
@@ -500,4 +505,11 @@ public class TVShow extends RealmObject{
         this.backdropBitmap = backdropBitmap;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }

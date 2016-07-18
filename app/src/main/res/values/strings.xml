@@ -30,8 +30,8 @@
     <!-- Preferences Strings -->
     <string name="recyclerview_view_type_preference">recyclerViewType</string>
     <string name="theme_preference">themePreference</string>
-
-
+    <string name="movie_sort">movieSort</string>
+    <string name="show_sort">showSort</string>
 
     <!-- API Strings -->
     <string name="image_base_url">https://image.tmdb.org/t/p/</string>

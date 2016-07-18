@@ -37,23 +37,30 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.Enums.MovieSort;
+import com.example.matt.bingeList.uitls.Enums.ShowSort;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
 import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsDetailActivity;
 import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.MovieWatchlistAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.WatchedMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.YourShowsAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class YourShowsFragment extends Fragment {
     private static final String TAG = YourShowsFragment.class.getSimpleName();
@@ -74,23 +81,43 @@ public class YourShowsFragment extends Fragment {
 
         if (getArguments().getInt("watched") == 1) {
             mIsWatched = true;
-
-            RealmResults<TVShow> tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAll();
-            if (!tvShowRealmResults.isEmpty() && tvShowRealmResults.isValid()) {
-                data.addAll(tvShowRealmResults.subList(0, tvShowRealmResults.size()));
-            } else {
-                data = new RealmList<>();
-            }
-
         } else {
             mIsWatched = false;
-            data = TVShowRealmStaticHelper.getShowsWithUnwatchedEpisodes(mUiRealm);
         }
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mYourShowsAdapter = new YourShowsAdapter(data, getContext(), mUiRealm);
-        mRecyclerView.setAdapter(mYourShowsAdapter);
+        sort(PreferencesHelper.getShowSort(getContext()));
         return mRecyclerView;
+    }
+
+    public void sort(int sortType) {
+        Log.d(TAG, Integer.toString(sortType));
+
+        if (mIsWatched) {
+            RealmResults<TVShow> tvShowRealmResults = null;
+            if (sortType == ShowSort.RECENTLY_ADDED) {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+            } else if (sortType == ShowSort.TOP_RATED) {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("voteAverage", Sort.DESCENDING);
+            } else if (sortType == ShowSort.ADDED_FIRST) {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.ASCENDING);
+            }else {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+            }
+
+            RealmList<TVShow> data = new RealmList<>();
+            for (TVShow tvShowResult : tvShowRealmResults) {
+                data.add(tvShowResult);
+            }
+
+            mYourShowsAdapter = new YourShowsAdapter(data, getContext(), mUiRealm);
+            mRecyclerView.setAdapter(mYourShowsAdapter);
+        } else {
+            data = TVShowRealmStaticHelper.getSortedShowsWithUnwatchedEpisodes(mUiRealm, sortType);
+
+            mYourShowsAdapter = new YourShowsAdapter(data, getContext(), mUiRealm);
+            mRecyclerView.setAdapter(mYourShowsAdapter);
+        }
     }
 }
