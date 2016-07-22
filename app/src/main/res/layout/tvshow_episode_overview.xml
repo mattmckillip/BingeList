@@ -39,8 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/md_keylines"
-                android:layout_marginLeft="@dimen/md_keylines"
-                android:layout_marginRight="@dimen/md_keylines"
+
                 app:cardBackgroundColor="?android:colorBackground">
 
             <RelativeLayout

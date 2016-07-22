@@ -99,7 +99,7 @@ public class YourShowsActivity extends AppCompatActivity {
         IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
         fab.setImageDrawable(search);
 
-        final Intent intent = new Intent(this, TVShowBrowseDetailActivity.class);
+        final Intent intent = new Intent(this, TVShowBrowseActivity.class);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,18 +113,18 @@ public class YourShowsActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
-        Bundle watchedMoviesBundle = new Bundle();
-        watchedMoviesBundle.putInt("watched", 0);
-        YourShowsFragment watchedMovies = new YourShowsFragment();
-        watchedMovies.setArguments(watchedMoviesBundle);
+        Bundle allShowsBundle = new Bundle();
+        allShowsBundle.putInt("unwatched", 0);
+        YourShowsFragment yourShowsFrgament = new YourShowsFragment();
+        yourShowsFrgament.setArguments(allShowsBundle);
 
-        Bundle watchListMoviesBundle = new Bundle();
-        watchListMoviesBundle.putInt("watched", 1);
-        YourShowsFragment watchListMovies = new YourShowsFragment();
-        watchListMovies.setArguments(watchListMoviesBundle);
+        Bundle unwatchedShowBundle = new Bundle();
+        unwatchedShowBundle.putInt("unwatched", 1);
+        YourShowsFragment unwatchedShowsFragment = new YourShowsFragment();
+        unwatchedShowsFragment.setArguments(unwatchedShowBundle);
 
-        mAdapterViewPager.addFragment(watchListMovies, "All");
-        mAdapterViewPager.addFragment(watchedMovies, "Unwatched Episodes");
+        mAdapterViewPager.addFragment(yourShowsFrgament, "All");
+        mAdapterViewPager.addFragment(unwatchedShowsFragment, "Unwatched Episodes");
         viewPager.setAdapter(mAdapterViewPager);
     }
 

@@ -46,8 +46,8 @@ import io.realm.RealmList;
 /**
  * Created by Matt on 6/14/2016.
  */
-public class TVEpisodeFragment extends Fragment {
-    private static final String TAG = TVEpisodeFragment.class.getSimpleName();
+public class TVShowEpisodeFragment extends Fragment {
+    private static final String TAG = TVShowEpisodeFragment.class.getSimpleName();
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 10;
 
     private FragmentActivity listener;
@@ -113,7 +113,7 @@ public class TVEpisodeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mShowId = getArguments().getInt("showID", 0);
+        mShowId = getArguments().getInt(getContext().getString(R.string.showId), 0);
         vibrantColor = getArguments().getInt("vibrantColor", 0);
         mutedColor = getArguments().getInt("mutedColor", 0);
     }
@@ -157,12 +157,17 @@ public class TVEpisodeFragment extends Fragment {
 
     private void setAdapters() {
         // PersonCast recycler view
-        mCrewAdapter = new CrewAdapter(mCrew, mContext, NUMBER_OF_CREW_TO_DISPLAY);
-        RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(mContext);
-        crewRecyclerView.setLayoutManager(crewLayoutManager);
-        crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        crewRecyclerView.setAdapter(mCrewAdapter);
-
+        if (mCrew.isEmpty()) {
+            crewTitle.setVisibility(View.GONE);
+            crewRecyclerView.setVisibility(View.GONE);
+            seeMoreCrewButton.setVisibility(View.GONE);
+        } else {
+            mCrewAdapter = new CrewAdapter(mCrew, mContext, NUMBER_OF_CREW_TO_DISPLAY);
+            RecyclerView.LayoutManager crewLayoutManager = new LinearLayoutManager(mContext);
+            crewRecyclerView.setLayoutManager(crewLayoutManager);
+            crewRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            crewRecyclerView.setAdapter(mCrewAdapter);
+        }
     }
 
     private void updateUI() {
@@ -232,7 +237,7 @@ public class TVEpisodeFragment extends Fragment {
             mActionButton.setText("{gmd_done_all} all caught up");
         } else {
             mActionButton.setEnabled(true);
-            mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
+            mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.lightColorAccent));
             mActionButton.setText("{gmd_remove_red_eye} watch episode!");
         }
     }
@@ -273,5 +278,21 @@ public class TVEpisodeFragment extends Fragment {
         }
 
         return date;
+    }
+
+    public void update() {
+        if (mEpisode.equals(TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShowId, mUiRealm))) {
+            return;
+        }
+        mEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShowId, mUiRealm);
+
+        setAdapters();
+
+        mIsCaughtUp = false;
+        if (mEpisode == null) {
+            mIsCaughtUp = true;
+            mEpisode = TVShowRealmStaticHelper.getLastEpisode(mShowId, mUiRealm);
+        }
+        updateUI();
     }
 }

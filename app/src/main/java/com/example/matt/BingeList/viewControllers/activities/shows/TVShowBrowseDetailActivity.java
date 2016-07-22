@@ -1,5 +1,6 @@
 package com.example.matt.bingeList.viewControllers.activities.shows;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
@@ -34,7 +36,7 @@ import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
-import com.example.matt.bingeList.viewControllers.fragments.shows.TVEpisodeFragment;
+import com.example.matt.bingeList.viewControllers.fragments.movies.MovieWatchListFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowBrowseSeasonFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -73,6 +75,9 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
     private TVShow show;
     private SlidrInterface mSlidrInterface;
     private Realm mUiRealm;
+    private String mShowName;
+    private Context mContext;
+    private int mViewPagerPosition;
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -100,32 +105,22 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
-        Iconics.init(getApplicationContext());
-        Iconics.registerFont(new GoogleMaterial());
-        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
-            setTheme(R.style.DarkAppTheme_Base);
-        }
+        setIcons();
+        setTheme();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
-        mShowId = getIntent().getIntExtra("showID", 0);
-        String ShowName = getIntent().getStringExtra("showName");
+        mContext = getApplicationContext();
 
+        getIntentExtras();
         ButterKnife.bind(this);
 
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
-
         fab.setImageDrawable(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE));
-
-        appbar.setVisibility(View.GONE);
-        collapsingToolbar.setVisibility(View.GONE);
-        background.setVisibility(View.GONE);
-        tabLayout.setVisibility(View.GONE);
-        fab.setVisibility(View.GONE);
-        loadingPanel.setVisibility(View.VISIBLE);
+        hideViews();
 
         // Set title of Detail page
-        collapsingToolbar.setTitle(ShowName);
+        collapsingToolbar.setTitle(mShowName);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.themoviedb.org/3/tv/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -140,72 +135,74 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                 background.setVisibility(View.VISIBLE);
                 collapsingToolbar.setVisibility(View.VISIBLE);
 
-                show = response.body();
+                if (response.isSuccessful()) {
+                    show = response.body();
 
-                Picasso.with(getApplicationContext())
-                        .load("https://image.tmdb.org/t/p/w500/" + response.body().getBackdropPath())
-                        .fit().centerCrop()
-                        .transform(PaletteTransformation.instance())
-                        .into(background, new PaletteTransformation.PaletteCallback(background) {
-                            @Override
-                            public void onSuccess(Palette palette) {
-                                Bitmap bitmap = ((BitmapDrawable) background.getDrawable()).getBitmap(); // Ew!
-                                appbar.setVisibility(View.VISIBLE);
-                                tabLayout.setVisibility(View.VISIBLE);
-                                fab.setVisibility(View.VISIBLE);
-                                loadingPanel.setVisibility(View.GONE);
+                    Picasso.with(getApplicationContext())
+                            .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + show.getBackdropPath())
+                            .fit().centerCrop()
+                            .transform(PaletteTransformation.instance())
+                            .into(background, new PaletteTransformation.PaletteCallback(background) {
+                                @Override
+                                public void onSuccess(Palette palette) {
+                                    Bitmap bitmap = ((BitmapDrawable) background.getDrawable()).getBitmap(); // Ew!
+                                    appbar.setVisibility(View.VISIBLE);
+                                    tabLayout.setVisibility(View.VISIBLE);
+                                    fab.setVisibility(View.VISIBLE);
+                                    loadingPanel.setVisibility(View.GONE);
 
-                                int defaultColor = 0x000000;
-                                mVibrantColor = palette.getVibrantColor(defaultColor);
-                                mMutedColor = palette.getLightMutedColor(defaultColor);
-                                if (mVibrantColor == 0) {
-                                    mVibrantColor = getResources().getColor(R.color.lightColorPrimary);
+                                    int defaultColor = 0x000000;
+                                    mVibrantColor = palette.getVibrantColor(defaultColor);
+                                    mMutedColor = palette.getLightMutedColor(defaultColor);
+                                    if (mVibrantColor == 0) {
+                                        mVibrantColor = getResources().getColor(R.color.lightColorPrimary);
+                                    }
+
+                                    if (mMutedColor == 0) {
+                                        mMutedColor = getResources().getColor(R.color.lightColorAccent);
+                                    }
+
+                                    setColors(mVibrantColor, mMutedColor);
+
+
+                                    // Setting ViewPager for each Tabs
+                                    mAdapterViewPager = new Adapter(getSupportFragmentManager());
+
+                                    Bundle overviewBundle = new Bundle();
+                                    Log.d(TAG, Integer.toString(mShowId));
+                                    overviewBundle.putInt(getApplicationContext().getString(R.string.showId), mShowId);
+                                    Log.d("LOOOOK", Integer.toString(mShowId));
+                                    overviewBundle.putInt("vibrantColor", mVibrantColor);
+                                    overviewBundle.putInt("mutedColor", mMutedColor);
+                                    TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
+                                    overviewFragment.setArguments(overviewBundle);
+
+                                    Bundle seasonsBundle = new Bundle();
+                                    seasonsBundle.putInt(getApplicationContext().getString(R.string.showId), mShowId);
+                                    seasonsBundle.putInt("vibrantColor", mVibrantColor);
+                                    seasonsBundle.putInt("mutedColor", mMutedColor);
+                                    TVShowBrowseSeasonFragment seasonsFragment = new TVShowBrowseSeasonFragment();
+                                    seasonsFragment.setArguments(seasonsBundle);
+
+                                    mAdapterViewPager.addFragment(overviewFragment, "");
+                                    mAdapterViewPager.addFragment(seasonsFragment, "");
+                                    viewPager.setAdapter(mAdapterViewPager);
+
+
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                    addByteArray(stream.toByteArray());
                                 }
 
-                                if (mMutedColor == 0) {
-                                    mMutedColor = getResources().getColor(R.color.lightColorAccent);
+                                @Override
+                                public void onError() {
+                                    //TODO
                                 }
-
-                                appbar.setBackgroundColor(mVibrantColor);
-                                collapsingToolbar.setBackgroundColor(mVibrantColor);
-                                collapsingToolbar.setContentScrimColor(mVibrantColor);
-                                collapsingToolbar.setStatusBarScrimColor(mVibrantColor);
-                                tabLayout.setBackgroundColor(mVibrantColor);
-                                fab.setBackgroundTintList(ColorStateList.valueOf(mMutedColor));
-                                tabLayout.setSelectedTabIndicatorColor(mMutedColor);
-
-                                // Setting ViewPager for each Tabs
-                                mAdapterViewPager = new Adapter(getSupportFragmentManager());
-
-                                Bundle overviewBundle = new Bundle();
-                                Log.d(TAG, Integer.toString(mShowId));
-                                overviewBundle.putInt("showID", mShowId);
-                                overviewBundle.putInt("vibrantColor", mVibrantColor);
-                                overviewBundle.putInt("mutedColor", mMutedColor);
-                                TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
-                                overviewFragment.setArguments(overviewBundle);
-
-                                Bundle seasonsBundle = new Bundle();
-                                seasonsBundle.putInt("showID", mShowId);
-                                seasonsBundle.putInt("vibrantColor", mVibrantColor);
-                                seasonsBundle.putInt("mutedColor", mMutedColor);
-                                TVShowBrowseSeasonFragment seasonsFragment = new TVShowBrowseSeasonFragment();
-                                seasonsFragment.setArguments(seasonsBundle);
-
-                                mAdapterViewPager.addFragment(overviewFragment, "");
-                                mAdapterViewPager.addFragment(seasonsFragment, "");
-                                viewPager.setAdapter(mAdapterViewPager);
-
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                addByteArray(stream.toByteArray());
-                            }
-
-                            @Override
-                            public void onError() {
-                                //TODO
-                            }
-                        });
+                            });
+                }
+                else {
+                    Log.d(TAG, "Error on show response");
+                }
             }
 
             @Override
@@ -243,6 +240,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        collapsingToolbar.setTitle(mShowName);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -261,7 +260,46 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
             }
         });
     }
+    // HELPERS
 
+    private void setColors(int mVibrantColor, int mMutedColor) {
+        appbar.setBackgroundColor(mVibrantColor);
+        collapsingToolbar.setBackgroundColor(mVibrantColor);
+        collapsingToolbar.setContentScrimColor(mVibrantColor);
+        collapsingToolbar.setStatusBarScrimColor(mVibrantColor);
+        tabLayout.setBackgroundColor(mVibrantColor);
+        fab.setBackgroundTintList(ColorStateList.valueOf(mMutedColor));
+        tabLayout.setSelectedTabIndicatorColor(mMutedColor);
+    }
+
+    private void getIntentExtras() {
+        mShowId = getIntent().getIntExtra(mContext.getString(R.string.showId), 0);
+        mShowName = getIntent().getStringExtra(mContext.getString(R.string.showTitle));
+
+        Log.d(TAG, "show Id: " + mShowId);
+        Log.d(TAG, "show name: " + mShowName);
+    }
+
+    private void hideViews() {
+        appbar.setVisibility(View.GONE);
+        collapsingToolbar.setVisibility(View.GONE);
+        background.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
+        loadingPanel.setVisibility(View.VISIBLE);
+    }
+
+    private void setIcons() {
+        LayoutInflaterCompat.setFactory(getLayoutInflater(), new IconicsLayoutInflater(getDelegate()));
+        Iconics.init(getApplicationContext());
+        Iconics.registerFont(new GoogleMaterial());
+    }
+
+    private void setTheme() {
+        if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
+            setTheme(R.style.DarkAppTheme_Base);
+        }
+    }
 
     private void addByteArray(byte[] image) {
         show.setBackdropBitmap(image);

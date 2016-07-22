@@ -338,13 +338,13 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                     if (result.getMediaType().equals(MOVIE_TYPE)) {
                         Log.d(TAG, "movieId" + Integer.toString(result.getId()));
                         Intent intent = new Intent(context, BrowseMovieDetailActivity.class);
-                        intent.putExtra("movieId", result.getId());
+                        intent.putExtra(mContext.getString(R.string.movieId), result.getId());
                         context.startActivity(intent);
                     } else if (result.getMediaType().equals(SHOW_TYPE)) {
                         Log.d(TAG, "showId" + Integer.toString(result.getId()));
                         Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
-                        intent.putExtra("showID", result.getId());
-                        intent.putExtra("mShowName", result.getName());
+                        intent.putExtra(mContext.getString(R.string.showId), result.getId());
+                        intent.putExtra(mContext.getString(R.string.showTitle), result.getName());
                         context.startActivity(intent);
                     } else {
                         Log.d(TAG, "ERROR");

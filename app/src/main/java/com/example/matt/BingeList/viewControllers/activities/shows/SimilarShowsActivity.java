@@ -1,4 +1,4 @@
-package com.example.matt.bingeList.viewControllers.activities.movies;
+package com.example.matt.bingeList.viewControllers.activities.shows;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,8 +19,13 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
+import com.example.matt.bingeList.models.shows.TVShow;
+import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
+import com.example.matt.bingeList.models.shows.TVShowResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
@@ -44,16 +49,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Matt on 6/7/2016.
  */
-public class SimilarMoviesActivity extends AppCompatActivity {
-    private static final String TAG = SimilarMoviesActivity.class.getName();
-    private BrowseMoviesAdapter mAdapter;
-    private List<MovieResult> mSimilarMoviesList;
-    private Integer mMovieId;
+public class SimilarShowsActivity extends AppCompatActivity {
+    private static final String TAG = SimilarShowsActivity.class.getName();
+    private BrowseTVShowsAdapter mAdapter;
+    private Integer mShowId;
     private Realm mUiRealm;
-    private RealmList<Movie> data;
+    private RealmList<TVShow> data;
     private Context mContext;
     private int mVibrantColor;
-
 
     @BindView(R.id.recycler_view)
     RecyclerView searchRecyclerView;
@@ -65,7 +68,6 @@ public class SimilarMoviesActivity extends AppCompatActivity {
     AppBarLayout mAppBar;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
@@ -73,6 +75,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
         Iconics.registerFont(new CommunityMaterial());
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.recyclerview_with_appbar);
         ButterKnife.bind(this);
 
@@ -85,32 +88,32 @@ public class SimilarMoviesActivity extends AppCompatActivity {
                 .build();
 
         Slidr.attach(this, config);
+        mContext = getApplicationContext();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mMovieId = extras.getInt(mContext.getString(R.string.movieId));
+            mShowId = extras.getInt(mContext.getString(R.string.showId));
             mVibrantColor = extras.getInt("vibrantColor");
 
             //The key argument here must match that used in the other activity
         }
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
-        mContext = getApplicationContext();
 
-        Movie movie = mUiRealm.where(Movie.class).equalTo("id", mMovieId).findFirst();
-        if (movie == null){
+        TVShow show = mUiRealm.where(TVShow.class).equalTo("id", mShowId).findFirst();
+        if (show == null){
             if (BuildConfig.DEBUG){
-                Log.d(TAG, "Movie is null");
+                Log.d(TAG, "Show is null");
             }
             Snackbar.make(getCurrentFocus(), "Bad data", Snackbar.LENGTH_INDEFINITE);
             return;
         }
 
-        toolbar.setTitle("Similar to " + movie.getTitle());
+        toolbar.setTitle("Similar to " + show.getName());
         toolbar.setBackgroundColor(mVibrantColor);
         mAppBar.setBackgroundColor(mVibrantColor);
 
         data = new RealmList<>();
-        mAdapter = new BrowseMoviesAdapter(data, mContext, mUiRealm);
+        mAdapter = new BrowseTVShowsAdapter(data, mContext, mUiRealm);
         RecyclerView.LayoutManager castLayoutManager = new LinearLayoutManager(getApplicationContext());
         searchRecyclerView.setLayoutManager(castLayoutManager);
         searchRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -126,7 +129,7 @@ public class SimilarMoviesActivity extends AppCompatActivity {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        loadSimilarMovies();
+        loadSimilarShows();
     }
 
     @Override
@@ -138,45 +141,43 @@ public class SimilarMoviesActivity extends AppCompatActivity {
         return true;
     }
 
-    private void loadSimilarMovies() {
+    private void loadSimilarShows() {
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "loadSimilarMovies()");
+            Log.d(TAG, "loadSimilarShows()");
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mContext.getString(R.string.movie_base_url))
+                .baseUrl(mContext.getString(R.string.tv_show_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        MovieAPI service = retrofit.create(MovieAPI.class);
+        TVShowAPI service = retrofit.create(TVShowAPI.class);
 
-        final Call<MovieQueryReturn> similarMoviesCall = service.getSimilarMovies(Integer.toString(mMovieId));
+        final Call<TVShowQueryReturn> similarMoviesCall = service.getSimilarShows(Integer.toString(mShowId));
 
-        similarMoviesCall.enqueue(new Callback<MovieQueryReturn>() {
+        similarMoviesCall.enqueue(new Callback<TVShowQueryReturn>() {
             @Override
-            public void onResponse(Call<MovieQueryReturn> call, Response<MovieQueryReturn> response) {
+            public void onResponse(Call<TVShowQueryReturn> call, Response<TVShowQueryReturn> response) {
                 if (response.isSuccessful()) {
-                    List<MovieResult> movieResults = response.body().getMovieResults();
+                    List<TVShowResult> showResults = response.body().getResults();
                     data = new RealmList<>();
-                    for (MovieResult movieResult : movieResults) {
-                        Movie movie = new Movie();
-                        movie.setTitle(movieResult.getTitle());
-                        movie.setId(movieResult.getId());
-                        movie.setOverview(movieResult.getOverview());
-                        movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + movieResult.getBackdropPath());
-                        data.add(movie);
+                    for (TVShowResult showResult : showResults) {
+                        TVShow tvShow = new TVShow();
+                        tvShow.setName(showResult.getName());
+                        tvShow.setId(showResult.getId());
+                        tvShow.setOverview(showResult.getOverview());
+                        tvShow.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + showResult.getBackdropPath());
+                        data.add(tvShow);
                     }
                     // Populate cast and crew recycler views
-                    searchRecyclerView.setAdapter(new BrowseMoviesAdapter(data, mContext, mUiRealm));
+                    searchRecyclerView.setAdapter(new BrowseTVShowsAdapter(data, mContext, mUiRealm));
                     searchRecyclerView.setFocusable(false);
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieQueryReturn> call, Throwable t) {
-                if (BuildConfig.DEBUG) {
-                    Log.d("getSimilarMovies()", "No Response");
-                }
+            public void onFailure(Call<TVShowQueryReturn> call, Throwable t) {
+                Snackbar.make(getCurrentFocus(), "Unable to connect to API", Snackbar.LENGTH_SHORT);
             }
         });
     }

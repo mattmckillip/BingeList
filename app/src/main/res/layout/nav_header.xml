@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:src="@drawable/header_5"
+        android:src="@drawable/pattern"
         android:scaleType="centerCrop"
         android:cropToPadding="false"
         android:id="@+id/imageView2" />

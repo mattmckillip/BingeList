@@ -178,12 +178,12 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
                     mShow = mShowList.get(getAdapterPosition());
+                    Context context = v.getContext();
 
-                    Intent intent = new Intent(context, TVShowBrowseDetailActivity.class);
-                    intent.putExtra("showID", mShow.getId());
-                    intent.putExtra("mShowName", mShow.getName());
+                    Intent intent = new Intent(mContext, TVShowBrowseDetailActivity.class);
+                    intent.putExtra(mContext.getString(R.string.showId), mShow.getId());
+                    intent.putExtra(mContext.getString(R.string.showTitle), mShow.getName());
                     context.startActivity(intent);
                 }
             });
@@ -276,7 +276,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 mShowId = mShowList.get(position).getId();
 
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl("http://api.themoviedb.org/3/tv/")
+                        .baseUrl(mContext.getString(R.string.tv_show_base_url))
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -295,7 +295,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
                                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                    Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
 
                                     mUiRealm.beginTransaction();
                                     mShow.setBackdropBitmap(stream.toByteArray());
@@ -330,7 +329,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                                     .load("https://image.tmdb.org/t/p/w500/" + mShow.getBackdropPath())
                                     .into(target);
                         } else {
-                            Snackbar.make(v, "Unable to load movie...", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(v, "Unable to load show...", Snackbar.LENGTH_LONG).show();
                         }
                     }
 
@@ -350,7 +349,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
             setWatchlistOverlay(holder);
             holder.mActionButton.setText(mContext.getString(R.string.your_shows_button));
             holder.mActionButton.setEnabled(false);
-            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.button_grey));
 
         } else {
             setNoOverlay(holder);
@@ -389,18 +388,15 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
             mUiRealm.beginTransaction();
             mUiRealm.copyToRealmOrUpdate(curSeason);
-            mUiRealm.commitTransaction();
 
             RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
             for (Episode episode: jsonEpisodeRealmList) {
-                mUiRealm.beginTransaction();
                 episode.setShow_id(mShowId);
                 episode.setIsWatched(false);
-                Log.d(TAG, "Current season number: " + curSeason.getSeasonNumber());
                 episode.setSeasonNumber(curSeason.getSeasonNumber());
                 mUiRealm.copyToRealmOrUpdate(episode);
-                mUiRealm.commitTransaction();
             }
+            mUiRealm.commitTransaction();
 
             Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).count());
             Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).equalTo("seasonNumber", 1).findAll().size());

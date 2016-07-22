@@ -26,6 +26,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
@@ -33,7 +34,8 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
-import com.example.matt.bingeList.viewControllers.fragments.shows.TVEpisodeFragment;
+import com.example.matt.bingeList.viewControllers.fragments.movies.MovieWatchListFragment;
+import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowEpisodeFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -85,6 +87,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
     @BindView(R.id.loadingPanel)
     RelativeLayout loadingPanel;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
@@ -92,7 +95,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tvshow_activity_detail);
-        mShowID = getIntent().getIntExtra("showID", 0);
+        mShowID = getIntent().getIntExtra(getApplicationContext().getString(R.string.showId), 0);
         String ShowName = getIntent().getStringExtra("showName");
         mSelectedTab = 0;
 
@@ -165,26 +168,25 @@ public class YourShowsDetailActivity extends AppCompatActivity {
             fab.setBackgroundTintList(ColorStateList.valueOf(mutedColor));
             tabLayout.setSelectedTabIndicatorColor(mutedColor);
 
-
             // Setting ViewPager for each Tabs
             mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
             Bundle overviewBundle = new Bundle();
-            overviewBundle.putInt("showID", mShowID);
+            overviewBundle.putInt(getApplicationContext().getString(R.string.showId), mShowID);
             overviewBundle.putInt("vibrantColor", vibrantColor);
             overviewBundle.putInt("mutedColor", mutedColor);
             TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
             overviewFragment.setArguments(overviewBundle);
 
             Bundle nextEpisode = new Bundle();
-            nextEpisode.putInt("showID", mShowID);
+            nextEpisode.putInt(getApplicationContext().getString(R.string.showId), mShowID);
             nextEpisode.putInt("vibrantColor", vibrantColor);
             nextEpisode.putInt("mutedColor", mutedColor);
-            TVEpisodeFragment nextEpisodeFragment = new TVEpisodeFragment();
+            TVShowEpisodeFragment nextEpisodeFragment = new TVShowEpisodeFragment();
             nextEpisodeFragment.setArguments(overviewBundle);
 
             Bundle seasonsBundle = new Bundle();
-            seasonsBundle.putInt("showID", mShowID);
+            seasonsBundle.putInt(getApplicationContext().getString(R.string.showId), mShowID);
             seasonsBundle.putInt("vibrantColor", vibrantColor);
             seasonsBundle.putInt("mutedColor", mutedColor);
             TVShowWatchlistSeasonFragment seasonsFragment = new TVShowWatchlistSeasonFragment();
@@ -194,6 +196,28 @@ public class YourShowsDetailActivity extends AppCompatActivity {
             mAdapterViewPager.addFragment(nextEpisodeFragment, "");
             mAdapterViewPager.addFragment(seasonsFragment, "");
             viewPager.setAdapter(mAdapterViewPager);
+
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    if (position == 1) {
+                        TVShowEpisodeFragment tvShowEpisodeFragment = (TVShowEpisodeFragment) mAdapterViewPager.getItem(position);
+                        tvShowEpisodeFragment.update();
+
+                    } else if (position == 2) {
+                        TVShowWatchlistSeasonFragment tvShowWatchlistSeasonFragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getItem(position);
+                        tvShowWatchlistSeasonFragment.updateAllGroupsAndChildren();
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                }
+            });
 
 
         } else {
@@ -250,7 +274,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
                         }
                         uiRealm.commitTransaction();
 
-                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getRegisteredFragment(1);
+                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getRegisteredFragment(2);
                         fragment.updateAllGroupsAndChildren();
 
                         Snackbar.make(v, "All episodes marked watched!",
@@ -272,7 +296,7 @@ public class YourShowsDetailActivity extends AppCompatActivity {
                         }
                         uiRealm.commitTransaction();
 
-                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getRegisteredFragment(1);
+                        TVShowWatchlistSeasonFragment fragment = (TVShowWatchlistSeasonFragment) mAdapterViewPager.getRegisteredFragment(2);
                         fragment.updateAllGroupsAndChildren();
 
                         Snackbar.make(v, "All episodes marked unwatched!",

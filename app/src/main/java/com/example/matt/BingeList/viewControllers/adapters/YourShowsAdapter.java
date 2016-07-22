@@ -33,6 +33,7 @@ import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.Enums.ShowSort;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
@@ -57,6 +58,7 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,11 +75,13 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
     private Realm mUiRealm;
     private TVShow mShow;
     private int viewMode;
+    private boolean mUnWatchedEpisodes;
 
-    public YourShowsAdapter(RealmList<TVShow> showList, Context context, Realm uiRealm) {
+    public YourShowsAdapter(RealmList<TVShow> showList, Context context, Realm uiRealm, boolean unWatchedEpisodes) {
         this.mShowList = showList;
         mContext = context;
         mUiRealm = uiRealm;
+        mUnWatchedEpisodes = unWatchedEpisodes;
         setHasStableIds(true);
         viewMode = PreferencesHelper.getRecyclerviewViewType(mContext);
     }
@@ -102,7 +106,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                     from(viewGroup.getContext()).
                     inflate(R.layout.item_more_options_card, viewGroup, false);
         }
-
 
         return new YourShowsViewHolder(itemView);
     }
@@ -137,6 +140,36 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
 
         setActionButton(holder);
         setListeners(holder, position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mShowList.size();
+    }
+
+    //HELPERS
+
+    public void sort(int sortType) {
+        if (mUnWatchedEpisodes){
+            mShowList = TVShowRealmStaticHelper.getSortedShowsWithUnwatchedEpisodes(mUiRealm, sortType);
+        } else {
+            RealmResults<TVShow> tvShowRealmResults = null;
+            if (sortType == ShowSort.RECENTLY_ADDED) {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+            } else if (sortType == ShowSort.TOP_RATED) {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("voteAverage", Sort.DESCENDING);
+            } else if (sortType == ShowSort.ADDED_FIRST) {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.ASCENDING);
+            } else {
+                tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+            }
+
+            mShowList = new RealmList<>();
+            for (TVShow tvShowResult : tvShowRealmResults) {
+                mShowList.add(tvShowResult);
+            }
+        }
+        notifyDataSetChanged();
     }
 
     private void setListeners(final YourShowsViewHolder holder, final int position){
@@ -216,8 +249,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         holder.mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Log.d(TAG, "onClick()");
-                Log.d(TAG, "Show id: " + Integer.toString(mShow.getId()));
                 Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
 
                 if (nextEpisode != null) {
@@ -267,11 +298,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         }
         Log.d("Episode Number", seasonText + episodeText);
         return seasonText + episodeText;
-    }
-
-    @Override
-    public int getItemCount() {
-        return mShowList.size();
     }
 
     public class YourShowsViewHolder extends RecyclerView.ViewHolder {
@@ -336,6 +362,9 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                                             .findFirst();
                                     TVShowResultsToRemove.deleteFromRealm();
 
+                                    mShowList.remove(getAdapterPosition());
+                                    notifyDataSetChanged();
+
 
                                     /*RealmResults<Episode> EpisodeResultsToRemove = mUiRealm.where(Episode.class)
                                             .equalTo("show_id", show.getId())
@@ -391,8 +420,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                     Context context = v.getContext();
                     TVShow movie = mShowList.get(getAdapterPosition());
                     Intent intent = new Intent(context, YourShowsDetailActivity.class);
-                    Log.d("FRAGMENT SHOW ID", Integer.toString(movie.getId()));
-                    intent.putExtra("showID", movie.getId());
+                    intent.putExtra(context.getString(R.string.showId), movie.getId());
                     context.startActivity(intent);
                 }
             });

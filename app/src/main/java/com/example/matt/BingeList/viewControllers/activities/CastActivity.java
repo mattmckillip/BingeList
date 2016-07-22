@@ -20,6 +20,7 @@ import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
@@ -48,6 +49,7 @@ public class CastActivity extends AppCompatActivity {
     private RealmList<Cast> mCastList;
     private Context mContext;
     private Credits mCredits;
+    private boolean isMovie;
 
     @BindView(R.id.recycler_view)
     RecyclerView mCastRecyclerView;
@@ -80,8 +82,9 @@ public class CastActivity extends AppCompatActivity {
         mContext = getApplicationContext();
 
         if (extras != null) {
-            mId = extras.getInt(mContext.getString(R.string.movieId));
-            mTitle = extras.getString(mContext.getString(R.string.movieTitle));
+            mId = extras.getInt("id");
+            mTitle = extras.getString("title");
+            isMovie = extras.getBoolean("isMovie");
         }
 
         toolbar.setTitle(mTitle + " Cast");
@@ -119,60 +122,119 @@ public class CastActivity extends AppCompatActivity {
             Log.d(TAG, "loadCredits()");
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/movie/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if (isMovie) {
 
-        MovieAPI service = retrofit.create(MovieAPI.class);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org/3/movie/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        Call<Credits> call = service.getCredits(Integer.toString(mId));
-        call.enqueue(new Callback<Credits>() {
-            @Override
-            public void onResponse(Call<Credits> call, Response<Credits> response) {
-                if (response.isSuccessful()) {
-                    mCredits = response.body();
-                    mCastList = mCredits.getCast();
+            MovieAPI service = retrofit.create(MovieAPI.class);
 
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Credits - " + mCredits.toString());
-                        Log.d(TAG, "PersonCast - " + mCastList.toString());
+            Call<Credits> call = service.getCredits(Integer.toString(mId));
+            call.enqueue(new Callback<Credits>() {
+                @Override
+                public void onResponse(Call<Credits> call, Response<Credits> response) {
+                    if (response.isSuccessful()) {
+                        mCredits = response.body();
+                        mCastList = mCredits.getCast();
+
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "Credits - " + mCredits.toString());
+                            Log.d(TAG, "PersonCast - " + mCastList.toString());
+                        }
+
+                        Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCastList.size());
+
+                        // Populate cast and crew recycler views
+                        mCastRecyclerView.setAdapter(new CastAdapter(mCastList, mContext, castSize));
+                        mCastRecyclerView.setFocusable(false);
+                    } else {
+                        Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Log.d(TAG, "Reloading credits");
+                                        loadCredits();
+                                    }
+                                })
+                                .show();
                     }
-
-                    Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCastList.size());
-
-                    // Populate cast and crew recycler views
-                    mCastRecyclerView.setAdapter(new CastAdapter(mCastList, mContext, castSize));
-                    mCastRecyclerView.setFocusable(false);
-                } else {
-                    Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
-                            .setAction("RETRY", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Log.d(TAG, "Reloading credits");
-                                    loadCredits();
-                                }
-                            })
-                            .show();
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Credits> call, Throwable t) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "GetCredits() Callback Failure");
+                @Override
+                public void onFailure(Call<Credits> call, Throwable t) {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "GetCredits() Callback Failure");
 
-                    Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
-                            .setAction("RETRY", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Log.d(TAG, "Reloading credits");
-                                    loadCredits();
-                                }
-                            })
-                            .show();
+                        Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Log.d(TAG, "Reloading credits");
+                                        loadCredits();
+                                    }
+                                })
+                                .show();
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://api.themoviedb.org/3/tv/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            TVShowAPI service = retrofit.create(TVShowAPI.class);
+
+            Call<Credits> call = service.getCredits(Integer.toString(mId));
+            call.enqueue(new Callback<Credits>() {
+                @Override
+                public void onResponse(Call<Credits> call, Response<Credits> response) {
+                    if (response.isSuccessful()) {
+                        mCredits = response.body();
+                        mCastList = mCredits.getCast();
+
+                        if (BuildConfig.DEBUG) {
+                            Log.d(TAG, "Credits - " + mCredits.toString());
+                            Log.d(TAG, "PersonCast - " + mCastList.toString());
+                        }
+
+                        Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCastList.size());
+
+                        // Populate cast and crew recycler views
+                        mCastRecyclerView.setAdapter(new CastAdapter(mCastList, mContext, castSize));
+                        mCastRecyclerView.setFocusable(false);
+                    } else {
+                        Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Log.d(TAG, "Reloading credits");
+                                        loadCredits();
+                                    }
+                                })
+                                .show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Credits> call, Throwable t) {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "GetCredits() Callback Failure");
+
+                        Snackbar.make(mCastRecyclerView, "Error fetching cast", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("RETRY", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Log.d(TAG, "Reloading credits");
+                                        loadCredits();
+                                    }
+                                })
+                                .show();
+                    }
+                }
+            });
+        }
     }
 }

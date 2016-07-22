@@ -50,7 +50,7 @@ public class TVShowWatchlistSeasonFragment extends Fragment implements RecyclerV
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         vibrantColor = getArguments().getInt("vibrantColor", 0);
         mutedColor = getArguments().getInt("mutedColor", 0);
-        showID = this.getArguments().getInt("showID");
+        showID = this.getArguments().getInt(getContext().getString(R.string.showId));
         return inflater.inflate(R.layout.tvshow_browse_season_recycler_view, container, false);
     }
 

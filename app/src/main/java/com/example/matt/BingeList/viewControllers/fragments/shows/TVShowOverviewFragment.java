@@ -2,6 +2,7 @@ package com.example.matt.bingeList.viewControllers.fragments.shows;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
@@ -32,6 +33,9 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
 import com.example.matt.bingeList.models.shows.TVShowResult;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.viewControllers.activities.CastActivity;
+import com.example.matt.bingeList.viewControllers.activities.movies.SimilarMoviesActivity;
+import com.example.matt.bingeList.viewControllers.activities.shows.SimilarShowsActivity;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.SimilarMoviesAdapter;
@@ -43,6 +47,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmList;
 import retrofit2.Call;
@@ -115,6 +120,25 @@ public class TVShowOverviewFragment extends Fragment {
     @BindView(R.id.see_more_shows)
     Button seeMoreShowsButton;
 
+    @OnClick(R.id.see_more_cast)
+    public void seeMoreCast(View view) {
+        Intent intent = new Intent(mContext, CastActivity.class);
+        intent.putExtra("id", mShowId);
+        intent.putExtra("title", mShow.getName());
+        intent.putExtra("isMovie", false);
+        startActivity(intent);
+    }
+
+
+    @OnClick(R.id.see_more_shows)
+    public void setSeeMoreShowsButton(View view) {
+        Intent intent = new Intent(mContext, SimilarShowsActivity.class);
+        intent.putExtra(mContext.getString(R.string.showId), mShowId);
+        intent.putExtra("vibrantColor", vibrantColor);
+
+        startActivity(intent);
+    }
+
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
     // This does not mean the Activity is fully initialized.
@@ -133,8 +157,8 @@ public class TVShowOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mShowId = getArguments().getInt("showID", 0);
-        Log.d(TAG, "Show id: " + Integer.toString(mShowId));
+        mShowId = getArguments().getInt(getContext().getString(R.string.showId), 0);
+        Log.d(getContext().getString(R.string.showId), Integer.toString(mShowId));
         vibrantColor = getArguments().getInt("vibrantColor", 0);
         mutedColor = getArguments().getInt("mutedColor", 0);
     }

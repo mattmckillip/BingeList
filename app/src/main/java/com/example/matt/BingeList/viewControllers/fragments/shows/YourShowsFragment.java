@@ -16,49 +16,23 @@
 
 package com.example.matt.bingeList.viewControllers.fragments.shows;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.example.matt.bingeList.models.movies.ArchivedMovies;
-import com.example.matt.bingeList.models.movies.Movie;
-import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.uitls.Enums.MovieSort;
-import com.example.matt.bingeList.uitls.Enums.ShowSort;
-import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
-import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsActivity;
-import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsDetailActivity;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.MovieWatchlistAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.WatchedMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.YourShowsAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -67,7 +41,7 @@ public class YourShowsFragment extends Fragment {
     private RealmList<TVShow> data = new RealmList<>();
     private RecyclerView mRecyclerView;
     private YourShowsAdapter mYourShowsAdapter;
-    private boolean mIsWatched;
+    private boolean mUnwatchedShows;
     private Realm mUiRealm;
 
     @Override
@@ -79,22 +53,37 @@ public class YourShowsFragment extends Fragment {
 
         mUiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
 
-        if (getArguments().getInt("watched") == 1) {
-            mIsWatched = true;
+        if (getArguments().getInt("unwatched") == 0) {
+            mUnwatchedShows = false;
+            RealmResults<TVShow> tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
+
+            RealmList<TVShow> data = new RealmList<>();
+            for (TVShow tvShowResult : tvShowRealmResults) {
+                data.add(tvShowResult);
+            }
         } else {
-            mIsWatched = false;
+            mUnwatchedShows = true;
+            data = TVShowRealmStaticHelper.getSortedShowsWithUnwatchedEpisodes(mUiRealm, PreferencesHelper.getShowSort(getContext()));
         }
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        sort(PreferencesHelper.getShowSort(getContext()));
+        mYourShowsAdapter = new YourShowsAdapter(data, getContext(), mUiRealm, mUnwatchedShows);
+        mYourShowsAdapter.sort(PreferencesHelper.getShowSort(getContext()));
+        mRecyclerView.setAdapter(mYourShowsAdapter);
+
+        //sort(PreferencesHelper.getShowSort(getContext()));
         return mRecyclerView;
     }
 
-    public void sort(int sortType) {
+    public void sort(int sortType){
+        mYourShowsAdapter.sort(sortType);
+    }
+
+    /*public void sort(int sortType) {
         Log.d(TAG, Integer.toString(sortType));
 
-        if (mIsWatched) {
+        if (mUnwatchedShows) {
             RealmResults<TVShow> tvShowRealmResults = null;
             if (sortType == ShowSort.RECENTLY_ADDED) {
                 tvShowRealmResults = mUiRealm.where(TVShow.class).equalTo("onYourShows", true).findAllSorted("date", Sort.DESCENDING);
@@ -112,6 +101,7 @@ public class YourShowsFragment extends Fragment {
             }
 
             mYourShowsAdapter = new YourShowsAdapter(data, getContext(), mUiRealm);
+            mYourShowsAdapter.
             mRecyclerView.setAdapter(mYourShowsAdapter);
         } else {
             data = TVShowRealmStaticHelper.getSortedShowsWithUnwatchedEpisodes(mUiRealm, sortType);
@@ -119,5 +109,5 @@ public class YourShowsFragment extends Fragment {
             mYourShowsAdapter = new YourShowsAdapter(data, getContext(), mUiRealm);
             mRecyclerView.setAdapter(mYourShowsAdapter);
         }
-    }
+    }*/
 }

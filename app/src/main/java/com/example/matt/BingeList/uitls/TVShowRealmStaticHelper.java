@@ -34,8 +34,13 @@ public class TVShowRealmStaticHelper {
 
     public static Episode getLastEpisode(int showId, Realm UIRealm) {
         RealmList<Episode> allEpisodes = getAllEpisodes(showId, UIRealm);
-        return allEpisodes.get(allEpisodes.size() - 1);
+        if (allEpisodes == null || allEpisodes.isEmpty()) {
+            return null;
+        } else {
+            return allEpisodes.get(allEpisodes.size() - 1);
+        }
     }
+
     public static void watchEpisode(int showId, int seasonNumber, int episodeNumber, Realm UIRealm) {
         Episode episode = getEpisode(showId, seasonNumber, episodeNumber, UIRealm);
         UIRealm.beginTransaction();

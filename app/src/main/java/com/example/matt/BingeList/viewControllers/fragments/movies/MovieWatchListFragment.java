@@ -19,6 +19,7 @@ package com.example.matt.bingeList.viewControllers.fragments.movies;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -48,7 +49,6 @@ public class MovieWatchListFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private Realm mUiRealm;
     private Context mContext;
-    boolean isWatched;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,11 +61,11 @@ public class MovieWatchListFragment extends Fragment {
         mContext = container.getContext();
 
         if (getArguments().getInt("watched") == 1) {
-            isWatched = true;
+            mWatchListAdapter = null;
             mWatchedAdapter = new WatchedMoviesAdapter(new RealmList<Movie>(), getContext(), mUiRealm);
 
         } else {
-            isWatched = false;
+            mWatchedAdapter = null;
             mWatchListAdapter = new MovieWatchlistAdapter(new RealmList(), getContext(), mUiRealm);
         }
         
@@ -73,11 +73,7 @@ public class MovieWatchListFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mWatchListAdapter);
 
-        //TODO get from context
-        //int sortType = MovieSort.TOP_RATED;
-        //sort(sortType);
-        sort(PreferencesHelper.getMovieSort(getContext()));
-
+        sort(PreferencesHelper.getMovieSort(mContext));
 
         return mRecyclerView;
     }
@@ -102,11 +98,13 @@ public class MovieWatchListFragment extends Fragment {
                 movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("runtime", Sort.DESCENDING);
             } else if (sortType == MovieSort.RUNTIME_ASCENDING){
                 movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("runtime", Sort.ASCENDING);
+            } else {
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAll();
             }
 
             RealmList<Movie> movies = new RealmList<>();
             for (Movie movieResult : movieRealmResults) {
-                if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
+                if(mUiRealm.where(ArchivedMovies.class).equalTo(mContext.getString(R.string.movieId), movieResult.getId()).count() == 0) {
                     movies.add(movieResult);
                 }
             }
@@ -124,11 +122,13 @@ public class MovieWatchListFragment extends Fragment {
                 movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.DESCENDING);
             } else if (sortType == MovieSort.RUNTIME_ASCENDING){
                 movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.ASCENDING);
+            } else {
+                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
             }
 
             RealmList<Movie> movies = new RealmList<>();
             for (Movie movieResult : movieRealmResults) {
-                if(mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movieResult.getId()).count() == 0) {
+                if(mUiRealm.where(ArchivedMovies.class).equalTo(mContext.getString(R.string.movieId), movieResult.getId()).count() == 0) {
                     movies.add(movieResult);
                 }
             }

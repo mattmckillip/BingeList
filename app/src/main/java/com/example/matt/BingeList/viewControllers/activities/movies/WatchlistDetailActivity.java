@@ -87,6 +87,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     private CrewAdapter crewAdapter;
     private Credits mCredits;
     private Context mContext;
+    private int mVibrantColor;
 
     private ArrayList<MovieResult> similarMovieList = new ArrayList<>();
     private SimilarMoviesAdapter similarMovieAdapter;
@@ -205,8 +206,9 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     @OnClick(R.id.see_more_cast)
     public void seeMoreCast(View view) {
         Intent intent = new Intent(getBaseContext(), CastActivity.class);
-        intent.putExtra(mContext.getString(R.string.movieId), movieID);
-        intent.putExtra(mContext.getString(R.string.movieTitle), movie.getTitle());
+        intent.putExtra("id", movieID);
+        intent.putExtra("title", movie.getTitle());
+        intent.putExtra("isMovie", true);
         startActivity(intent);
     }
 
@@ -222,6 +224,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     public void seeMoreSimilarMovies(View view) {
         Intent intent = new Intent(getBaseContext(), SimilarMoviesActivity.class);
         intent.putExtra(mContext.getString(R.string.movieId), movieID);
+        intent.putExtra("vibrantColor", mVibrantColor);
         startActivity(intent);
     }
 

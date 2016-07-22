@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -77,12 +78,13 @@ public class TVShowBrowseSeasonFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         vibrantColor = getArguments().getInt("vibrantColor", 0);
         mutedColor = getArguments().getInt("mutedColor", 0);
-        showID = this.getArguments().getInt("showID");
+        showID = this.getArguments().getInt("showId");
+        Log.d("TVShowBrowseSeason", "Show id: " + Integer.toString(showID));
         return inflater.inflate(R.layout.tvshow_browse_season_recycler_view, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         //noinspection ConstantConditions
@@ -97,7 +99,7 @@ public class TVShowBrowseSeasonFragment
         final FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.themoviedb.org/3/tv/")
+                .baseUrl(getContext().getString(R.string.tv_show_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -106,14 +108,17 @@ public class TVShowBrowseSeasonFragment
         call.enqueue(new Callback<TVShow>() {
             @Override
             public void onResponse(Call<TVShow> call, Response<TVShow> response) {
-                Log.d("getMovie()", "Callback Success");
-                numberOfSeasons = response.body().getNumberOfSeasons();
-                fetchSeasonsTask.execute(showID, numberOfSeasons);
+                if (response.isSuccessful()){
+                    numberOfSeasons = response.body().getNumberOfSeasons();
+                    fetchSeasonsTask.execute(showID, numberOfSeasons);
+                } else {
+                    Snackbar.make(view, "Unsuccessful callback", Snackbar.LENGTH_SHORT);
+                }
             }
 
             @Override
             public void onFailure(Call<TVShow> call, Throwable t) {
-                Log.d("getMovie()", "Callback Failure");
+                Snackbar.make(view, "Failure callback", Snackbar.LENGTH_SHORT);
             }
         });
     }

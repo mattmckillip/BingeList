@@ -370,7 +370,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 if (response.isSuccessful()){
-                    Log.d(TAG, "Movie Success");
                     final Movie movie = response.body();
                     movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + movie.getBackdropPath());
 
@@ -390,11 +389,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                 Target target = new Target() {
                                     @Override
                                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                        Log.d(TAG, "onBitmapLoaded()");
-
                                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                        Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
 
                                         mUiRealm.beginTransaction();
                                         movie.setBackdropBitmap(stream.toByteArray());
@@ -407,17 +403,14 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                         //setActionButton(holder, position, movie.getWatchedDate());
                                         notifyDataSetChanged();
                                         Snackbar.make(v, "Added to watchlist!", Snackbar.LENGTH_LONG).show();
-
                                     }
 
                                     @Override
                                     public void onBitmapFailed(Drawable errorDrawable) {
-                                        Log.d(TAG, "onBitmapFailed()");
                                     }
 
                                     @Override
                                     public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                        Log.d(TAG, "onPrepareLoad()");
                                     }
                                 };
 
@@ -425,32 +418,26 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                         .load(movie.getBackdropPath())
                                         .into(target);
                             } else {
-                                Log.d(TAG, "Bad credits call");
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Credits> call, Throwable t) {
                             Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
-                            Log.d(TAG, "Credits - Failure");
                         }
                     });
                 } else {
-                    Log.d(TAG, "Movie Bad Call");
                 }
             }
 
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
-                Log.d(TAG, "Movie - Failure");
             }
         });
     }
 
     private void moveFromBrowseToWatched(final int position, final View v, final BrowseMoviesViewHolder holder) {
-        Log.d(TAG, "moveFromBrowseToWatchList()");
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -463,7 +450,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 if (response.isSuccessful()){
-                    Log.d(TAG, "Movie Success");
                     mMovie = response.body();
                     mMovie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
 

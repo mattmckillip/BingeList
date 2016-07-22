@@ -181,6 +181,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/see_more"
                 android:textColor="@color/colorPrimary"
+                android:layout_marginBottom="@dimen/md_keylines"
                 style="?android:attr/borderlessButtonStyle"
                 />
 

@@ -1,40 +1,29 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="Movie Settings">
+    <PreferenceCategory android:title="General Settings">
+
+    <CheckBoxPreference
+            android:key="checkbox_preference"
+            android:title="Fetch HD Images"
+            android:summary="Enabling this will increase battery and data usage"
+            android:defaultValue="false"/>
 
         <CheckBoxPreference
             android:key="hide_watched_movies_preference"
             android:title="Hide watched movies"
-            android:summary="Summary"
+            android:summary="For browse and searching"
             android:defaultValue="false"/>
-    </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="TV Settings">
-
-        <Preference
-            android:title="Title">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="http://codepath.com/" />
-        </Preference>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="General Settings">
+        <CheckBoxPreference
+            android:key="hide_watched_shows"
+            android:title="Hide watched shows"
+            android:summary="For browse and searching"
+            android:defaultValue="false"/>
 
         <CheckBoxPreference
             android:key="checkbox_preference"
-            android:title="Fetch HD Images"
-            android:summary="Summary"
+            android:title="Only fetch images in WiFi"
             android:defaultValue="false"/>
-
-        <Preference
-            android:title="View repository">
-            <intent android:action="android.intent.action.VIEW"
-                android:data="https://github.com/mattmckillip/BingeList" />
-        </Preference>
 
     </PreferenceCategory>
 

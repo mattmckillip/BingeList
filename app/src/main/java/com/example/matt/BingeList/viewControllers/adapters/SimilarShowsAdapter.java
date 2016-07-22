@@ -83,7 +83,8 @@ public class SimilarShowsAdapter extends RecyclerView.Adapter<SimilarShowsAdapte
                 public void onClick(View v) {
                     TVShowResult show = mSimilarShowList.get(getAdapterPosition());
                     Intent intent = new Intent(v.getContext(), TVShowBrowseDetailActivity.class);
-                    intent.putExtra("showID", show.getId());
+                    intent.putExtra(mContext.getString(R.string.showId), show.getId());
+                    intent.putExtra(mContext.getString(R.string.showTitle), show.getName());
                     v.getContext().startActivity(intent);
                 }
             });

@@ -97,6 +97,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     private SimilarMoviesAdapter similarMovieAdapter;
     private Realm mUiRealm;
     private Context mContext;
+    private int mVibrantColor;
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -230,8 +231,10 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     @OnClick(R.id.see_more_cast)
     public void seeMoreCast(View view) {
         Intent intent = new Intent(getBaseContext(), CastActivity.class);
-        intent.putExtra(mContext.getString(R.string.movieId), movieID);
-        intent.putExtra(mContext.getString(R.string.movieTitle), movie.getTitle());
+        intent.putExtra("id", movieID);
+        intent.putExtra("title", movie.getTitle());
+        intent.putExtra("isMovie", true);
+
         startActivity(intent);
     }
 
@@ -247,6 +250,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     public void seeMoreSimilarMovies(View view) {
         Intent intent = new Intent(getBaseContext(), SimilarMoviesActivity.class);
         intent.putExtra(mContext.getString(R.string.movieId), movieID);
+        intent.putExtra("vibrantColor", mVibrantColor);
         startActivity(intent);
     }
 
@@ -415,16 +419,16 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
                         Bitmap bitmap = ((BitmapDrawable) backdrop.getDrawable()).getBitmap(); // Ew!
 
-                        int vibrantColor = palette.getVibrantColor(DEFAULT_COLOR);
+                        mVibrantColor = palette.getVibrantColor(DEFAULT_COLOR);
                         int mutedColor = palette.getMutedColor(DEFAULT_COLOR);
 
-                        if (vibrantColor == DEFAULT_COLOR) {
-                            vibrantColor = ContextCompat.getColor(mContext, R.color.lightColorPrimary);
+                        if (mVibrantColor == DEFAULT_COLOR) {
+                            mVibrantColor = ContextCompat.getColor(mContext, R.color.lightColorPrimary);
                         }
                         if (mutedColor == DEFAULT_COLOR) {
                             mutedColor = ContextCompat.getColor(mContext, R.color.lightColorAccent);
                         }
-                        setColors(vibrantColor, mutedColor);
+                        setColors(mVibrantColor, mutedColor);
                         setViewsVisible();
 
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
