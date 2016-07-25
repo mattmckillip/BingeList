@@ -1,72 +1,45 @@
-package com.example.matt.bingeList.viewControllers.adapters;
+package com.example.matt.bingeList.viewControllers.adapters.shows;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.bingeList.models.Cast;
-import com.example.matt.bingeList.models.Credits;
-import com.example.matt.bingeList.models.Crew;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
-import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.uitls.API.TVShowAPI;
-import com.example.matt.bingeList.uitls.BadgedImageview.BadgedImageView;
+import com.example.matt.bingeList.uitls.BadgeDrawable;
 import com.example.matt.bingeList.uitls.Enums.ShowSort;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
-import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
+import com.example.matt.bingeList.uitls.UniversalStaticHelper;
 import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsDetailActivity;
-import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Matt on 6/12/2016.
@@ -153,9 +126,11 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                 }
             });
         } else {
-            holder.mShowImage.setBadgeText(mShow.getNetworks().first().getName());
-            holder.mShowImage.showBadge(true);
+            if (mShow.getNetworks() != null && !mShow.getNetworks().isEmpty()) {
+                holder.mChannelBadge.setImageDrawable(new BadgeDrawable(mContext, mShow.getNetworks().first().getName(), Color.WHITE));
+            }
         }
+
         holder.mShowDecsiption.setText(mShowList.get(position).getOverview());
 
         holder.mShowName.setVisibility(View.VISIBLE);
@@ -208,24 +183,25 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                             case R.id.action_remove:
                                 mShow = mShowList.get(holder.getAdapterPosition());
                                 String showName = mShow.getName();
+                                int id = mShow.getId();
 
                                 mUiRealm.beginTransaction();
                                 TVShow TVShowResultsToRemove = mUiRealm.where(TVShow.class)
-                                        .equalTo("id", mShow.getId())
+                                        .equalTo("id",id)
                                         .findFirst();
                                 TVShowResultsToRemove.deleteFromRealm();
 
                                 mShowList.remove(holder.getAdapterPosition());
 
                                 RealmResults<Episode> EpisodeResultsToRemove = mUiRealm.where(Episode.class)
-                                        .equalTo("show_id", mShow.getId())
+                                        .equalTo("show_id",id)
                                         .findAll();
                                 for (int i = 0; i < EpisodeResultsToRemove.size(); i++) {
                                     EpisodeResultsToRemove.get(i).deleteFromRealm();
                                 }
 
                                 RealmResults<Season> SeasonResultsToRemove = mUiRealm.where(Season.class)
-                                        .equalTo("show_id", mShow.getId())
+                                        .equalTo("show_id", id)
                                         .findAll();
                                 for (int i = 0; i < SeasonResultsToRemove.size(); i++) {
                                     SeasonResultsToRemove.get(i).deleteFromRealm();
@@ -252,7 +228,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                                 }
                                 mUiRealm.commitTransaction();
 
-                                Snackbar.make(v, "All episodes marked watched!",
+                                Snackbar.make(v, "All episodes for " + mShow.getName() + " marked watched!",
                                         Snackbar.LENGTH_SHORT).show();
 
                                 notifyDataSetChanged();
@@ -272,8 +248,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                                 }
                                 mUiRealm.commitTransaction();
 
-                                Snackbar.make(v, "All episodes marked unwatched!",
-                                        Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(v, "All episodes for " + mShow.getName() + " marked unwatched!", Snackbar.LENGTH_SHORT).show();
 
                                 notifyDataSetChanged();
 
@@ -291,13 +266,12 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
             public void onClick(final View v) {
                 mShow = mShowList.get(holder.getAdapterPosition());
 
-                Log.d(TAG, mShow.getName());
                 Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
 
                 if (nextEpisode != null) {
                     TVShowRealmStaticHelper.watchEpisode(nextEpisode, mUiRealm);
                     setActionButton(holder);
-                    Snackbar.make(v, "Watched " + formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName() + "!", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(v, "Watched " + UniversalStaticHelper.formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName() + "!", Snackbar.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(v, "Error Null Show", Snackbar.LENGTH_LONG).show();
                 }
@@ -309,7 +283,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
 
         if (nextEpisode != null) {
-            holder.mActionButton.setText("{gmd_remove_red_eye} " + formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName());
+            holder.mActionButton.setText("{gmd_remove_red_eye} " + UniversalStaticHelper.formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName());
             holder.mActionButton.setEnabled(true);
             holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.lightColorAccent));
         } else {
@@ -319,31 +293,17 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         }
     }
 
-    private String formatEpisodeTitle(Integer seasonNumber, Integer episodeNumber) {
-        String seasonText = "";
-        String episodeText = "";
 
-        if (seasonNumber >= 10) {
-            seasonText = "S" + Integer.toString(seasonNumber);
-        } else {
-            seasonText = "S0" + Integer.toString(seasonNumber);
-        }
-
-        if (episodeNumber >= 10) {
-            episodeText = "E" + Integer.toString(episodeNumber);
-        } else {
-            episodeText = "E0" + Integer.toString(episodeNumber);
-        }
-        Log.d("Episode Number", seasonText + episodeText);
-        return seasonText + episodeText;
-    }
 
     public class YourShowsViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.card_title)
         TextView mShowName;
 
         @BindView(R.id.card_image)
-        BadgedImageView mShowImage;
+        ImageView mShowImage;
+
+        @BindView(R.id.channel_badge)
+        ImageView mChannelBadge;
 
         @BindView(R.id.card_text)
         TextView mShowDecsiption;

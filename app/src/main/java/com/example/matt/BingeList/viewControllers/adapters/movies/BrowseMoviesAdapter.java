@@ -1,4 +1,4 @@
-package com.example.matt.bingeList.viewControllers.adapters;
+package com.example.matt.bingeList.viewControllers.adapters.movies;
 
 import android.content.Context;
 import android.content.Intent;
@@ -569,7 +569,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             setWatchlistOverlay(holder);
             holder.mActionButton.setText(mContext.getString(R.string.watch_button));
             holder.mActionButton.setEnabled(true);
-            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.lightColorAccent));
 
         } else if (isWatched(position)) {
             setWatchedOverlay(holder);
@@ -582,7 +582,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             setNoOverlay(holder);
             holder.mActionButton.setText(mContext.getString(R.string.add_to_watchlist_button));
             holder.mActionButton.setEnabled(true);
-            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+            holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.lightColorAccent));
         }
     }
 

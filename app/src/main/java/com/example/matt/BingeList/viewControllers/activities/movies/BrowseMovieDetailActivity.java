@@ -49,7 +49,7 @@ import com.example.matt.bingeList.uitls.PaletteTransformation;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.movies.BrowseMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -61,7 +61,6 @@ import com.r0adkll.slidr.Slidr;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

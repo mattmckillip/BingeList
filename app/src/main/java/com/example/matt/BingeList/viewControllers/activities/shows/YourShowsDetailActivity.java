@@ -34,6 +34,7 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
+import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
 import com.example.matt.bingeList.viewControllers.fragments.movies.MovieWatchListFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowEpisodeFragment;
 import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowOverviewFragment;
@@ -100,13 +101,13 @@ public class YourShowsDetailActivity extends AppCompatActivity {
         mSelectedTab = 0;
 
         mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_clear).sizeDp(16).color(Color.WHITE));
-        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE));
+        mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_check).sizeDp(16).color(Color.WHITE));
         mFabIcons.add(new IconicsDrawable(getApplicationContext()).icon(GoogleMaterial.Icon.gmd_done_all).sizeDp(16).color(Color.WHITE));
 
-        Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
-        RealmQuery<TVShow> query = uiRealm.where(TVShow.class);
+        final Realm mUiRealm = ((MyApplication) getApplication()).getUiRealm();
+        RealmQuery<TVShow> query = mUiRealm.where(TVShow.class);
         mShow = query.equalTo("id", mShowID).findFirst();
-        RealmQuery<Episode> episodeRealmQuery = uiRealm.where(Episode.class);
+        RealmQuery<Episode> episodeRealmQuery = mUiRealm.where(Episode.class);
         RealmResults<Episode> episodeRealmResults = episodeRealmQuery.equalTo("isWatched", false).equalTo("show_id", mShow.getId()).findAll();
 
         if (episodeRealmResults.size() == 0) {
@@ -120,7 +121,6 @@ public class YourShowsDetailActivity extends AppCompatActivity {
         // Set title of Detail page
         collapsingToolbar.setTitle(ShowName);
 
-        // Attach the Slidr Mechanism to this activity
         mSlidrInterface = Slidr.attach(this);
 
         tabLayout.addTab(tabLayout.newTab().setText("Overview"));
@@ -232,7 +232,6 @@ public class YourShowsDetailActivity extends AppCompatActivity {
                 mSelectedTab = tab.getPosition();
                 if (mSelectedTab == 0) {
                     mSlidrInterface.unlock();
-
                     animateFab(mSelectedTab, mFabIcons);
                 } else {
                     animateFab(mSelectedTab, mFabIcons);
@@ -255,7 +254,44 @@ public class YourShowsDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mSelectedTab == 0) {
-                    //TODO Remove from your shows
+                    String showName = mShow.getName();
+
+                    mUiRealm.beginTransaction();
+                    TVShow TVShowResultsToRemove = mUiRealm.where(TVShow.class)
+                            .equalTo("id", mShow.getId())
+                            .findFirst();
+                    TVShowResultsToRemove.deleteFromRealm();
+
+                    RealmResults<Episode> EpisodeResultsToRemove = mUiRealm.where(Episode.class)
+                            .equalTo("show_id", mShow.getId())
+                            .findAll();
+                    for (int i = 0; i < EpisodeResultsToRemove.size(); i++) {
+                        EpisodeResultsToRemove.get(i).deleteFromRealm();
+                    }
+
+                    RealmResults<Season> SeasonResultsToRemove = mUiRealm.where(Season.class)
+                            .equalTo("show_id", mShow.getId())
+                            .findAll();
+                    for (int i = 0; i < SeasonResultsToRemove.size(); i++) {
+                        SeasonResultsToRemove.get(i).deleteFromRealm();
+                    }
+
+                    mUiRealm.commitTransaction();
+
+                    Snackbar.make(v, showName + " removed from your shows", Snackbar.LENGTH_LONG).show();
+
+                } else if (mSelectedTab == 1) {
+                    Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
+
+                    if (nextEpisode != null) {
+                        TVShowRealmStaticHelper.watchEpisode(nextEpisode, mUiRealm);
+                        TVShowEpisodeFragment tvShowEpisodeFragment = (TVShowEpisodeFragment) mAdapterViewPager.getItem(mSelectedTab);
+                        tvShowEpisodeFragment.update();
+                    } else {
+                        Snackbar.make(v, "Error watching this episode", Snackbar.LENGTH_LONG).show();
+                    }
+
+
                 } else if (mSelectedTab == 2) {
                     Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
 

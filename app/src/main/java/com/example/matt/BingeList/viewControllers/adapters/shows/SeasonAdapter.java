@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.example.matt.bingeList.viewControllers.adapters;
+package com.example.matt.bingeList.viewControllers.adapters.shows;
 
 import android.content.Context;
 import android.util.Log;
@@ -117,7 +117,7 @@ public class SeasonAdapter
         holder.mNumberOfEpisodes.setText(curSeason.getEpisodes().size() + " Episodes");
         holder.mEpisodeProgress.getProgressDrawable().setColorFilter(
                 vibrantColor, android.graphics.PorterDuff.Mode.SRC_IN);
-        holder.mSeasonAirDate.setText(formatAirDate(curSeason.getAirDate().toString()));
+        holder.mSeasonAirDate.setText("First Aired on " + formatAirDate(curSeason.getAirDate().toString()));
 
         Picasso.with(context)
                 .load("https://image.tmdb.org/t/p/w92/" + curSeason.getPosterPath()) // w92, w154, w185

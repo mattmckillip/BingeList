@@ -20,7 +20,7 @@ import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.movies.BrowseMoviesAdapter;
 import com.mikepenz.community_material_typeface_library.CommunityMaterial;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;

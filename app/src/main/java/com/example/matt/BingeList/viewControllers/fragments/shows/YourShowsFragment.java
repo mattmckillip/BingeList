@@ -29,7 +29,7 @@ import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
-import com.example.matt.bingeList.viewControllers.adapters.YourShowsAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.shows.YourShowsAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmList;

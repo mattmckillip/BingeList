@@ -1,4 +1,4 @@
-package com.example.matt.bingeList.viewControllers.adapters;
+package com.example.matt.bingeList.viewControllers.adapters.shows;
 
 import android.content.Context;
 import android.support.design.widget.Snackbar;
@@ -163,7 +163,7 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
         holder.mEpisodeDescription.setText(mCurEpisode.getOverview());
         holder.mEpisodeNumber.setText(formatEpisodeTitle(mCurEpisode.getSeasonNumber(), mCurEpisode.getEpisodeNumber()));
         holder.mEpisodeNumber.setTextColor(mVibrantColor);
-        holder.mEpisodeAirDate.setText("Aired on " + formatAirDate(mCurEpisode.getAirDate()));
+        holder.mEpisodeAirDate.setText("First Aired on " + formatAirDate(mCurEpisode.getAirDate()));
 
         if (mCurEpisode.getIsWatched()) {
             holder.mWatchEpisode.setColor(mVibrantColor);

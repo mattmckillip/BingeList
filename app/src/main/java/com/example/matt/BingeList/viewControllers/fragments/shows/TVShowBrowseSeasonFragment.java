@@ -36,7 +36,7 @@ import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
-import com.example.matt.bingeList.viewControllers.adapters.SeasonAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.shows.SeasonAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;

@@ -1,4 +1,4 @@
-package com.example.matt.bingeList.viewControllers.adapters;
+package com.example.matt.bingeList.viewControllers.adapters.movies;
 
 import android.content.Context;
 import android.content.Intent;

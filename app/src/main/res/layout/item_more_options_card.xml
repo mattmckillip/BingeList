@@ -30,14 +30,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.example.matt.bingeList.uitls.BadgedImageview.BadgedImageView
-             android:id="@+id/card_image"
+        <ImageView
+            android:id="@+id/card_image"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_image_height"
             android:scaleType="centerCrop"
-            android:foreground="?selectableItemBackground"
-            app:badgeGravity="top|left"
-            app:badgePadding="@dimen/md_keylines" />
+            android:foreground="?selectableItemBackground" />
+
+        <ImageView
+            android:id="@+id/channel_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/md_keylines" />
+
 
         <!-- Bottom Scrim -->
         <View

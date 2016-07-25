@@ -47,7 +47,7 @@ import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.movies.BrowseMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -55,10 +55,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
-import com.r0adkll.slidr.model.SlidrConfig;
-import com.r0adkll.slidr.model.SlidrPosition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -247,15 +244,8 @@ public class WatchlistDetailActivity extends AppCompatActivity {
         mUiRealm = ((MyApplication) getApplication()).getUiRealm();
         setContentView(R.layout.movie_detail_activity);
 
-        SlidrConfig config = new SlidrConfig.Builder()
-                .position(SlidrPosition.LEFT)
-                .sensitivity(1f)
-                .velocityThreshold(2400)
-                .distanceThreshold(0.25f)
-                .edge(true)
-                .build();
+        Slidr.attach(this);
 
-        Slidr.attach(this, config);
         mContext = getApplicationContext();
         movieID = getIntent().getIntExtra(mContext.getString(R.string.movieId), 0);
 

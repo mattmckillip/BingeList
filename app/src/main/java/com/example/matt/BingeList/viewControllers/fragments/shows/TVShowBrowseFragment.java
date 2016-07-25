@@ -33,7 +33,7 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.uitls.EndlessRecyclerOnScrollListener;
 import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.shows.BrowseTVShowsAdapter;
 
 import java.util.List;
 

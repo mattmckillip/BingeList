@@ -19,7 +19,6 @@ package com.example.matt.bingeList.viewControllers.fragments.movies;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,20 +26,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
-import com.example.matt.bingeList.uitls.Enums.MovieSort;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
-import com.example.matt.bingeList.viewControllers.adapters.MovieWatchlistAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.WatchedMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.movies.MovieWatchlistAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.movies.WatchedMoviesAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
-import io.realm.Sort;
 
 public class MovieWatchListFragment extends Fragment {
     private static final String TAG = "MovieWLFragment";

@@ -1,4 +1,4 @@
-package com.example.matt.bingeList.uitls.BadgedImageview;
+package com.example.matt.bingeList.uitls;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,7 +18,7 @@ import android.util.DisplayMetrics;
 /**
  * A drawable for put into the Imageview
  */
-class BadgeDrawable extends Drawable {
+public class BadgeDrawable extends Drawable {
     private static final int TEXT_SIZE = 12;    // sp
     private static final int PADDING = 4;       // dp
     private static final int CORNER_RADIUS = 2; // dp
@@ -30,7 +30,7 @@ class BadgeDrawable extends Drawable {
     private int width;
     private int height;
 
-    BadgeDrawable(Context context, String badgeText, int badgeColor) {
+    public BadgeDrawable(Context context, String badgeText, int badgeColor) {
         if (bitmap == null && badgeText != null) {
             text = badgeText;
             final DisplayMetrics dm = context.getResources().getDisplayMetrics();

@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.OvershootInterpolator;
 
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.models.movies.ArchivedMovies;
@@ -35,7 +34,7 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.uitls.EndlessRecyclerOnScrollListener;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.movies.BrowseMoviesAdapter;
 
 import java.util.List;
 

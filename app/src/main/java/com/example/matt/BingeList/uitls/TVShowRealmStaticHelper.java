@@ -17,6 +17,11 @@ import io.realm.Sort;
  * Created by Matt on 7/10/2016.
  */
 public class TVShowRealmStaticHelper {
+    public static boolean isOnYourShows(int showId, Realm UIRealm) {
+        return  UIRealm.where(TVShow.class).equalTo("id", showId).count() > 0;
+    }
+
+
     public static Episode getEpisode(int showId, int seasonNumber, int episodeNumber, Realm UIRealm) {
         return  UIRealm.where(Episode.class).equalTo("show_id", showId).equalTo("seasonNumber", seasonNumber).equalTo("episodeNumber", episodeNumber).findFirst();
     }

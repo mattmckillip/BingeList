@@ -14,15 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/compact_card_height">
 
-        <com.example.matt.bingeList.uitls.BadgedImageview.BadgedImageView
+        <ImageView
             android:id="@+id/card_image"
             android:layout_width="@dimen/compact_card_image_width"
             android:layout_height="@dimen/compact_card_height"
-            android:scaleType="centerCrop"
-            app:badgeGravity="top|left"
-            app:badgePadding="@dimen/md_keylines"
-            app:badgeText="ABC" />
+            android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/channel_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <!-- Watchlist overlay -->
         <include layout="@layout/movie_watchlist_compact_card_overlay" />

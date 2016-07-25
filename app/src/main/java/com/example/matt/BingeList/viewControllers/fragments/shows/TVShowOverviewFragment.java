@@ -26,8 +26,6 @@ import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
-import com.example.matt.bingeList.models.movies.Movie;
-import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
@@ -36,13 +34,11 @@ import com.example.matt.bingeList.models.shows.TVShowResult;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.SimilarShowsActivity;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.shows.BrowseTVShowsAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

@@ -95,7 +95,6 @@ public class YourShowsActivity extends AppCompatActivity {
         // Create Navigation drawer
         mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
-
         // Adding Floating Action Button to bottom right of main view
         IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
         fab.setImageDrawable(search);
