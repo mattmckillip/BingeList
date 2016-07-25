@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.matt.bingeList.models.MultiSearchQueryReturn;
 import com.example.matt.bingeList.models.MultiSearchResult;
@@ -52,6 +54,9 @@ public class SearchActivity extends AppCompatActivity {
     @BindView(R.id.toolber)
     Toolbar toolbar;
 
+    @BindView(R.id.searchMessage)
+    TextView mSearchMessage;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
@@ -59,9 +64,10 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.recyclerview_with_appbar);
+        setContentView(R.layout.search_view);
 
         ButterKnife.bind(this);
+        mSearchMessage.setText("Search for a show or a movie!");
 
         mSearchMovieResults = new ArrayList<>();
         mSearchAdapter = new SearchAdapter(mSearchMovieResults, getApplicationContext());
@@ -74,15 +80,15 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Search");
 
+        // Create Navigation drawer
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_more_vert).color(Color.WHITE).sizeDp(24));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Create Navigation drawer
-        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
-
     }
 
     /*
@@ -92,18 +98,18 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-
         MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) myActionMenuItem.getActionView();
-        myActionMenuItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE));
+        //myActionMenuItem.setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE));
 
         searchView.setIconified(false);
-        searchView.clearFocus();
+        searchView.requestFocus();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d("SearchView", "onQueryTextSubmit");
+                mSearchMessage.setText("");
+                mSearchMessage.setVisibility(View.GONE);
 
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://api.themoviedb.org/3/search/")
@@ -117,17 +123,17 @@ public class SearchActivity extends AppCompatActivity {
                 call.enqueue(new Callback<MultiSearchQueryReturn>() {
                     @Override
                     public void onResponse(Call<MultiSearchQueryReturn> call, Response<MultiSearchQueryReturn> response) {
-                        Log.d("getMovie()", response.raw().toString());
-                        List<MultiSearchResult> multiSearchResults = response.body().getResults();
-                        Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
+                        if (response.isSuccessful()) {
+                            List<MultiSearchResult> multiSearchResults = response.body().getResults();
+                            Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
 
-                        searchRecyclerView.setAdapter(new MultiSearchAdapter(multiSearchResults, getApplicationContext(), uiRealm));
-                        searchRecyclerView.setFocusable(false);
+                            searchRecyclerView.setAdapter(new MultiSearchAdapter(multiSearchResults, getApplicationContext(), uiRealm));
+                            searchRecyclerView.setFocusable(false);
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<MultiSearchQueryReturn> call, Throwable t) {
-                        Log.d("getMovie()", "Callback Failure");
                     }
                 });
 
@@ -150,9 +156,7 @@ public class SearchActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
+        if (id == android.R.id.home) {
             mNavigationDrawer.openDrawer();
         }
         return super.onOptionsItemSelected(item);

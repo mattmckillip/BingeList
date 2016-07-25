@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,6 +28,8 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.Enums.ViewType;
+import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.mikepenz.iconics.view.IconicsButton;
@@ -67,11 +68,13 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
     private TVShow mShow;
     private Credits mCredits;
 
+    private int viewMode;
 
     public MultiSearchAdapter(List<MultiSearchResult> results, Context context, Realm uiRealm) {
         mMultiSearchResults = results;
         mContext = context;
         mUiRealm = uiRealm;
+        viewMode = PreferencesHelper.getRecyclerviewViewType(mContext);
     }
 
     @Override
@@ -83,12 +86,28 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
     public void onBindViewHolder(SearchViewHolder searchViewHolder, int position) {
         MultiSearchResult result = mMultiSearchResults.get(position);
 
-        searchViewHolder.progressSpinner.setVisibility(View.GONE);
         searchViewHolder.watchedLayout.setVisibility(View.GONE);
         searchViewHolder.watchListLayout.setVisibility(View.GONE);
 
         if (result.getMediaType().equals(MOVIE_TYPE)) {
             searchViewHolder.mediaTitle.setText(result.getTitle());
+            searchViewHolder.mediaDescription.setText(result.getOverview());
+
+            // Check the case where the title is too long
+            if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
+                final TextView title = searchViewHolder.mediaTitle;
+                final TextView description = searchViewHolder.mediaDescription;
+
+                searchViewHolder.mediaTitle.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (title.getLineCount() > 1) {
+                            description.setSingleLine();
+                        }
+                        // Perform any actions you want based on the line count here.
+                    }
+                });
+            }
             searchViewHolder.actionButton.setText("{gmd_add} add to watchlist");
 
             if (mUiRealm.where(Movie.class).equalTo("id", result.getId()).equalTo("isWatched", true).findAll().size() == 1) {
@@ -100,6 +119,23 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
             }
         } else if (result.getMediaType().equals(SHOW_TYPE)) {
             searchViewHolder.mediaTitle.setText(result.getName());
+            searchViewHolder.mediaDescription.setText(result.getOverview());
+
+            // Check the case where the title is too long
+            if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
+                final TextView title = searchViewHolder.mediaTitle;
+                final TextView description = searchViewHolder.mediaDescription;
+
+                searchViewHolder.mediaTitle.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (title.getLineCount() > 1) {
+                            description.setSingleLine();
+                        }
+                        // Perform any actions you want based on the line count here.
+                    }
+                });
+            }
             searchViewHolder.actionButton.setText("{gmd_add} add to your shows");
 
             if (mUiRealm.where(TVShow.class).equalTo("id", result.getId()).equalTo("onYourShows", true).findAll().size() == 1) {
@@ -124,7 +160,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         holder.actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                holder.progressSpinner.setVisibility(View.VISIBLE);
                 MultiSearchResult result = mMultiSearchResults.get(position);
 
                 if (result.getMediaType().equals(MOVIE_TYPE)) {
@@ -173,7 +208,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                                             mUiRealm.commitTransaction();
 
                                             holder.watchListLayout.setVisibility(View.VISIBLE);
-                                            holder.progressSpinner.setVisibility(View.GONE);
 
                                             Snackbar.make(v, "Added to watchlist!",
                                                     Snackbar.LENGTH_LONG).show();
@@ -228,7 +262,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
                                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                        Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
 
                                         mUiRealm.beginTransaction();
                                         mShow.setBackdropBitmap(stream.toByteArray());
@@ -239,8 +272,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                                         notifyDataSetChanged();
 
                                         FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
-                                        Log.d(TAG, Integer.toString(showId));
-                                        Log.d(TAG, Integer.toString(mShow.getNumberOfSeasons()));
                                         fetchSeasonsTask.execute(showId, mShow.getNumberOfSeasons());
 
                                         Snackbar.make(v, mShow.getName() + " Added to your shows!",
@@ -278,9 +309,26 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
     @Override
     public SearchViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View itemView = LayoutInflater.
-                from(viewGroup.getContext()).
-                inflate(R.layout.item_more_options_card, viewGroup, false);
+        PreferencesHelper.printValues(mContext);
+
+        View itemView = null;
+        if (viewMode == ViewType.CARD) {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_card, viewGroup, false);
+        } else if (viewMode == ViewType.COMPACT_CARD){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_compact_card, viewGroup, false);
+        } else if (viewMode == ViewType.LIST){
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_list, viewGroup, false);
+        } else {
+            itemView = LayoutInflater.
+                    from(viewGroup.getContext()).
+                    inflate(R.layout.item_more_options_card, viewGroup, false);
+        }
 
         return new SearchViewHolder(itemView);
     }
@@ -303,9 +351,6 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
         @BindView(R.id.watch_list_layout)
         RelativeLayout watchListLayout;
-
-        @BindView(R.id.progress_spinner)
-        ProgressBar progressSpinner;
 
         @BindView(R.id.more_button)
         ImageButton mMoreOptionsButton;

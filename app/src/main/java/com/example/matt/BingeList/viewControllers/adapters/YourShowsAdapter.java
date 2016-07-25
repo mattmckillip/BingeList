@@ -119,7 +119,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
     public void onBindViewHolder(final YourShowsViewHolder holder, final int position) {
         mShow = mShowList.get(position);
 
-        holder.mProgressSpinner.setVisibility(View.GONE);
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
         holder.mShowName.setVisibility(View.GONE);
@@ -135,7 +134,23 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         }
 
         holder.mShowName.setText(mShowList.get(position).getName());
+        // Check the case where the title is too long
+        if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
+            final TextView title = holder.mShowName;
+            final TextView description = holder.mShowDecsiption;
+
+            holder.mShowName.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (title.getLineCount() > 1) {
+                        description.setSingleLine();
+                    }
+                    // Perform any actions you want based on the line count here.
+                }
+            });
+        }
         holder.mShowDecsiption.setText(mShowList.get(position).getOverview());
+
         holder.mShowName.setVisibility(View.VISIBLE);
 
         setActionButton(holder);
@@ -266,7 +281,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
 
         if (nextEpisode != null) {
-            Log.d(TAG, "setActionButton - Episode name: " + nextEpisode.getName());
             holder.mActionButton.setText("{gmd_remove_red_eye} " + formatEpisodeTitle(nextEpisode.getSeasonNumber(), nextEpisode.getEpisodeNumber()) + " " + nextEpisode.getName());
             holder.mActionButton.setEnabled(true);
             holder.mActionButton.setTextColor(ContextCompat.getColor(mContext, R.color.lightColorAccent));
@@ -317,9 +331,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
 
         @BindView(R.id.action_button)
         IconicsButton mActionButton;
-
-        @BindView(R.id.progress_spinner)
-        ProgressBar mProgressSpinner;
 
         @BindView(R.id.watched_icon)
         ImageView mWatchedIcon;

@@ -44,7 +44,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         searchViewHolder.watchListLayout.setVisibility(View.GONE);
 
         Picasso.with(context)
-                .load("https://image.tmdb.org/t/p/w342/" + movie.getBackdropPath())
+                .load("https://image.tmdb.org/t/p/w500/" + movie.getBackdropPath())
                 //.placeholder(R.drawable.unkown_person)
                 //.error(R.drawable.generic_movie_background)
                 .into(searchViewHolder.movieImage);

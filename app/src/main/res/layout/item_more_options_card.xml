@@ -98,16 +98,6 @@
             android:layout_width="50dp"
             android:tint="@color/button_grey"/>
 
-        <ProgressBar
-            android:id="@+id/progress_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:foregroundGravity="clip_horizontal"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"
-            android:layout_above="@+id/card_text" />
-
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

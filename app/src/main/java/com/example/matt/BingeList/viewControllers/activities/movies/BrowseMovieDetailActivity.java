@@ -28,7 +28,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,17 +49,15 @@ import com.example.matt.bingeList.uitls.PaletteTransformation;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.SimilarMoviesAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.Iconics;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.r0adkll.slidr.Slidr;
-import com.r0adkll.slidr.model.SlidrConfig;
-import com.r0adkll.slidr.model.SlidrPosition;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
@@ -93,8 +90,8 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     private RealmList<Cast> mCast = new RealmList<>();
     private CastAdapter castAdapter;
     private CrewAdapter crewAdapter;
-    private ArrayList<MovieResult> similarMovieList = new ArrayList<>();
-    private SimilarMoviesAdapter similarMovieAdapter;
+    private RealmList<Movie> similarMovieList = new RealmList<>();
+    private BrowseMoviesAdapter similarMovieAdapter;
     private Realm mUiRealm;
     private Context mContext;
     private int mVibrantColor;
@@ -338,11 +335,21 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         similarMoviesCall.enqueue(new Callback<MovieQueryReturn>() {
             @Override
             public void onResponse(Call<MovieQueryReturn> call, Response<MovieQueryReturn> response) {
-                List<MovieResult> similarMovies = response.body().getMovieResults();
+                if (response.isSuccessful()) {
+                    List<MovieResult> tempSimilarMovies = response.body().getMovieResults();
 
-                // Populate cast and crew recycler views
-                similarMovieRecyclerView.setAdapter(new SimilarMoviesAdapter(similarMovies, mContext, NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY));
-                similarMovieRecyclerView.setFocusable(false);
+                    similarMovieList = new RealmList<>();
+                    for (int i = 0; i < tempSimilarMovies.size() || i < NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY; i++) {
+                        Movie movie = new Movie();
+                        movie.setTitle(tempSimilarMovies.get(i).getTitle());
+                        movie.setId(tempSimilarMovies.get(i).getId());
+                        movie.setOverview(tempSimilarMovies.get(i).getOverview());
+                        movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + tempSimilarMovies.get(i).getBackdropPath());
+                        similarMovieList.add(movie);
+                    }
+                    similarMovieRecyclerView.setAdapter(new BrowseMoviesAdapter(similarMovieList, mContext, mUiRealm));
+                    similarMovieRecyclerView.setFocusable(false);
+                }
             }
 
             @Override
@@ -517,7 +524,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
 
         // Similar Moves recycler view
-        similarMovieAdapter = new SimilarMoviesAdapter(similarMovieList, mContext, NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY);
+        similarMovieAdapter = new BrowseMoviesAdapter(similarMovieList, mContext, mUiRealm);
         RecyclerView.LayoutManager similaryMovieLayoutManager = new LinearLayoutManager(mContext);
         similarMovieRecyclerView.setLayoutManager(similaryMovieLayoutManager);
         similarMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());

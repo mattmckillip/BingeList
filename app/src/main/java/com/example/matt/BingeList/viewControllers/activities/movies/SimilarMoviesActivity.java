@@ -47,7 +47,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SimilarMoviesActivity extends AppCompatActivity {
     private static final String TAG = SimilarMoviesActivity.class.getName();
     private BrowseMoviesAdapter mAdapter;
-    private List<MovieResult> mSimilarMoviesList;
     private Integer mMovieId;
     private Realm mUiRealm;
     private RealmList<Movie> data;

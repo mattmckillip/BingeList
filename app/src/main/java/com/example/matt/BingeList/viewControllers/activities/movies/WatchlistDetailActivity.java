@@ -47,9 +47,9 @@ import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.CrewActivity;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.SimilarMoviesAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
@@ -76,6 +76,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WatchlistDetailActivity extends AppCompatActivity {
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
+    private static final int NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY = 5;
     private static final String TAG = "MovieWLDetailActivity";
     private static final int DEFAULT_COLOR = 0x000000;
 
@@ -87,10 +88,9 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     private CrewAdapter crewAdapter;
     private Credits mCredits;
     private Context mContext;
+    private RealmList<Movie> mSimilarMovieList = new RealmList<>();
+    private BrowseMoviesAdapter similarMovieAdapter;
     private int mVibrantColor;
-
-    private ArrayList<MovieResult> similarMovieList = new ArrayList<>();
-    private SimilarMoviesAdapter similarMovieAdapter;
 
     private Realm mUiRealm;
 
@@ -319,7 +319,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
 
 
         // Similar Moves recycler view
-        similarMovieAdapter = new SimilarMoviesAdapter(similarMovieList, mContext, NUMBER_OF_CREW_TO_DISPLAY);
+        similarMovieAdapter = new BrowseMoviesAdapter(mSimilarMovieList, mContext, mUiRealm);
         RecyclerView.LayoutManager similaryMovieLayoutManager = new LinearLayoutManager(mContext);
         similarMovieRecyclerView.setLayoutManager(similaryMovieLayoutManager);
         similarMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -395,11 +395,21 @@ public class WatchlistDetailActivity extends AppCompatActivity {
         similarMoviesCall.enqueue(new Callback<MovieQueryReturn>() {
             @Override
             public void onResponse(Call<MovieQueryReturn> call, Response<MovieQueryReturn> response) {
-                List<MovieResult> similarMovies = response.body().getMovieResults();
+                if (response.isSuccessful()) {
+                    List<MovieResult> tempSimilarMovies = response.body().getMovieResults();
 
-                // Populate cast and crew recycler views
-                similarMovieRecyclerView.setAdapter(new SimilarMoviesAdapter(similarMovies, mContext, NUMBER_OF_CREW_TO_DISPLAY));
-                similarMovieRecyclerView.setFocusable(false);
+                    mSimilarMovieList = new RealmList<>();
+                    for (int i = 0; i < tempSimilarMovies.size() || i < NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY; i++) {
+                        Movie movie = new Movie();
+                        movie.setTitle(tempSimilarMovies.get(i).getTitle());
+                        movie.setId(tempSimilarMovies.get(i).getId());
+                        movie.setOverview(tempSimilarMovies.get(i).getOverview());
+                        movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + tempSimilarMovies.get(i).getBackdropPath());
+                        mSimilarMovieList.add(movie);
+                    }
+                    similarMovieRecyclerView.setAdapter(new BrowseMoviesAdapter(mSimilarMovieList, mContext, mUiRealm));
+                    similarMovieRecyclerView.setFocusable(false);
+                }
             }
 
             @Override

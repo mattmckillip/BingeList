@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -133,7 +132,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
     @Override
     public void onBindViewHolder(final BrowseTVShowsViewHolder holder, int position) {
-        holder.mProgressSpinner.setVisibility(View.GONE);
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
         String path = mShowList.get(position).getBackdropPath();
@@ -141,12 +139,26 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         holder.mMoreOptionsButton.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_more_vert).sizeDp(16).color(ContextCompat.getColor(mContext, R.color.button_grey)));
 
         Picasso.with(mContext)
-                .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) +  mShowList.get(position).getBackdropPath())
+                .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) +  path)
                 .error(R.drawable.generic_movie_background)
                 .into(holder.mShowImage);
 
-        Log.d(TAG, mShowList.get(position).getName());
         holder.mShowName.setText(mShowList.get(position).getName());
+        // Check the case where the title is too long
+        if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
+            final TextView title = holder.mShowName;
+            final TextView description = holder.mShowDescription;
+
+            holder.mShowName.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (title.getLineCount() > 1) {
+                        description.setSingleLine();
+                    }
+                    // Perform any actions you want based on the line count here.
+                }
+            });
+        }
         holder.mShowDescription.setText(mShowList.get(position).getOverview());
 
         setActionButton(holder, position);
@@ -179,9 +191,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
         @BindView(R.id.more_button)
         ImageButton mMoreOptionsButton;
-
-        @BindView(R.id.progress_spinner)
-        ProgressBar mProgressSpinner;
 
         @BindView(R.id.watched_icon)
         ImageView mWatchedIcon;
@@ -291,8 +300,8 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         holder.mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                holder.mProgressSpinner.setVisibility(View.VISIBLE);
                 mShowId = mShowList.get(position).getId();
+                setWatchlistOverlay(holder);
 
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(mContext.getString(R.string.tv_show_base_url))
@@ -329,8 +338,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     }
 
     private void setActionButton(BrowseTVShowsViewHolder holder, int position) {
-        Log.d(TAG, "setActionButton()");
-
         if (isOnWatchList(position)) {
             setWatchlistOverlay(holder);
             holder.mActionButton.setText(mContext.getString(R.string.your_shows_button));
@@ -348,15 +355,12 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     private void setWatchlistOverlay(BrowseTVShowsViewHolder holder){
         holder.mWatchListLayout.setVisibility(View.VISIBLE);
         holder.mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
-        //holder.mOverlaytext.setText("On your shows!");
         holder.mWatchedLayout.setVisibility(View.INVISIBLE);
-        holder.mProgressSpinner.setVisibility(View.GONE);
     }
 
     private void setNoOverlay(BrowseTVShowsViewHolder holder){
         holder.mWatchedLayout.setVisibility(View.INVISIBLE);
         holder.mWatchListLayout.setVisibility(View.INVISIBLE);
-        holder.mProgressSpinner.setVisibility(View.GONE);
     }
 
     public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons) {

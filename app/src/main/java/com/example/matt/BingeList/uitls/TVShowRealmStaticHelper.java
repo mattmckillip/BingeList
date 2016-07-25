@@ -88,7 +88,7 @@ public class TVShowRealmStaticHelper {
     }
 
     public static RealmList<Episode> getAllWatchedEpisodes(Realm UIRealm) {
-        RealmResults<Episode> allWatchedEpisodes =  UIRealm.where(Episode.class).equalTo("isWatched", true).findAllSorted("date", Sort.DESCENDING);
+        RealmResults<Episode> allWatchedEpisodes =  UIRealm.where(Episode.class).equalTo("isWatched", true).findAllSorted("airDate", Sort.DESCENDING);
         RealmList<Episode> returnList = new RealmList<>();
         returnList.addAll(allWatchedEpisodes.subList(0, allWatchedEpisodes.size()));
         return returnList;

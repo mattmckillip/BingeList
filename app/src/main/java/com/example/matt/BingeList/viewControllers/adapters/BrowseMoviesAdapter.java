@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -130,7 +129,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
     @Override
     public BrowseMoviesViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        Log.d(TAG, "onCreateViewHolder()");
         PreferencesHelper.printValues(mContext);
 
         View itemView = null;
@@ -157,8 +155,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
     @Override
     public void onBindViewHolder(BrowseMoviesViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder()");
-        holder.mProgressSpinner.setVisibility(View.GONE);
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
         holder.mMovieTitle.setVisibility(View.GONE);
@@ -233,9 +229,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
 
         @BindView(R.id.action_button)
         IconicsButton mActionButton;
-
-        @BindView(R.id.progress_spinner)
-        ProgressBar mProgressSpinner;
 
         @BindView(R.id.watched_icon)
         ImageView mWatchedIcon;
@@ -337,7 +330,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                                     return true;
 
                                 case R.id.action_watch:
-                                    holder.mProgressSpinner.setVisibility(View.VISIBLE);
                                     moveFromBrowseToWatched(position, v, holder);
                                     return true;
                             }
@@ -352,13 +344,13 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         holder.mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                holder.mProgressSpinner.setVisibility(View.VISIBLE);
-
                 if (isOnWatchList(position)) {
+                    setWatchedOverlay(holder);
                     moveFromWatchlistToWatched(position);
                     Snackbar.make(v, "Watched!", Snackbar.LENGTH_LONG).show();
 
                 } else if (!isWatched(position)){
+                    setWatchlistOverlay(holder);
                     moveFromBrowseToWatchList(position, v);
                 }
             }
@@ -598,19 +590,16 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         holder.mWatchedLayout.setVisibility(View.VISIBLE);
         holder.mWatchedIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
         holder.mWatchListLayout.setVisibility(View.INVISIBLE);
-        holder.mProgressSpinner.setVisibility(View.GONE);
     }
 
     private void setWatchlistOverlay(BrowseMoviesViewHolder holder){
         holder.mWatchListLayout.setVisibility(View.VISIBLE);
         holder.mWatchlistIcon.setImageDrawable(new IconicsDrawable(mContext).icon(GoogleMaterial.Icon.gmd_dvr).sizeDp(24).color(Color.WHITE));
         holder.mWatchedLayout.setVisibility(View.INVISIBLE);
-        holder.mProgressSpinner.setVisibility(View.GONE);
     }
 
     private void setNoOverlay(BrowseMoviesViewHolder holder){
         holder.mWatchedLayout.setVisibility(View.INVISIBLE);
         holder.mWatchListLayout.setVisibility(View.INVISIBLE);
-        holder.mProgressSpinner.setVisibility(View.GONE);
     }
 }

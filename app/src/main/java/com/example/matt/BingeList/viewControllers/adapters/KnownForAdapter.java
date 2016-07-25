@@ -81,12 +81,12 @@ public class KnownForAdapter extends RecyclerView.Adapter<KnownForAdapter.Simila
             PersonCast cast = mPersonCast.get(i);
             contactViewHolder.mMovieTitle.setText(cast.getTitle());
             contactViewHolder.mMovieDescription.setText(cast.getCharacter());
-            posterPath = "https://image.tmdb.org/t/p/"+ mContext.getString(R.string.image_size_w92) + "/" + cast.getPosterPath();
+            posterPath = mContext.getString(R.string.image_base_url)+ mContext.getString(R.string.image_size_w92) + "/" + cast.getPosterPath();
         } else {
             PersonCrew crew = mPersonCrew.get(i);
             contactViewHolder.mMovieTitle.setText(crew.getTitle());
             contactViewHolder.mMovieDescription.setText(crew.getJob());
-            posterPath = "https://image.tmdb.org/t/p/"+ mContext.getString(R.string.image_size_w92) + "/" + crew.getPosterPath();
+            posterPath = mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w92) + "/" + crew.getPosterPath();
         }
 
         Picasso.with(mContext)
@@ -126,22 +126,22 @@ public class KnownForAdapter extends RecyclerView.Adapter<KnownForAdapter.Simila
                         PersonCast cast = mPersonCast.get(getAdapterPosition());
                         if (cast.getMediaType().equals(MOVIE_TYPE)) {
                             Intent intent = new Intent(v.getContext(), BrowseMovieDetailActivity.class);
-                            intent.putExtra("movieId", cast.getId());
+                            intent.putExtra(mContext.getString(R.string.movieId), cast.getId());
                             v.getContext().startActivity(intent);
                         } else {
                             Intent intent = new Intent(v.getContext(), TVShowBrowseDetailActivity.class);
-                            intent.putExtra("showId", cast.getId());
+                            intent.putExtra(mContext.getString(R.string.showId), cast.getId());
                             v.getContext().startActivity(intent);
                         }
                     } else {
                         PersonCrew crew = mPersonCrew.get(getAdapterPosition());
                         if (crew.getMediaType().equals(MOVIE_TYPE)) {
                             Intent intent = new Intent(v.getContext(), BrowseMovieDetailActivity.class);
-                            intent.putExtra("movieId", crew.getId());
+                            intent.putExtra(mContext.getString(R.string.movieId), crew.getId());
                             v.getContext().startActivity(intent);
                         } else {
                             Intent intent = new Intent(v.getContext(), TVShowBrowseDetailActivity.class);
-                            intent.putExtra("showId", crew.getId());
+                            intent.putExtra(mContext.getString(R.string.showId), crew.getId());
                             v.getContext().startActivity(intent);
                         }
                     }

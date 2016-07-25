@@ -62,6 +62,7 @@ public class YourShowsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
         Iconics.registerFont(new GoogleMaterial());
+        Iconics.registerFont(new CommunityMaterial());
 
         if(PreferencesHelper.getTheme(getApplicationContext()) == ThemeEnum.NIGHT_THEME){
             setTheme(R.style.DarkAppTheme_Base);
@@ -123,8 +124,9 @@ public class YourShowsActivity extends AppCompatActivity {
         YourShowsFragment unwatchedShowsFragment = new YourShowsFragment();
         unwatchedShowsFragment.setArguments(unwatchedShowBundle);
 
-        mAdapterViewPager.addFragment(yourShowsFrgament, "All");
         mAdapterViewPager.addFragment(unwatchedShowsFragment, "Unwatched Episodes");
+        mAdapterViewPager.addFragment(yourShowsFrgament, "All");
+
         viewPager.setAdapter(mAdapterViewPager);
     }
 
@@ -302,8 +304,8 @@ public class YourShowsActivity extends AppCompatActivity {
     }
 
     private void setTabDrawables(){
-        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
-        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_eye_off).sizeDp(24).color(Color.WHITE));
+        tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_television_guide).sizeDp(24).color(Color.WHITE));
+        tabs.getTabAt(0).setIcon(new IconicsDrawable(this).icon(CommunityMaterial.Icon.cmd_eye_off).sizeDp(24).color(Color.WHITE));
     }
 
     @Override

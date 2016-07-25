@@ -26,6 +26,7 @@ import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
+import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
@@ -34,12 +35,11 @@ import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
 import com.example.matt.bingeList.models.shows.TVShowResult;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
-import com.example.matt.bingeList.viewControllers.activities.movies.SimilarMoviesActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.SimilarShowsActivity;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseMoviesAdapter;
+import com.example.matt.bingeList.viewControllers.adapters.BrowseTVShowsAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CastAdapter;
 import com.example.matt.bingeList.viewControllers.adapters.CrewAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.SimilarMoviesAdapter;
-import com.example.matt.bingeList.viewControllers.adapters.SimilarShowsAdapter;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.util.ArrayList;
@@ -75,8 +75,8 @@ public class TVShowOverviewFragment extends Fragment {
     private RealmList<Cast> mCast = new RealmList<>();
     private CastAdapter castAdapter;
     private CrewAdapter crewAdapter;
-    private ArrayList<MovieResult> similarMovieList = new ArrayList<>();
-    private SimilarMoviesAdapter similarMovieAdapter;
+    private RealmList<TVShow> mSimilarShowList = new RealmList<>();
+    private BrowseTVShowsAdapter similarMovieAdapter;
 
     @BindView(R.id.scroll_view)
     NestedScrollView scroll_view;
@@ -282,11 +282,21 @@ public class TVShowOverviewFragment extends Fragment {
         similarMoviesCall.enqueue(new Callback<TVShowQueryReturn>() {
             @Override
             public void onResponse(Call<TVShowQueryReturn> call, Response<TVShowQueryReturn> response) {
-                List<TVShowResult> similarShows = response.body().getResults();
+                if (response.isSuccessful()) {
+                    List<TVShowResult> tempSimilarShows = response.body().getResults();
 
-                // Populate cast and crew recycler views
-                similarShowsRecyclerView.setAdapter(new SimilarShowsAdapter(similarShows, mContext, NUMBER_OF_SIMILAR_SHOWS_TO_DISPLAY));
-                similarShowsRecyclerView.setFocusable(false);
+                    mSimilarShowList = new RealmList<>();
+                    for (int i = 0; i < tempSimilarShows.size() || i < NUMBER_OF_SIMILAR_SHOWS_TO_DISPLAY; i++) {
+                        TVShow tvShow = new TVShow();
+                        tvShow.setName(tempSimilarShows.get(i).getName());
+                        tvShow.setId(tempSimilarShows.get(i).getId());
+                        tvShow.setOverview(tempSimilarShows.get(i).getOverview());
+                        tvShow.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + tempSimilarShows.get(i).getBackdropPath());
+                        mSimilarShowList.add(tvShow);
+                    }
+                    similarShowsRecyclerView.setAdapter(new BrowseTVShowsAdapter(mSimilarShowList, mContext, mUiRealm));
+                    similarShowsRecyclerView.setFocusable(false);
+                }
             }
 
             @Override
@@ -352,7 +362,7 @@ public class TVShowOverviewFragment extends Fragment {
         castRecyclerView.setAdapter(castAdapter);
 
         // Similar Moves recycler view
-        similarMovieAdapter = new SimilarMoviesAdapter(similarMovieList, mContext, NUMBER_OF_SIMILAR_SHOWS_TO_DISPLAY);
+        similarMovieAdapter = new BrowseTVShowsAdapter(mSimilarShowList, mContext, mUiRealm);
         RecyclerView.LayoutManager similaryMovieLayoutManager = new LinearLayoutManager(mContext);
         similarShowsRecyclerView.setLayoutManager(similaryMovieLayoutManager);
         similarShowsRecyclerView.setItemAnimator(new DefaultItemAnimator());

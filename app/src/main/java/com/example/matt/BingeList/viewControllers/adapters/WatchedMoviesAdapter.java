@@ -91,7 +91,6 @@ public class WatchedMoviesAdapter extends RecyclerView.Adapter<WatchedMoviesAdap
             Log.d(TAG, "onBindViewHolder()");
         }
 
-        holder.mProgressSpinner.setVisibility(View.GONE);
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
 
@@ -306,9 +305,6 @@ public class WatchedMoviesAdapter extends RecyclerView.Adapter<WatchedMoviesAdap
 
         @BindView(R.id.watch_list_layout)
         RelativeLayout mWatchListLayout;
-
-        @BindView(R.id.progress_spinner)
-        ProgressBar mProgressSpinner;
 
         public WatchedMovieViewHolder(View v, Context context, final List<Movie> movieList, Realm uiRealm) {
             super(v);
