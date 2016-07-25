@@ -59,6 +59,59 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     private Realm mUiRealm;
     private Movie mMovie;
     private int viewMode;
+    private Credits mCredits;
+
+    private Target browseToWatchedTarget = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+            mUiRealm.beginTransaction();
+            mMovie.setBackdropBitmap(stream.toByteArray());
+            mMovie.setOnWatchList(false);
+            mMovie.setWatched(true);
+            mMovie.setWatchedDate(new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date()));
+            mUiRealm.copyToRealmOrUpdate(mMovie);
+            mUiRealm.copyToRealmOrUpdate(mCredits);
+            mUiRealm.commitTransaction();
+
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
+
+    private Target browseToWatchlistTarget = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+            mUiRealm.beginTransaction();
+            mMovie.setBackdropBitmap(stream.toByteArray());
+            mMovie.setOnWatchList(true);
+            mUiRealm.copyToRealmOrUpdate(mMovie);
+            mUiRealm.copyToRealmOrUpdate(mCredits);
+            mUiRealm.commitTransaction();
+
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
 
     public BrowseMoviesAdapter(RealmList<Movie> movieList, Context context, Realm uiRealm) {
         mMovieList = movieList;
@@ -356,8 +409,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     private void moveFromBrowseToWatchList(final int position, final View v) {
-        Log.d(TAG, "moveFromBrowseToWatchList()");
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -370,8 +421,8 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 if (response.isSuccessful()){
-                    final Movie movie = response.body();
-                    movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + movie.getBackdropPath());
+                    mMovie = response.body();
+                    mMovie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + mMovie.getBackdropPath());
 
                     Retrofit retrofit = new Retrofit.Builder()
                             .baseUrl(mContext.getString(R.string.movie_base_url))
@@ -379,45 +430,21 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                             .build();
 
                     MovieAPI service = retrofit.create(MovieAPI.class);
-                    Call<Credits> creditsCall = service.getCredits(Integer.toString(movie.getId()));
+                    Call<Credits> creditsCall = service.getCredits(Integer.toString(mMovie.getId()));
 
                     creditsCall.enqueue(new Callback<Credits>() {
                         @Override
                         public void onResponse(Call<Credits> call, Response<Credits> response) {
                             if (response.isSuccessful()) {
-                                final Credits credits = response.body();
-                                Target target = new Target() {
-                                    @Override
-                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                mCredits = response.body();
 
-                                        mUiRealm.beginTransaction();
-                                        movie.setBackdropBitmap(stream.toByteArray());
-                                        movie.setOnWatchList(true);
-                                        mUiRealm.copyToRealmOrUpdate(movie);
-                                        mUiRealm.copyToRealmOrUpdate(credits);
-                                        mUiRealm.commitTransaction();
-
-                                        //setWatchedOverlay(holder);
-                                        //setActionButton(holder, position, movie.getWatchedDate());
-                                        notifyDataSetChanged();
-                                        Snackbar.make(v, "Added to watchlist!", Snackbar.LENGTH_LONG).show();
-                                    }
-
-                                    @Override
-                                    public void onBitmapFailed(Drawable errorDrawable) {
-                                    }
-
-                                    @Override
-                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                    }
-                                };
+                                Snackbar.make(v, mMovie.getTitle() + " Added to watchlist!", Snackbar.LENGTH_LONG).show();
 
                                 Picasso.with(mContext)
-                                        .load(movie.getBackdropPath())
-                                        .into(target);
+                                        .load(mMovie.getBackdropPath())
+                                        .into(browseToWatchlistTarget);
                             } else {
+                                Snackbar.make(v, "Error making API call", Snackbar.LENGTH_LONG);
                             }
                         }
 
@@ -427,6 +454,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                         }
                     });
                 } else {
+                    Snackbar.make(v, "Error making API call", Snackbar.LENGTH_LONG);
                 }
             }
 
@@ -465,65 +493,33 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
                         @Override
                         public void onResponse(Call<Credits> call, Response<Credits> response) {
                             if (response.isSuccessful()) {
-                                final Credits credits = response.body();
-                                Target target = new Target() {
-                                    @Override
-                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                        Log.d(TAG, "onBitmapLoaded()");
+                                mCredits = response.body();
 
-                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                        Log.d(TAG, "byte array " + Integer.toString(stream.toByteArray().length));
-
-                                        mUiRealm.beginTransaction();
-                                        mMovie.setBackdropBitmap(stream.toByteArray());
-                                        mMovie.setOnWatchList(false);
-                                        mMovie.setWatched(true);
-                                        mMovie.setWatchedDate(new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date()));
-                                        mUiRealm.copyToRealmOrUpdate(mMovie);
-                                        mUiRealm.copyToRealmOrUpdate(credits);
-                                        mUiRealm.commitTransaction();
-
-                                        notifyDataSetChanged();
-                                        Snackbar.make(v, mMovie.getTitle() + " Watched!", Snackbar.LENGTH_LONG).show();
-                                        holder.mProgressSpinner.setVisibility(View.GONE);
-
-                                    }
-
-                                    @Override
-                                    public void onBitmapFailed(Drawable errorDrawable) {
-                                        Log.d(TAG, "onBitmapFailed()");
-                                    }
-
-                                    @Override
-                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                        Log.d(TAG, "onPrepareLoad()");
-                                    }
-                                };
+                                Snackbar.make(v, mMovie.getTitle() + " Watched!", Snackbar.LENGTH_LONG).show();
 
                                 Picasso.with(mContext)
                                         .load(mMovie.getBackdropPath())
-                                        .into(target);
+                                        .error(R.drawable.generic_movie_background)
+                                        .placeholder(R.drawable.generic_movie_background)
+                                        .into(browseToWatchedTarget);
                             } else {
-                                Log.d(TAG, "Bad credits call");
+                                Snackbar.make(v, "Error making API call", Snackbar.LENGTH_LONG);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<Credits> call, Throwable t) {
                             Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
-                            Log.d(TAG, "Credits - Failure");
                         }
                     });
                 } else {
-                    Log.d(TAG, "Movie Bad Call");
+                    Snackbar.make(v, "Error making API call", Snackbar.LENGTH_LONG);
                 }
             }
 
             @Override
             public void onFailure(Call<Movie> call, Throwable t) {
                 Snackbar.make(v, "Error accessing internet", Snackbar.LENGTH_LONG);
-                Log.d(TAG, "Movie - Failure");
             }
         });
     }

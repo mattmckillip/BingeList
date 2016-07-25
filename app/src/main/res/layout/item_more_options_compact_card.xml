@@ -57,7 +57,6 @@
             android:id="@+id/action_button"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="12312312312312312312312312312312"
             android:layout_marginLeft="@dimen/compact_card_image_margin"
             android:layout_toRightOf="@+id/card_image"
             android:layout_marginRight="40dp"
@@ -84,8 +83,11 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:foregroundGravity="clip_horizontal"
-            android:layout_below="@+id/card_title"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/card_image"
+            android:layout_alignEnd="@+id/card_image" />
 
     </RelativeLayout>
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -20,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
@@ -54,9 +52,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by Matt on 6/12/2016.
- */
 public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdapter.BrowseTVShowsViewHolder> {
     private static final String TAG = BrowseTVShowsAdapter.class.getSimpleName();
     private RealmList<TVShow> mShowList;
@@ -65,6 +60,33 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     private TVShow mShow;
     private int mShowId;
     private int viewMode;
+    private  Target mTarget = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+            mUiRealm.beginTransaction();
+            mShow.setBackdropBitmap(stream.toByteArray());
+            mShow.setOnYourShows(true);
+            mShow.setDate(new Date());
+            mUiRealm.copyToRealmOrUpdate(mShow);
+            mUiRealm.commitTransaction();
+
+            notifyDataSetChanged();
+
+            FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
+            fetchSeasonsTask.execute(mShowId, mShow.getNumberOfSeasons());
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
 
     public BrowseTVShowsAdapter(RealmList<TVShow> showList, Context context, Realm uiRealm) {
         this.mShowList = showList;
@@ -166,9 +188,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
         @BindView(R.id.watchlist_icon)
         ImageView mWatchlistIcon;
-
-        /*@BindView(R.id.overlay_text)
-        TextView mOverlaytext;*/
 
         public BrowseTVShowsViewHolder(View v) {
             super(v);
@@ -288,46 +307,13 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     public void onResponse(Call<TVShow> call, Response<TVShow> response) {
                         if (response.isSuccessful()){
                             mShow = response.body();
-                            Target target = new Target() {
-                                @Override
-                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    Log.d(TAG, "onBitmapLoaded()");
 
-                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-                                    mUiRealm.beginTransaction();
-                                    mShow.setBackdropBitmap(stream.toByteArray());
-                                    mShow.setOnYourShows(true);
-                                    mShow.setDate(new Date());
-                                    mUiRealm.copyToRealmOrUpdate(mShow);
-                                    mUiRealm.commitTransaction();
-
-                                    notifyDataSetChanged();
-
-                                    FetchSeasonsTask fetchSeasonsTask = new FetchSeasonsTask();
-                                    Log.d(TAG, Integer.toString(mShowId));
-                                    Log.d(TAG, Integer.toString(mShow.getNumberOfSeasons()));
-                                    fetchSeasonsTask.execute(mShowId, mShow.getNumberOfSeasons());
-
-                                    Snackbar.make(v, mShow.getName() + " Added to your shows!",
-                                            Snackbar.LENGTH_LONG).show();
-                                }
-
-                                @Override
-                                public void onBitmapFailed(Drawable errorDrawable) {
-                                    Log.d(TAG, "onBitmapFailed()");
-                                }
-
-                                @Override
-                                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                                    Log.d(TAG, "onPrepareLoad()");
-                                }
-                            };
+                            Snackbar.make(v, mShow.getName() + " Added to your shows!",
+                                    Snackbar.LENGTH_LONG).show();
 
                             Picasso.with(mContext)
-                                    .load("https://image.tmdb.org/t/p/w500/" + mShow.getBackdropPath())
-                                    .into(target);
+                                    .load(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + mShow.getBackdropPath())
+                                    .into(mTarget);
                         } else {
                             Snackbar.make(v, "Unable to load show...", Snackbar.LENGTH_LONG).show();
                         }
@@ -378,28 +364,28 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         Log.d("realm transaction","attempting to add");
 
         for (TVShowSeasonResult season: seasons) {
-            Season curSeason = new Season();
-            curSeason.setAirDate(season.getAirDate());
-            curSeason.setEpisodeCount(season.getEpisodes().size());
-            curSeason.setId(season.getId());
-            curSeason.setPosterPath(season.getPosterPath());
-            curSeason.setShow_id(mShowId);
-            curSeason.setSeasonNumber(season.getSeasonNumber());
+            if (season != null) {
+                Season curSeason = new Season();
 
-            mUiRealm.beginTransaction();
-            mUiRealm.copyToRealmOrUpdate(curSeason);
+                curSeason.setAirDate(season.getAirDate());
+                curSeason.setEpisodeCount(season.getEpisodes().size());
+                curSeason.setId(season.getId());
+                curSeason.setPosterPath(season.getPosterPath());
+                curSeason.setShow_id(mShowId);
+                curSeason.setSeasonNumber(season.getSeasonNumber());
 
-            RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
-            for (Episode episode: jsonEpisodeRealmList) {
-                episode.setShow_id(mShowId);
-                episode.setIsWatched(false);
-                episode.setSeasonNumber(curSeason.getSeasonNumber());
-                mUiRealm.copyToRealmOrUpdate(episode);
+                mUiRealm.beginTransaction();
+                mUiRealm.copyToRealmOrUpdate(curSeason);
+
+                RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
+                for (Episode episode : jsonEpisodeRealmList) {
+                    episode.setShow_id(mShowId);
+                    episode.setIsWatched(false);
+                    episode.setSeasonNumber(curSeason.getSeasonNumber());
+                    mUiRealm.copyToRealmOrUpdate(episode);
+                }
+                mUiRealm.commitTransaction();
             }
-            mUiRealm.commitTransaction();
-
-            Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).count());
-            Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).equalTo("seasonNumber", 1).findAll().size());
         }
     }
 

@@ -208,26 +208,25 @@ public class TVShowEpisodeFragment extends Fragment {
     }
 
     private void setData() {
-        Log.d(TAG, "setData()");
-        Log.d(TAG, "Crew Size: " + Integer.toString(mEpisode.getCrew().size()));
-
         // Add data
-        mPlot.setText(mEpisode.getOverview());
-        mEpisodeTitle.setText(formatEpisodeTitle(mEpisode.getSeasonNumber(), mEpisode.getEpisodeNumber()) + ": " + mEpisode.getName());
-        mAirDate.setText(formatAirDate(mEpisode.getAirDate()));
-        stars.setRating(mEpisode.getVoteAverage().floatValue());
-        DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.UP);
-        userRating.setText(df.format(mEpisode.getVoteAverage()) + "/10");
+        if (mEpisode.isValid()) {
+            mPlot.setText(mEpisode.getOverview());
+            mEpisodeTitle.setText(formatEpisodeTitle(mEpisode.getSeasonNumber(), mEpisode.getEpisodeNumber()) + ": " + mEpisode.getName());
+            mAirDate.setText(formatAirDate(mEpisode.getAirDate()));
+            stars.setRating(mEpisode.getVoteAverage().floatValue());
+            DecimalFormat df = new DecimalFormat("#.##");
+            df.setRoundingMode(RoundingMode.UP);
+            userRating.setText(df.format(mEpisode.getVoteAverage()) + "/10");
 
-        mCrew = mEpisode.getCrew();
-        Integer crewSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCrew.size());
-        crewRecyclerView.setAdapter(new CrewAdapter(mCrew, mContext, crewSize));
+            mCrew = mEpisode.getCrew();
+            Integer crewSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCrew.size());
+            crewRecyclerView.setAdapter(new CrewAdapter(mCrew, mContext, crewSize));
 
-        setActionButton();
-        Picasso.with(mContext)
-                .load("https://image.tmdb.org/t/p/w500/" + mEpisode.getStillPath())
-                .into(mEpisodeImage);
+            setActionButton();
+            Picasso.with(mContext)
+                    .load("https://image.tmdb.org/t/p/w500/" + mEpisode.getStillPath())
+                    .into(mEpisodeImage);
+        }
     }
 
     private void setActionButton(){

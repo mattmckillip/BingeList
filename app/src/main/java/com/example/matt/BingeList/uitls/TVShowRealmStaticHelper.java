@@ -22,6 +22,9 @@ public class TVShowRealmStaticHelper {
     }
 
     public static Episode getNextUnwatchedEpisode(int showId, Realm UIRealm) {
+        Log.d("getNextUnwatchedEpisode", "Show id: " + Integer.toString(showId));
+        Log.d("getNextUnwatchedEpisode", "size: " + Long.toString(UIRealm.where(Episode.class).equalTo("show_id", showId).equalTo("isWatched", false).count()));
+
         return UIRealm.where(Episode.class).equalTo("show_id", showId).equalTo("isWatched", false).findFirst();
     }
 
@@ -51,6 +54,7 @@ public class TVShowRealmStaticHelper {
     public static void watchEpisode(Episode episode, Realm UIRealm) {
         UIRealm.beginTransaction();
         episode.setIsWatched(true);
+        UIRealm.copyToRealmOrUpdate(episode);
         UIRealm.commitTransaction();
     }
 

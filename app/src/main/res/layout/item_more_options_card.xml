@@ -42,7 +42,8 @@
             android:layout_height="@dimen/card_scrim_height"
             android:layout_gravity="bottom"
             android:background="@drawable/scrim_bottom_layout"
-            android:layout_alignBottom="@+id/card_title"/>
+            android:layout_alignBottom="@+id/card_title"
+            android:id="@+id/view" />
 
         <TextView
             android:id="@+id/card_title"
@@ -104,8 +105,8 @@
             android:indeterminate="true"
             android:foregroundGravity="clip_horizontal"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="false"
-            android:layout_alignParentTop="false" />
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/card_text" />
 
     </RelativeLayout>
 

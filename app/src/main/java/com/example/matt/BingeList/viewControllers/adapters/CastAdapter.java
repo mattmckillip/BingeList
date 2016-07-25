@@ -49,7 +49,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CrewViewHolder
     public void onBindViewHolder(CrewViewHolder contactViewHolder, int i) {
         Cast castMember = mCastList.get(i);
         contactViewHolder.mActor.setText(castMember.getName());
-        contactViewHolder.mCharacter.setText(castMember.getCharacter());
+        contactViewHolder.mCharacter.setText("As " + castMember.getCharacter());
 
         Picasso.with(mContext)
                 .load("https://image.tmdb.org/t/p/" + mContext.getString(R.string.image_size_w185) + castMember.getProfilePath())
