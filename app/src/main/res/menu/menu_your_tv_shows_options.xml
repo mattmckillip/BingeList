@@ -8,8 +8,13 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_mark_show_watched"
-        android:title="Mark watched"
+        android:id="@+id/action_mark_all_watched"
+        android:title="Watch All Episodes"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_mark_all_unwatched"
+        android:title="Unwatch All Episodes"
         app:showAsAction="ifRoom"/>
 
 </menu>

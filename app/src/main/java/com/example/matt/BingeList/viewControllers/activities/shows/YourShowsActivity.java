@@ -86,15 +86,15 @@ public class YourShowsActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
         setTabDrawables();
 
-        // Create Navigation drawer
-        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
-
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).sizeDp(16).color(Color.WHITE));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        // Create Navigation drawer
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+
 
         // Adding Floating Action Button to bottom right of main view
         IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);

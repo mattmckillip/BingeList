@@ -24,6 +24,7 @@ import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
+import com.example.matt.bingeList.uitls.Enums.MovieSort;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistDetailActivity;
@@ -38,6 +39,7 @@ import butterknife.ButterKnife;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 public class WatchedMoviesAdapter extends RecyclerView.Adapter<WatchedMoviesAdapter.WatchedMovieViewHolder> {
@@ -262,8 +264,6 @@ public class WatchedMoviesAdapter extends RecyclerView.Adapter<WatchedMoviesAdap
     }
 
     private void archiveMovie(Integer id, int position) {
-        Log.d(TAG, "archiveMovie()");
-
         mUiRealm.beginTransaction();
         ArchivedMovies archivedMovies = new ArchivedMovies();
         archivedMovies.setMovieId(id);
@@ -277,6 +277,34 @@ public class WatchedMoviesAdapter extends RecyclerView.Adapter<WatchedMoviesAdap
     @Override
     public int getItemCount() {
         return mMovieList.size();
+    }
+
+    public void sort(int sortType) {
+        Log.d(TAG, "sort()");
+        RealmResults<Movie> movieRealmResults = null;
+        if (sortType == MovieSort.DATE_ADDED){
+            movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
+        } else if (sortType == MovieSort.RATING){
+            movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("voteAverage", Sort.DESCENDING);
+        }  else if (sortType == MovieSort.RUNTIME){
+            movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.DESCENDING);
+        } else if (sortType == MovieSort.ALPHABETICAL){
+            movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("title", Sort.ASCENDING);
+        } else {
+            movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
+        }
+        Log.d(TAG, "movieRealmResults size: " + Integer.toString(movieRealmResults.size()));
+
+        mMovieList = new RealmList<>();
+        for (Movie movieResult : movieRealmResults) {
+            if(mUiRealm.where(ArchivedMovies.class).equalTo(mContext.getString(R.string.movieId), movieResult.getId()).count() == 0) {
+                mMovieList.add(movieResult);
+            }
+        }
+
+        Log.d(TAG, "mMovieList size: " + Integer.toString(mMovieList.size()));
+
+        notifyDataSetChanged();
     }
 
     public static class WatchedMovieViewHolder extends RecyclerView.ViewHolder {

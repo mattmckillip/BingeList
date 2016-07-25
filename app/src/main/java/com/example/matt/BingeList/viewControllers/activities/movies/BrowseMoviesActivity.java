@@ -85,15 +85,15 @@ public class BrowseMoviesActivity extends AppCompatActivity {
         setTabDrawables();
 
 
-        // Create Navigation drawer
-        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
-
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).sizeDp(16).color(Color.WHITE));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        // Create Navigation drawer
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding Floating Action Button to bottom right of main view
         fab.setImageDrawable(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_search).sizeDp(16).color(Color.WHITE));;

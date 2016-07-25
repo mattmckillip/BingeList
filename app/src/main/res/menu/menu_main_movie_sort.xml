@@ -13,21 +13,22 @@
             <group android:id="@+id/movie_sort"
                 android:checkableBehavior="single">
 
-                <item android:id="@+id/recently_added_sort"
-                    android:title="Newly Added">
+                <item android:id="@+id/alphabetical_sort"
+                    android:title="Alphabetical">
                 </item>
 
-                <item android:id="@+id/top_rated_sort"
-                    android:title="Top Rated">
+                <item android:id="@+id/date_added_sort"
+                    android:title="Date Added">
                 </item>
 
-                <item android:id="@+id/runtime_descending_sort"
-                    android:title="Runtime (Descending)">
+                <item android:id="@+id/rating_sort"
+                    android:title="Rating">
                 </item>
 
-                <item android:id="@+id/runtime_ascending_sort"
-                    android:title="Runtime (Ascending)">
+                <item android:id="@+id/runtime_sort"
+                    android:title="Runtime">
                 </item>
+
 
             </group>
 

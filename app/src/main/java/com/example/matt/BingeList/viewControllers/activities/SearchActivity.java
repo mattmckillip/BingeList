@@ -80,15 +80,16 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Search");
 
-        // Create Navigation drawer
-        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_more_vert).color(Color.WHITE).sizeDp(24));
+            supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).color(Color.WHITE).sizeDp(16));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+        // Create Navigation drawer
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
     }
 
     /*

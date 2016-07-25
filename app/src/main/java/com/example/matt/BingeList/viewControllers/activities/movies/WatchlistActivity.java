@@ -90,7 +90,7 @@ public class WatchlistActivity extends AppCompatActivity {
 
         // Adding Toolbar to Main screen
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Movie Watch List");
+        getSupportActionBar().setTitle("Movie Watchlist");
 
         // Setting ViewPager for each Tabs
         setupViewPager(viewPager);
@@ -104,8 +104,7 @@ public class WatchlistActivity extends AppCompatActivity {
             tabs.getTabAt(1).setIcon(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_playlist_add_check).sizeDp(24).color(Color.WHITE));
         }
 
-        // Create Navigation drawer
-        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
+
 
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
@@ -113,6 +112,9 @@ public class WatchlistActivity extends AppCompatActivity {
             supportActionBar.setHomeAsUpIndicator(new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_menu).sizeDp(16).color(Color.WHITE));
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        // Create Navigation drawer
+        mNavigationDrawer = new DrawerHelper().GetDrawer(this, toolbar, savedInstanceState);
 
         // Adding Floating Action Button to bottom right of main view
         IconicsDrawable search = new IconicsDrawable(this).icon(GoogleMaterial.Icon.gmd_add).sizeDp(16).color(Color.WHITE);
@@ -149,7 +151,7 @@ public class WatchlistActivity extends AppCompatActivity {
         MovieWatchListFragment watchListMovies = new MovieWatchListFragment();
         watchListMovies.setArguments(watchListMoviesBundle);
 
-        mAdapterViewPager.addFragment(watchListMovies, "Watch List");
+        mAdapterViewPager.addFragment(watchListMovies, "Watchlist");
         mAdapterViewPager.addFragment(watchedMovies, "Watched");
         viewPager.setAdapter(mAdapterViewPager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -200,14 +202,14 @@ public class WatchlistActivity extends AppCompatActivity {
         }
 
         int movieSort = PreferencesHelper.getMovieSort(getApplicationContext());
-        if (movieSort == MovieSort.RECENTLY_ADDED){
-            menu.findItem(R.id.recently_added_sort).setChecked(true);
-        } else if (movieSort == MovieSort.TOP_RATED){
-            menu.findItem(R.id.top_rated_sort).setChecked(true);
-        } else if (movieSort == MovieSort.RUNTIME_DESCENDING){
-            menu.findItem(R.id.runtime_descending_sort).setChecked(true);
-        } else if (movieSort == MovieSort.RUNTIME_ASCENDING){
-            menu.findItem(R.id.runtime_ascending_sort).setChecked(true);
+        if (movieSort == MovieSort.DATE_ADDED){
+            menu.findItem(R.id.date_added_sort).setChecked(true);
+        } else if (movieSort == MovieSort.RUNTIME){
+            menu.findItem(R.id.rating_sort).setChecked(true);
+        } else if (movieSort == MovieSort.RATING){
+            menu.findItem(R.id.rating_sort).setChecked(true);
+        }else if (movieSort == MovieSort.ALPHABETICAL){
+            menu.findItem(R.id.alphabetical_sort).setChecked(true);
         }
 
         return true;
@@ -316,51 +318,48 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             // Sorting
-            case R.id.recently_added_sort:
-                Log.d(TAG, "recently_added_sort: " + Integer.toString(movieWatchListFragments.size()));
-                PreferencesHelper.setMovieSort(MovieSort.RECENTLY_ADDED, getApplicationContext());
+            case R.id.date_added_sort:
+                PreferencesHelper.setMovieSort(MovieSort.DATE_ADDED, getApplicationContext());
                 for (MovieWatchListFragment fragment : movieWatchListFragments) {
                     if (fragment != null) {
-                        fragment.sort(MovieSort.RECENTLY_ADDED);
+                        fragment.sort(MovieSort.DATE_ADDED);
                     }
                 }
                 item.setChecked(true);
 
                 return true;
 
-            case R.id.top_rated_sort:
+            case R.id.alphabetical_sort:
+                PreferencesHelper.setMovieSort(MovieSort.ALPHABETICAL, getApplicationContext());
+                for (MovieWatchListFragment fragment : movieWatchListFragments) {
+                    if (fragment != null) {
+                        fragment.sort(MovieSort.ALPHABETICAL);
+                    }
+                }
+                item.setChecked(true);
+
+                return true;
+
+            case R.id.rating_sort:
                 Log.d(TAG, "top_rated_sort: " + Integer.toString(movieWatchListFragments.size()));
-                PreferencesHelper.setMovieSort(MovieSort.TOP_RATED, getApplicationContext());
+                PreferencesHelper.setMovieSort(MovieSort.RATING, getApplicationContext());
 
                 for (MovieWatchListFragment fragment : movieWatchListFragments) {
                     if (fragment != null) {
-                        fragment.sort(MovieSort.TOP_RATED);
+                        fragment.sort(MovieSort.RATING);
                     }
                 }
                 item.setChecked(true);
 
                 return true;
 
-            case R.id.runtime_descending_sort:
+            case R.id.runtime_sort:
                 Log.d(TAG, "runtime_sort: " + Integer.toString(movieWatchListFragments.size()));
-                PreferencesHelper.setMovieSort(MovieSort.RUNTIME_DESCENDING, getApplicationContext());
+                PreferencesHelper.setMovieSort(MovieSort.RUNTIME, getApplicationContext());
 
                 for (MovieWatchListFragment fragment : movieWatchListFragments) {
                     if (fragment != null) {
-                        fragment.sort(MovieSort.RUNTIME_DESCENDING);
-                    }
-                }
-                item.setChecked(true);
-
-                return true;
-
-            case R.id.runtime_ascending_sort:
-                Log.d(TAG, "runtime_sort: " + Integer.toString(movieWatchListFragments.size()));
-                PreferencesHelper.setMovieSort(MovieSort.RUNTIME_ASCENDING, getApplicationContext());
-
-                for (MovieWatchListFragment fragment : movieWatchListFragments) {
-                    if (fragment != null) {
-                        fragment.sort(MovieSort.RUNTIME_ASCENDING);
+                        fragment.sort(MovieSort.RUNTIME);
                     }
                 }
                 item.setChecked(true);

@@ -43,30 +43,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0c53e106-d391-4253-9388-4786240c9aaa" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/search_view.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/SimilarMoviesAdapter.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/SimilarShowsAdapter.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/BadgedImageview/BadgeDrawable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/BadgedImageview/BadgedImageView.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/BadgedImageview/ForegroundImageView.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/values/attrs_badged_image_view.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/values/attrs_foreground_view.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/TVShowRealmStaticHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/TVShowRealmStaticHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/Enums/MovieSort.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/Enums/MovieSort.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/PreferencesHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/uitls/PreferencesHelper.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/SearchActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/SearchActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/BrowseMovieDetailActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/BrowseMovieDetailActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/SimilarMoviesActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/SimilarMoviesActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/WatchlistDetailActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/WatchlistDetailActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/StatisticsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/StatisticsActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/BrowseMoviesActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/BrowseMoviesActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/WatchlistActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/movies/WatchlistActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/shows/TVShowBrowseActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/shows/TVShowBrowseActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/shows/YourShowsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/activities/shows/YourShowsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/BrowseMoviesAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/BrowseMoviesAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/BrowseTVShowsAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/BrowseTVShowsAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/KnownForAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/KnownForAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/MovieWatchlistAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/MovieWatchlistAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/MultiSearchAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/MultiSearchAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/SearchAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/SearchAdapter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/WatchListSeasonAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/WatchListSeasonAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/WatchedMoviesAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/WatchedMoviesAdapter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/YourShowsAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/adapters/YourShowsAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/fragments/shows/TVShowOverviewFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/fragments/shows/TVShowOverviewFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/fragments/movies/MovieWatchListFragment.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/matt/BingeList/viewControllers/fragments/movies/MovieWatchListFragment.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_card.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_card.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_compact_card.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_compact_card.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_list.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_list.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_search.xml" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_search.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_main_movie_sort.xml" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_main_movie_sort.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/menu/menu_your_tv_shows_options.xml" afterPath="$PROJECT_DIR$/app/src/main/res/menu/menu_your_tv_shows_options.xml" />
     </list>
     <ignored path="movieWatchList.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -113,44 +116,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="menu_search.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_search.xml">
+      <file leaf-file-name="YourShowsAdapter.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/YourShowsAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.8461537">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.4031007">
-              <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TVShowBrowseActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/TVShowBrowseActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="84" column="1" selection-start-line="84" selection-start-column="1" selection-end-line="84" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="YourShowsActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="310" column="13" selection-start-line="310" selection-start-column="13" selection-end-line="310" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.5125">
+              <caret line="225" column="0" selection-start-line="225" selection-start-column="0" selection-end-line="225" selection-end-column="0" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="method#onCreateViewHolder#0;class#YourShowsAdapter#0" expanded="false" />
+                <element signature="e#6743#6744#0" expanded="true" />
+                <element signature="e#6782#6783#0" expanded="true" />
+                <element signature="method#sort#0;class#YourShowsAdapter#0" expanded="false" />
+                <element signature="e#8556#12767#0" expanded="true" />
+                <element signature="e#12766#12767#0" expanded="true" />
+                <element signature="e#16408#16442#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="YourShowsDetailActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsDetailActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-21.655172">
+              <caret line="305" column="60" selection-start-line="286" selection-start-column="24" selection-end-line="305" selection-end-column="60" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -160,10 +149,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="valueResourceFile" />
         <option value="resourceFile" />
         <option value="Class" />
         <option value="layoutResourceFile_vertical" />
+        <option value="valueResourceFile" />
       </list>
     </option>
   </component>
@@ -1748,7 +1737,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="4399277466230" />
+        <entry key="$PROJECT_DIR$" value="4401774778508" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -2126,24 +2115,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/BrowseMoviesActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_main_sort.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/PreferencesHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MovieWatchlistAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/Enums/MovieSort.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_main_movie_sort.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/WatchlistActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/models/shows/TVShow.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_main_show_sort.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/Enums/ShowSort.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/movies/MovieWatchListFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/YourShowsFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVShowBrowseSeasonFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_your_tv_shows_options.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVEpisodeFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/tvshow_overview.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/CastActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/SimilarShowsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/movies/MovieBrowseFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/SimilarShowsAdapter.java" />
@@ -2162,28 +2133,47 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/WatchlistDetailActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVShowOverviewFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/search_view.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_card.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_compact_card.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_list.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MultiSearchAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchedMoviesAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/YourShowsAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseMoviesAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseTVShowsAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/TVShowRealmStaticHelper.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/SearchAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_search.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/TVShowBrowseActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/SearchActivity.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/BadgedFourThreeImageView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/BadgeDrawable.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/BadgedSquareImageView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/BadgedImageView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/attrs_badged_image_view.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/attrs_foreground_view.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/ForegroundImageView.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_compact_card.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_list.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/item_more_options_card.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseTVShowsAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MultiSearchAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_main_movie_sort.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/Enums/MovieSort.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/PreferencesHelper.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MovieWatchlistAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchedMoviesAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/movies/MovieWatchListFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/WatchlistActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/BrowseMoviesActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/TVShowBrowseActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/StatisticsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/SearchActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchListSeasonAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/menu_your_tv_shows_options.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/YourShowsAdapter.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-7" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -2229,12 +2219,181 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.NonAndroidModuleNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bingeList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bingeList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="viewControllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bingeList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="viewControllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shows" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bingeList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="viewControllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="adapters" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bingeList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="viewControllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="movieWatchList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="bingeList" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="viewControllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="activities" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="shows" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2287,8 +2446,9 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2302,7 +2462,7 @@
     <property name="ExportApk.Flavors" value="" />
     <property name="ExportApk.BuildType" value="release" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/res/drawable-xhdpi" />
-    <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.WIDTH" value="380" />
+    <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.WIDTH" value="3" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://E:/workspace/Android/movieWatchList/app/src/main/java/com/example/matt/movieWatchList/viewControllers/activities/shows/BrowseTVShowsDetailActivity.java" />
     <property name="android.project.structure.last.selected" value="SDK Location" />
     <property name="android.project.structure.proportion" value="0.15" />
@@ -2322,11 +2482,11 @@
       <recent name="com.example.matt.movieWatchList.viewControllers.fragments.shows" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\workspace\Android\movieWatchList\app\src\main\java\com\example\matt\bingeList\uitls\BadgedImageview" />
       <recent name="E:\workspace\Android\movieWatchList\app\src\main\java\com\example\matt\bingeList\models" />
       <recent name="E:\workspace\Android\movieWatchList\app\src\main\java\com\example\matt\bingeList\models\shows" />
       <recent name="E:\workspace\Android\movieWatchList\app\src\main\java\com\example\matt\movieWatchList\Models\POJO\shows" />
       <recent name="E:\workspace\Android\movieWatchList\app\src\main\java\com\example\matt\movieWatchList\viewControllers\ExpandableDemo" />
-      <recent name="E:\workspace\Android\movieWatchList\app\src\main\java\com\example\matt\movieWatchList\Models\POJO" />
     </key>
   </component>
   <component name="RunManager" selected="Android Application.app">
@@ -2857,20 +3017,26 @@
       <option name="project" value="LOCAL" />
       <updated>1469412081993</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Redo related shows adapter to browse adapter.&#10;&#10;Improved search activity (themes and auto search focus)&#10;&#10;bug fixes">
+      <created>1469460993677</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1469460993677</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="0" width="974" height="1047" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33912036" sideWeight="0.4664179" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33853006" sideWeight="0.4664179" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33741647" sideWeight="0.5191898" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3129176" sideWeight="0.47654584" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3129176" sideWeight="0.47654584" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19599108" sideWeight="0.4914712" order="2" side_tool="false" content_ui="tabs" />
@@ -2879,7 +3045,7 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33296213" sideWeight="0.5234541" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.7341357" sideWeight="0.49303135" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22334754" sideWeight="0.49303135" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Fabric" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -2892,7 +3058,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32850778" sideWeight="0.48081023" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739422" sideWeight="0.48081023" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -2907,7 +3073,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added search functionality, and fixed settings toolbar" />
     <MESSAGE value="Added TV Browse" />
     <MESSAGE value="Fixed movie browse bug. added sort menu" />
     <MESSAGE value="Finally fixed popular movies bug. Was a static recyclerview" />
@@ -2932,210 +3097,20 @@
     <MESSAGE value="Added in sorting, still a few bugs, but getting there" />
     <MESSAGE value="Added synchronization between tabs on yourshows detail activity" />
     <MESSAGE value="Fixed issue where item wasn;t added first time" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed issue where item wasn;t added first time" />
+    <MESSAGE value="Redo related shows adapter to browse adapter.&#10;&#10;Improved search activity (themes and auto search focus)&#10;&#10;bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Redo related shows adapter to browse adapter.&#10;&#10;Improved search activity (themes and auto search focus)&#10;&#10;bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="33" />
+      <option name="time" value="35" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/tvshow_overview.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.58219177">
-          <caret line="183" column="64" selection-start-line="183" selection-start-column="64" selection-end-line="183" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/CastActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6057471">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/SimilarShowsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="93" column="29" selection-start-line="93" selection-start-column="29" selection-end-line="93" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/movies/MovieBrowseFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#8393#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/xml/preferences.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.923077">
-          <caret line="25" column="42" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/DrawerHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="71" column="46" selection-start-line="71" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/nav_header.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.6363635">
-          <caret line="26" column="34" selection-start-line="26" selection-start-column="34" selection-end-line="26" selection-end-column="34" />
-          <folding>
-            <element signature="e#1010#1030#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/tvshow_episode_overview.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.4">
-          <caret line="35" column="3" selection-start-line="35" selection-start-column="3" selection-end-line="35" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36343613">
-          <caret line="21" column="42" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/WatchlistActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="8" selection-start-line="64" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVShowWatchlistSeasonFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="179" column="5" selection-start-line="179" selection-start-column="5" selection-end-line="179" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/CastAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31587303">
-          <caret line="47" column="13" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVShowBrowseSeasonFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.026984127">
-          <caret line="72" column="11" selection-start-line="72" selection-start-column="11" selection-end-line="72" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/movies/MovieWatchListFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.026984127">
-          <caret line="80" column="16" selection-start-line="80" selection-start-column="16" selection-end-line="80" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.realm/realm-android-library/1.0.1/5eac8938d5d64b70ba9069c000d69ce96a6e7819/realm-android-library-1.0.1-sources.jar!/io/realm/RealmObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33273703">
-          <caret line="141" column="49" selection-start-line="141" selection-start-column="49" selection-end-line="141" selection-end-column="49" />
-          <folding>
-            <element signature="e#5353#5354#0" expanded="false" />
-            <element signature="e#5401#5402#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVShowEpisodeFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="228" column="9" selection-start-line="228" selection-start-column="9" selection-end-line="228" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/KnownForAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.0331411">
-          <caret line="143" column="78" selection-start-line="143" selection-start-column="78" selection-end-line="143" selection-end-column="78" />
-          <folding>
-            <element signature="e#3065#3108#0" expanded="false" />
-            <element signature="e#3110#3153#0" expanded="false" />
-            <element signature="e#3416#3459#0" expanded="false" />
-            <element signature="e#3462#3505#0" expanded="false" />
-            <element signature="e#5117#5153#0" expanded="false" />
-            <element signature="e#5419#5454#0" expanded="false" />
-            <element signature="e#5892#5928#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchListSeasonAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="94" column="12" selection-start-line="94" selection-start-column="10" selection-end-line="94" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/models/movies/MovieResult.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/SimilarMoviesActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="166" column="21" selection-start-line="158" selection-start-column="20" selection-end-line="166" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/BrowseMoviesActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.028862478">
-          <caret line="232" column="45" selection-start-line="232" selection-start-column="37" selection-end-line="232" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/TVShowBrowseDetailActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="189" column="0" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsDetailActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.028862478">
-          <caret line="212" column="80" selection-start-line="212" selection-start-column="80" selection-end-line="212" selection-end-column="80" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3157,16 +3132,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="4.6044145">
           <caret line="267" column="37" selection-start-line="267" selection-start-column="37" selection-end-line="267" selection-end-column="37" />
-          <folding>
-            <element signature="e#4624#4659#0" expanded="false" />
-            <element signature="e#5618#5657#0" expanded="false" />
-            <element signature="e#5677#5716#0" expanded="false" />
-            <element signature="e#7395#7440#0" expanded="false" />
-            <element signature="e#10166#10211#0" expanded="false" />
-            <element signature="e#11317#11360#0" expanded="false" />
-            <element signature="e#11363#11407#0" expanded="false" />
-            <element signature="e#12201#12246#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3191,47 +3156,6 @@
           <folding>
             <element signature="e#1853#1873#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MovieWatchlistAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37521222">
-          <caret line="109" column="8" selection-start-line="109" selection-start-column="8" selection-end-line="127" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_more_options_card.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_more_options_compact_card.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_more_options_list.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.65384614">
-          <caret line="59" column="0" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3268,109 +3192,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MultiSearchAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.275862">
-          <caret line="210" column="0" selection-start-line="210" selection-start-column="0" selection-end-line="210" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#UpdateRealmSeasons#0;class#MultiSearchAdapter#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchedMoviesAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/YourShowsAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24263431">
-          <caret line="121" column="0" selection-start-line="121" selection-start-column="0" selection-end-line="121" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseTVShowsAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.4827586">
-          <caret line="303" column="35" selection-start-line="303" selection-start-column="16" selection-end-line="303" selection-end-column="35" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#onCreateViewHolder#0;class#BrowseTVShowsAdapter#0" expanded="false" />
-            <element signature="e#7500#8078#0" expanded="true" />
-            <element signature="e#8077#8078#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/models/shows/Episode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="26" selection-start-line="14" selection-start-column="19" selection-end-line="14" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/TVShowRealmStaticHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3327674">
-          <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseMoviesAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.26785713">
-          <caret line="347" column="0" selection-start-line="347" selection-start-column="0" selection-end-line="347" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#2275:3195" expanded="false" />
-            <element signature="class#3247:4018" expanded="false" />
-            <element signature="method#addMoreMovies#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#isOnWatchList#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#isWatched#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#archiveHandler#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#moveFromWatchlistToWatched#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#moveFromWatchedToWatchList#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#moveFromBrowseToWatchList#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#moveFromBrowseToWatched#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#moveFromWatchListToBrowse#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#unArchiveMovie#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#archiveMovie#0;class#BrowseMoviesAdapter#0" expanded="false" />
-            <element signature="method#setActionButton#0;class#BrowseMoviesAdapter#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/SearchAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.663837">
-          <caret line="46" column="54" selection-start-line="46" selection-start-column="54" selection-end-line="46" selection-end-column="54" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="310" column="13" selection-start-line="310" selection-start-column="13" selection-end-line="310" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/TVShowBrowseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="84" column="1" selection-start-line="84" selection-start-column="1" selection-end-line="84" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3378,7 +3203,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.663837">
           <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3386,39 +3210,397 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.11544991">
           <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.814816">
+          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/SearchActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/API/MovieAPI.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4516129">
-          <caret line="90" column="9" selection-start-line="90" selection-start-column="9" selection-end-line="90" selection-end-column="9" />
-          <folding />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="40" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_search.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/BadgeDrawable.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.8461537">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.020334927">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/attrs_foreground_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.52469134">
+          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.10167464">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_search.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.4031007">
-          <caret line="53" column="0" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.25185186">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_more_options_compact_card.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.1454546">
+          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="23" selection-end-column="34" />
+          <folding>
+            <element signature="e#371#391#0" expanded="true" />
+            <element signature="e#422#442#0" expanded="true" />
+            <element signature="e#474#494#0" expanded="true" />
+            <element signature="e#705#733#0" expanded="true" />
+            <element signature="e#884#917#0" expanded="true" />
+            <element signature="e#952#980#0" expanded="true" />
+            <element signature="e#1093#1113#0" expanded="true" />
+            <element signature="e#1560#1594#0" expanded="true" />
+            <element signature="e#1633#1653#0" expanded="true" />
+            <element signature="e#1693#1713#0" expanded="true" />
+            <element signature="e#2401#2421#0" expanded="true" />
+            <element signature="e#2461#2481#0" expanded="true" />
+            <element signature="e#2522#2542#0" expanded="true" />
+            <element signature="e#2768#2802#0" expanded="true" />
+            <element signature="e#3289#3315#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_more_options_list.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3047375">
+          <caret line="14" column="73" selection-start-line="14" selection-start-column="58" selection-end-line="14" selection-end-column="73" />
+          <folding>
+            <element signature="e#530#558#0" expanded="true" />
+            <element signature="e#709#742#0" expanded="true" />
+            <element signature="e#777#805#0" expanded="true" />
+            <element signature="e#918#938#0" expanded="true" />
+            <element signature="e#1385#1419#0" expanded="true" />
+            <element signature="e#1458#1478#0" expanded="true" />
+            <element signature="e#1518#1538#0" expanded="true" />
+            <element signature="e#2226#2246#0" expanded="true" />
+            <element signature="e#2286#2306#0" expanded="true" />
+            <element signature="e#2347#2367#0" expanded="true" />
+            <element signature="e#2600#2634#0" expanded="true" />
+            <element signature="e#2950#2976#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/attrs_badged_image_view.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7381818">
+          <caret line="32" column="20" selection-start-line="32" selection-start-column="20" selection-end-line="32" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/ForegroundImageView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="6" selection-start-line="34" selection-start-column="6" selection-end-line="34" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/BadgedImageview/BadgedImageView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/item_more_options_card.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.6363635">
+          <caret line="39" column="48" selection-start-line="39" selection-start-column="48" selection-end-line="39" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/SearchAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0034482758">
+          <caret line="46" column="54" selection-start-line="46" selection-start-column="54" selection-end-line="46" selection-end-column="54" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseTVShowsAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="165" column="30" selection-start-line="165" selection-start-column="30" selection-end-line="165" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MultiSearchAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.275862">
+          <caret line="298" column="57" selection-start-line="298" selection-start-column="57" selection-end-line="298" selection-end-column="57" />
+          <folding>
+            <element signature="class#3032:3803" expanded="false" />
+            <element signature="e#6517#6560#0" expanded="true" />
+            <element signature="e#6563#6607#0" expanded="true" />
+            <element signature="e#7499#7540#0" expanded="true" />
+            <element signature="e#8749#8801#0" expanded="true" />
+            <element signature="e#9522#9568#0" expanded="true" />
+            <element signature="e#9938#9991#0" expanded="true" />
+            <element signature="e#10850#10893#0" expanded="true" />
+            <element signature="e#11440#11483#0" expanded="true" />
+            <element signature="e#11486#11530#0" expanded="true" />
+            <element signature="e#11661#11704#0" expanded="true" />
+            <element signature="e#13572#22596#0" expanded="true" />
+            <element signature="e#22595#22596#0" expanded="true" />
+            <element signature="e#24761#24987#0" expanded="true" />
+            <element signature="e#24986#24987#0" expanded="true" />
+            <element signature="e#25171#26440#0" expanded="true" />
+            <element signature="e#25705#25741#0" expanded="true" />
+            <element signature="e#26105#26140#0" expanded="true" />
+            <element signature="e#26199#26237#0" expanded="true" />
+            <element signature="e#26439#26440#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/MovieRealmStaticHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/TVShowRealmStaticHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3027027">
+          <caret line="89" column="75" selection-start-line="89" selection-start-column="75" selection-end-line="89" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/models/movies/Movie.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="102" column="24" selection-start-line="102" selection-start-column="19" selection-end-line="102" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/Enums/MovieSort.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="34" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_main_movie_sort.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4831261">
+          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#371#385#0" expanded="true" />
+            <element signature="e#1168#1183#0" expanded="true" />
+            <element signature="e#1422#1441#0" expanded="true" />
+            <element signature="e#1553#1574#0" expanded="true" />
+            <element signature="e#1723#1737#0" expanded="true" />
+            <element signature="e#1973#1987#0" expanded="true" />
+            <element signature="e#2101#2118#0" expanded="true" />
+            <element signature="e#2229#2243#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/uitls/PreferencesHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6689304">
+          <caret line="64" column="100" selection-start-line="64" selection-start-column="100" selection-end-line="64" selection-end-column="100" />
+          <folding>
+            <element signature="e#2788#2826#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/YourShowsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="42" column="24" selection-start-line="42" selection-start-column="24" selection-end-line="42" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://E:/Programs/platforms/android-24/android.jar!/java/lang/String.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1271028">
+          <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/MovieWatchlistAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/movies/MovieWatchListFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.49575552">
+          <caret line="66" column="16" selection-start-line="66" selection-start-column="16" selection-end-line="66" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchedMoviesAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8234295">
+          <caret line="109" column="70" selection-start-line="109" selection-start-column="70" selection-end-line="109" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/WatchlistActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.827586">
+          <caret line="111" column="0" selection-start-line="111" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39285713">
+          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/movies/BrowseMoviesActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4232143">
+          <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/TVShowBrowseActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="100" column="26" selection-start-line="100" selection-start-column="26" selection-end-line="100" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/StatisticsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/SearchActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34804752">
+          <caret line="83" column="0" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/SeasonAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="47.482758">
+          <caret line="59" column="25" selection-start-line="59" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/WatchListSeasonAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="128" column="74" selection-start-line="128" selection-start-column="70" selection-end-line="128" selection-end-column="74" />
+          <folding>
+            <element signature="method#formatAirDate#0;class#WatchListSeasonAdapter#0" expanded="false" />
+            <element signature="method#formatEpisodeTitle#0;class#WatchListSeasonAdapter#0" expanded="false" />
+            <element signature="method#onCheckCanExpandOrCollapseGroup#0;class#WatchListSeasonAdapter#0" expanded="false" />
+            <element signature="method#onClickItemView#0;class#WatchListSeasonAdapter#0" expanded="false" />
+            <element signature="method#handleOnClickGroupItemContainerView#0;class#WatchListSeasonAdapter#0" expanded="false" />
+            <element signature="method#handleOnClickChildItemContainerView#0;class#WatchListSeasonAdapter#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/BrowseMoviesAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="163" column="0" selection-start-line="163" selection-start-column="0" selection-end-line="163" selection-end-column="0" />
+          <folding>
+            <element signature="class#2275:3195" expanded="false" />
+            <element signature="class#3247:4018" expanded="false" />
+            <element signature="method#addMoreMovies#0;class#BrowseMoviesAdapter#0" expanded="false" />
+            <element signature="method#archiveHandler#0;class#BrowseMoviesAdapter#0" expanded="false" />
+            <element signature="method#moveFromWatchedToWatchList#0;class#BrowseMoviesAdapter#0" expanded="false" />
+            <element signature="method#moveFromBrowseToWatched#0;class#BrowseMoviesAdapter#0" expanded="false" />
+            <element signature="method#moveFromWatchListToBrowse#0;class#BrowseMoviesAdapter#0" expanded="false" />
+            <element signature="method#unArchiveMovie#0;class#BrowseMoviesAdapter#0" expanded="false" />
+            <element signature="method#archiveMovie#0;class#BrowseMoviesAdapter#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/menu_your_tv_shows_options.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.807693">
+          <caret line="15" column="47" selection-start-line="15" selection-start-column="47" selection-end-line="15" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/fragments/shows/TVShowWatchlistSeasonFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.413793">
+          <caret line="53" column="90" selection-start-line="53" selection-start-column="88" selection-end-line="53" selection-end-column="90" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/activities/shows/YourShowsDetailActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.655172">
+          <caret line="305" column="60" selection-start-line="286" selection-start-column="24" selection-end-line="305" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/matt/bingeList/viewControllers/adapters/YourShowsAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5125">
+          <caret line="225" column="0" selection-start-line="225" selection-start-column="0" selection-end-line="225" selection-end-column="0" />
+          <folding>
+            <element signature="method#onCreateViewHolder#0;class#YourShowsAdapter#0" expanded="false" />
+            <element signature="e#6743#6744#0" expanded="true" />
+            <element signature="e#6782#6783#0" expanded="true" />
+            <element signature="method#sort#0;class#YourShowsAdapter#0" expanded="false" />
+            <element signature="e#8556#12767#0" expanded="true" />
+            <element signature="e#12766#12767#0" expanded="true" />
+            <element signature="e#16408#16442#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

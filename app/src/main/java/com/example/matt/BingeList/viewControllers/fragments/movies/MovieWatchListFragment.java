@@ -63,15 +63,15 @@ public class MovieWatchListFragment extends Fragment {
         if (getArguments().getInt("watched") == 1) {
             mWatchListAdapter = null;
             mWatchedAdapter = new WatchedMoviesAdapter(new RealmList<Movie>(), getContext(), mUiRealm);
-
+            mRecyclerView.setAdapter(mWatchedAdapter);
         } else {
             mWatchedAdapter = null;
             mWatchListAdapter = new MovieWatchlistAdapter(new RealmList(), getContext(), mUiRealm);
+            mRecyclerView.setAdapter(mWatchListAdapter);
         }
         
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(mWatchListAdapter);
 
         sort(PreferencesHelper.getMovieSort(mContext));
 
@@ -89,51 +89,9 @@ public class MovieWatchListFragment extends Fragment {
         Log.d(TAG, Integer.toString(sortType));
 
         if (mWatchListAdapter != null) {
-            RealmResults<Movie> movieRealmResults = null;
-            if (sortType == MovieSort.RECENTLY_ADDED){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAll();
-            } else if (sortType == MovieSort.TOP_RATED){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("voteAverage", Sort.DESCENDING);
-            } else if (sortType == MovieSort.RUNTIME_DESCENDING){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("runtime", Sort.DESCENDING);
-            } else if (sortType == MovieSort.RUNTIME_ASCENDING){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAllSorted("runtime", Sort.ASCENDING);
-            } else {
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("onWatchList", true).findAll();
-            }
-
-            RealmList<Movie> movies = new RealmList<>();
-            for (Movie movieResult : movieRealmResults) {
-                if(mUiRealm.where(ArchivedMovies.class).equalTo(mContext.getString(R.string.movieId), movieResult.getId()).count() == 0) {
-                    movies.add(movieResult);
-                }
-            }
-
-            mWatchListAdapter = new MovieWatchlistAdapter(movies, getContext(), mUiRealm);
-            mRecyclerView.setAdapter(mWatchListAdapter);
-        }
-        if (mWatchedAdapter != null) {
-            RealmResults<Movie> movieRealmResults = null;
-            if (sortType == MovieSort.RECENTLY_ADDED){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
-            } else if (sortType == MovieSort.TOP_RATED){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("voteAverage", Sort.DESCENDING);
-            }  else if (sortType == MovieSort.RUNTIME_DESCENDING){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.DESCENDING);
-            } else if (sortType == MovieSort.RUNTIME_ASCENDING){
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAllSorted("runtime", Sort.ASCENDING);
-            } else {
-                movieRealmResults = mUiRealm.where(Movie.class).equalTo("isWatched", true).findAll();
-            }
-
-            RealmList<Movie> movies = new RealmList<>();
-            for (Movie movieResult : movieRealmResults) {
-                if(mUiRealm.where(ArchivedMovies.class).equalTo(mContext.getString(R.string.movieId), movieResult.getId()).count() == 0) {
-                    movies.add(movieResult);
-                }
-            }
-            mWatchedAdapter = new WatchedMoviesAdapter(movies, getContext(), mUiRealm);
-            mRecyclerView.setAdapter(mWatchedAdapter);
+            mWatchListAdapter.sort(sortType);
+        }else if (mWatchedAdapter != null) {
+            mWatchedAdapter.sort(sortType);
         }
     }
 }

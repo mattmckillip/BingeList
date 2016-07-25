@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -33,12 +34,14 @@ import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.BadgedImageview.BadgedImageView;
 import com.example.matt.bingeList.uitls.Enums.ShowSort;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.YourShowsDetailActivity;
+import com.example.matt.bingeList.viewControllers.fragments.shows.TVShowWatchlistSeasonFragment;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.iconics.view.IconicsButton;
@@ -116,7 +119,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
     }
 
     @Override
-    public void onBindViewHolder(final YourShowsViewHolder holder, final int position) {
+    public void onBindViewHolder(final YourShowsViewHolder holder, int position) {
         mShow = mShowList.get(position);
 
         holder.mWatchedLayout.setVisibility(View.GONE);
@@ -134,6 +137,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         }
 
         holder.mShowName.setText(mShowList.get(position).getName());
+
         // Check the case where the title is too long
         if (viewMode == ViewType.COMPACT_CARD || viewMode == ViewType.LIST) {
             final TextView title = holder.mShowName;
@@ -148,6 +152,9 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
                     // Perform any actions you want based on the line count here.
                 }
             });
+        } else {
+            holder.mShowImage.setBadgeText(mShow.getNetworks().first().getName());
+            holder.mShowImage.showBadge(true);
         }
         holder.mShowDecsiption.setText(mShowList.get(position).getOverview());
 
@@ -188,82 +195,103 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
     }
 
     private void setListeners(final YourShowsViewHolder holder, final int position){
-        /*holder.mMoreOptionsButton.setOnClickListener(new View.OnClickListener() {
+        holder.mMoreOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Log.d(TAG, "moreOptionsButtonClick()");
-                if (isOnWatchList(position)) { // Movie is on the users watchlist
-                    PopupMenu popup = new PopupMenu(mContext, v);
-                    popup.getMenuInflater().inflate(R.menu.menu_watchlist, popup.getMenu());
+                Context wrapper = new ContextThemeWrapper(mContext, R.style.MyPopupMenu);
+                PopupMenu popup = new PopupMenu(wrapper, v);
+                popup.getMenuInflater().inflate(R.menu.menu_your_tv_shows_options, popup.getMenu());
 
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.action_archive:
-                                    archiveHandler(mMovieList.get(position), position, v);
-                                    return true;
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_remove:
+                                mShow = mShowList.get(holder.getAdapterPosition());
+                                String showName = mShow.getName();
 
-                                case R.id.action_remove:
-                                    moveFromWatchListToBrowse(mMovieList.get(position).getId());
-                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " removed from watchlist", Snackbar.LENGTH_LONG).show();
-                                    return true;
-                            }
-                            return false;
+                                mUiRealm.beginTransaction();
+                                TVShow TVShowResultsToRemove = mUiRealm.where(TVShow.class)
+                                        .equalTo("id", mShow.getId())
+                                        .findFirst();
+                                TVShowResultsToRemove.deleteFromRealm();
+
+                                mShowList.remove(holder.getAdapterPosition());
+
+                                RealmResults<Episode> EpisodeResultsToRemove = mUiRealm.where(Episode.class)
+                                        .equalTo("show_id", mShow.getId())
+                                        .findAll();
+                                for (int i = 0; i < EpisodeResultsToRemove.size(); i++) {
+                                    EpisodeResultsToRemove.get(i).deleteFromRealm();
+                                }
+
+                                RealmResults<Season> SeasonResultsToRemove = mUiRealm.where(Season.class)
+                                        .equalTo("show_id", mShow.getId())
+                                        .findAll();
+                                for (int i = 0; i < SeasonResultsToRemove.size(); i++) {
+                                    SeasonResultsToRemove.get(i).deleteFromRealm();
+                                }
+
+                                mUiRealm.commitTransaction();
+
+                                Snackbar.make(v, showName + " removed from your shows", Snackbar.LENGTH_LONG).show();
+
+                                notifyDataSetChanged();
+
+                                return true;
+
+                            case R.id.action_mark_all_watched:
+                                mShow = mShowList.get(holder.getAdapterPosition());
+
+                                mUiRealm.beginTransaction();
+                                RealmList<Season> watchSeasons = mShow.getSeasons();
+                                for (int i = 0; i < watchSeasons.size(); i++) {
+                                    RealmResults<Episode> episodes = mUiRealm.where(Episode.class).equalTo("show_id", mShow.getId()).findAll();
+                                    for (int j = 0; j < episodes.size(); j++) {
+                                        episodes.get(j).setIsWatched(true);
+                                    }
+                                }
+                                mUiRealm.commitTransaction();
+
+                                Snackbar.make(v, "All episodes marked watched!",
+                                        Snackbar.LENGTH_SHORT).show();
+
+                                notifyDataSetChanged();
+
+                                return true;
+
+                            case R.id.action_mark_all_unwatched:
+                                mShow = mShowList.get(holder.getAdapterPosition());
+
+                                mUiRealm.beginTransaction();
+                                RealmList<Season> unwatchSeasons = mShow.getSeasons();
+                                for (int i = 0; i < unwatchSeasons.size(); i++) {
+                                    RealmResults<Episode> episodes = mUiRealm.where(Episode.class).equalTo("show_id", mShow.getId()).findAll();
+                                    for (int j = 0; j < episodes.size(); j++) {
+                                        episodes.get(j).setIsWatched(false);
+                                    }
+                                }
+                                mUiRealm.commitTransaction();
+
+                                Snackbar.make(v, "All episodes marked unwatched!",
+                                        Snackbar.LENGTH_SHORT).show();
+
+                                notifyDataSetChanged();
+
+                                return true;
                         }
-                    });
-                    popup.show();
-
-                } else if (isWatched(position)) { // Movie has been watched
-                    PopupMenu popup = new PopupMenu(mContext, v);
-                    popup.getMenuInflater().inflate(R.menu.menu_watched, popup.getMenu());
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.action_archive:
-                                    archiveHandler(mMovieList.get(position), position, v);
-                                    return true;
-
-                                case R.id.action_remove:
-                                    moveFromWatchListToBrowse(mMovieList.get(position).getId());
-                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " removed from watchlist", Snackbar.LENGTH_LONG).show();
-                                    return true;
-
-                                case R.id.action_move_to_watchlist:
-                                    moveFromWatchedToWatchList(position);
-                                    Snackbar.make(v, mMovieList.get(position).getTitle() + " unwatched", Snackbar.LENGTH_LONG).show();
-                                    return true;
-                            }
-                            return false;
-                        }
-                    });
-                    popup.show();
-                } else { // Movie is not on watchlist or watched
-                    PopupMenu popup = new PopupMenu(mContext, v);
-                    popup.getMenuInflater().inflate(R.menu.menu_browse, popup.getMenu());
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.action_archive:
-                                    archiveHandler(mMovieList.get(position), position, v);
-                                    return true;
-
-                                case R.id.action_watch:
-                                    moveFromBrowseToWatched(position, v);
-                                    return true;
-                            }
-                            return false;
-                        }
-                    });
-                    popup.show();
-                }
+                        return false;
+                    }
+                });
+                popup.show();
             }
-        });*/
+        });
 
         holder.mActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
+                mShow = mShowList.get(holder.getAdapterPosition());
+
+                Log.d(TAG, mShow.getName());
                 Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
 
                 if (nextEpisode != null) {
@@ -315,7 +343,7 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
         TextView mShowName;
 
         @BindView(R.id.card_image)
-        ImageView mShowImage;
+        BadgedImageView mShowImage;
 
         @BindView(R.id.card_text)
         TextView mShowDecsiption;
@@ -343,83 +371,6 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
             super(v);
 
             ButterKnife.bind(this, v);
-
-            mMoreOptionsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    Context wrapper = new ContextThemeWrapper(mContext, R.style.MyPopupMenu);
-                    PopupMenu popup = new PopupMenu(wrapper, v);
-                    //PopupMenu popup = new PopupMenu(mContext, v);
-                    //Inflating the Popup using xml file
-                    popup.getMenuInflater().inflate(R.menu.menu_your_tv_shows_options, popup.getMenu());
-
-                    //registering popup with OnMenuItemClickListener
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            TVShow show = null;
-
-                            switch (item.getItemId()) {
-                                case R.id.action_remove:
-                                    show = mShowList.get(getAdapterPosition());
-                                    Integer showId = show.getId();
-
-                                    mUiRealm.beginTransaction();
-                                    TVShow TVShowResultsToRemove = mUiRealm.where(TVShow.class)
-                                            .equalTo("id", showId)
-                                            .findFirst();
-                                    TVShowResultsToRemove.deleteFromRealm();
-
-                                    mShowList.remove(getAdapterPosition());
-                                    notifyDataSetChanged();
-
-
-                                    /*RealmResults<Episode> EpisodeResultsToRemove = mUiRealm.where(Episode.class)
-                                            .equalTo("show_id", show.getId())
-                                            .findAll();
-                                    for (int i = 0; i < EpisodeResultsToRemove.size(); i++) {
-                                        EpisodeResultsToRemove.get(i).deleteFromRealm();
-                                    }
-
-                                    RealmResults<Season> SeasonResultsToRemove = mUiRealm.where(Season.class)
-                                            .equalTo("show_id", show.getId())
-                                            .findAll();
-                                    for (int i = 0; i < SeasonResultsToRemove.size(); i++) {
-                                        SeasonResultsToRemove.get(i).deleteFromRealm();
-                                    }*/
-
-                                    mUiRealm.commitTransaction();
-                                    //notifyDataSetChanged(); TODO breaking this
-
-                                    /*Snackbar.make(v, "Removed from your shows",
-                                            Snackbar.LENGTH_LONG).show();*/
-                                    return true;
-
-                                /*case R.id.action_mark_show_watched:
-                                    show = mShowList.get(getAdapterPosition());
-
-                                    RealmQuery<Episode> query = mUiRealm.where(Episode.class);
-                                    RealmResults<Episode> episodes = null;
-
-                                    episodes =  query.equalTo("show_id", show.getId()).findAll();
-
-                                    mUiRealm.beginTransaction();
-                                    for (int i = 0; i < episodes.size(); i++) {
-                                        episodes.get(i).setIsWatched(true);
-                                    }
-                                    mUiRealm.commitTransaction();
-
-                                    //TODO figure out how to notify
-
-                                    Snackbar.make(v, "Show watched!", Snackbar.LENGTH_SHORT);
-                                    return true;*/
-                            }
-                            return false;
-                        }
-                    });
-                    popup.show();//showing popup menu
-
-                }
-            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

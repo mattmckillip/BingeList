@@ -62,7 +62,7 @@ public class PreferencesHelper {
 
     public static int getMovieSort(Context context){
         SharedPreferences sharedPreferences = getSharedPreferences(context);
-        return sharedPreferences.getInt(context.getString(R.string.movie_sort), MovieSort.RECENTLY_ADDED);
+        return sharedPreferences.getInt(context.getString(R.string.movie_sort), MovieSort.DATE_ADDED);
     }
 
     public static void setShowSort(int sort, Context context){

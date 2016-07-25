@@ -64,13 +64,9 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
         mContext = context;
         mShowId = showId;
         mExpandableItemManager = expandableItemManager;
-
-        // ExpandableItemAdapter requires stable ID, and also
-        // have to implement the getGroupItemId()/getChildItemId() methods appropriately.
         setHasStableIds(true);
     }
 
-    //private AbstractExpandableDataProvider mProvider;
 
     @Override
     public int getGroupCount() {
@@ -128,11 +124,7 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
         holder.mSeasonAirDate.setText(formatAirDate(curSeason.getAirDate()));
 
         RealmQuery<Episode> query = mUiRealm.where(Episode.class);
-
         RealmResults<Episode> episodes =  query.equalTo("seasonNumber", curSeason.getSeasonNumber()).equalTo("show_id", mShowId).equalTo("isWatched", true).findAll();
-
-        Log.d(TAG, "Number of watched episodes: " + Integer.toString(episodes.size()));
-        Log.d(TAG, "Number of episodes: " + Integer.toString(curSeason.getEpisodeCount()));
 
         holder.mEpisodeProgress.setProgress((int) (((double) episodes.size()/(double) curSeason.getEpisodeCount()) * 100.0));
 
@@ -331,7 +323,6 @@ public class WatchListSeasonAdapter extends AbstractExpandableItemAdapter<WatchL
 
     private void handleOnClickChildItemContainerView(int groupPosition, int childPosition) {
     }
-
 
     private void handleOnClickWatchEpisodeButton(int groupPosition, int childPosition) {
         Log.d(TAG, "handleOnClickWatchEpisodeButton()");

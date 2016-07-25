@@ -24,6 +24,7 @@ import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.BadgedImageview.BadgedImageView;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.shows.TVShowBrowseDetailActivity;
@@ -158,11 +159,16 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                     // Perform any actions you want based on the line count here.
                 }
             });
+        } else {
+            holder.mShowImage.setBadgeText(mShow.getNetworks().first().getName());
+            holder.mShowImage.showBadge(true);
         }
         holder.mShowDescription.setText(mShowList.get(position).getOverview());
 
         setActionButton(holder, position);
         setListeners(holder, position);
+
+
     }
 
     @Override
@@ -175,7 +181,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
         TextView mShowName;
 
         @BindView(R.id.card_image)
-        ImageView mShowImage;
+        BadgedImageView mShowImage;
 
         @BindView(R.id.card_text)
         TextView mShowDescription;
