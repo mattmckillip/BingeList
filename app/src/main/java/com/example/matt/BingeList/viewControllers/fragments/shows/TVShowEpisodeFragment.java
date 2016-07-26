@@ -209,7 +209,7 @@ public class TVShowEpisodeFragment extends Fragment {
 
     private void setData() {
         // Add data
-        if (mEpisode.isValid()) {
+        if (mEpisode!= null && mEpisode.isValid()) {
             mPlot.setText(mEpisode.getOverview());
             mEpisodeTitle.setText(formatEpisodeTitle(mEpisode.getSeasonNumber(), mEpisode.getEpisodeNumber()) + ": " + mEpisode.getName());
             mAirDate.setText(formatAirDate(mEpisode.getAirDate()));

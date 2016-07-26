@@ -1,10 +1,16 @@
 package com.example.matt.bingeList.models;
+import android.util.Log;
+
+import com.example.matt.bingeList.models.movies.Movie;
+import com.example.matt.bingeList.models.shows.ExternalIds;
+
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
 import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
+import io.realm.internal.Table;
 
 public class Migration implements RealmMigration {
 
@@ -18,56 +24,39 @@ public class Migration implements RealmMigration {
         // Access the Realm schema in order to create, modify or delete classes and their fields.
         RealmSchema schema = realm.getSchema();
 
-        /************************************************
-         // Version 0
-         class Person
-         @Required
-         String firstName;
-         @Required
-         String lastName;
-         int    age;
-         // Version 1
-         class Person
-         @Required
-         String fullName;            // combine firstName and lastName into single field.
-         int age;
-         ************************************************/
         // Migrate from version 0 to version 1
-        if (oldVersion == 0) {
+        /*if (oldVersion == 1) {
+            RealmObjectSchema movieSchema = schema.get("Movie");
+            movieSchema.addField("onNetflix", boolean.class, FieldAttribute.INDEXED);
+            oldVersion++;
         }
 
-        /************************************************
-         // Version 2
-         class Pet                   // add a new model class
-         @Required
-         String name;
-         @Required
-         String type;
-         class Person
-         @Required
-         String fullName;
-         int age;
-         RealmList<Pet> pets;    // add an array property
-         ************************************************/
-        // Migrate from version 1 to version 2
-        if (oldVersion == 1) {
-
-        }
-
-        /************************************************
-         // Version 3
-         class Pet
-         @Required
-         String name;
-         int type;               // type becomes int
-         class Person
-         String fullName;        // fullName is nullable now
-         RealmList<Pet> pets;    // age and pets re-ordered (no action needed)
-         int age;
-         ************************************************/
-        // Migrate from version 2 to version 3
         if (oldVersion == 2) {
+            RealmObjectSchema movieSchema = schema.get("Movie");
+            movieSchema
+                    .addField("netflixStreaming", int.class, FieldAttribute.INDEXED)
+                    .removeField("onNetflix");
+            oldVersion++;
 
         }
+
+        if (oldVersion == 3) {
+            // Create a new class
+            RealmObjectSchema externalIdsSchema = schema.create("ExternalIds")
+                    .addField("imdbId", String.class, FieldAttribute.INDEXED)
+                    .addField("freebaseMid", String.class, FieldAttribute.INDEXED)
+                    .addField("freebaseId", String.class, FieldAttribute.INDEXED)
+                    .addField("tvdbId", String.class, FieldAttribute.INDEXED)
+                    .addField("tvrageId", String.class, FieldAttribute.INDEXED);
+            oldVersion++;
+        }
+
+        if (oldVersion == 4) {
+            RealmObjectSchema tvShowSchema = schema.get("TVShow");
+            tvShowSchema
+                    .addField("netflixStreaming", int.class, FieldAttribute.INDEXED)
+                    .addField("externalIds", ExternalIds.class, FieldAttribute.INDEXED);
+            oldVersion++;
+        }*/
     }
 }

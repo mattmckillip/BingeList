@@ -117,16 +117,7 @@ public class StatisticsActivity extends AppCompatActivity {
         Log.d(TAG, "onCreateOptionsMenu()");
 
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        int viewMode = PreferencesHelper.getRecyclerviewViewType(getApplicationContext());
-        if (viewMode == ViewType.CARD){
-            menu.findItem(R.id.card_view).setChecked(true);
-        } else if (viewMode == ViewType.COMPACT_CARD){
-            menu.findItem(R.id.compact_view).setChecked(true);
-        } else if (viewMode == ViewType.LIST){
-            menu.findItem(R.id.list_view).setChecked(true);
-        }
+        getMenuInflater().inflate(R.menu.menu_theme_only, menu);
 
         int theme = PreferencesHelper.getTheme(getApplicationContext());
         if (theme == ThemeEnum.DAY_THEME){
@@ -145,59 +136,9 @@ public class StatisticsActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "settings");
-                }
-
-                return true;
-
-            case R.id.card_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "card_view");
-                }
-                PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
-                PreferencesHelper.printValues(getApplicationContext());
-                viewPager.setAdapter(mAdapterViewPager);
-
-                item.setChecked(true);
-                tabs.setupWithViewPager(viewPager);
-                setTabDrawables();
-
-                return true;
-
-            case R.id.compact_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "compact_view");
-                }
-                PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
-                PreferencesHelper.printValues(getApplicationContext());
-                viewPager.setAdapter(mAdapterViewPager);
-
-                item.setChecked(true);
-                tabs.setupWithViewPager(viewPager);
-                setTabDrawables();
-
-                return true;
-
-            case R.id.list_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "list_view");
-                }
-                PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
-                mAdapterViewPager.notifyDataSetChanged();
-                viewPager.setAdapter(mAdapterViewPager);
-
-                item.setChecked(true);
-                tabs.setupWithViewPager(viewPager);
-                setTabDrawables();
-
                 return true;
 
             case R.id.light_theme:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "light_theme");
-                }
                 PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
@@ -206,9 +147,6 @@ public class StatisticsActivity extends AppCompatActivity {
                 return true;
 
             case R.id.dark_theme:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "dark_theme");
-                }
                 PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
@@ -217,11 +155,6 @@ public class StatisticsActivity extends AppCompatActivity {
                 return true;
 
             case android.R.id.home:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "Sort");
-                }
                 mNavigationDrawer.openDrawer();
 
                 return true;
@@ -232,15 +165,6 @@ public class StatisticsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-
-        /*int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
-        }
-        return super.onOptionsItemSelected(item);*/
     }
 
     @Override

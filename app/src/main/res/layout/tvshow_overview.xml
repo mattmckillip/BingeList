@@ -85,6 +85,28 @@
                 />
 
             <TextView
+                android:id="@+id/streaming_header"
+                android:text="@string/streaming_header"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?android:textColorSecondary"
+                android:paddingLeft="@dimen/md_keylines"
+                android:paddingStart="@dimen/md_keylines"
+                android:paddingRight="@dimen/md_keylines"
+                android:paddingEnd="@dimen/md_keylines" />
+
+            <ImageView
+                android:id="@+id/netflix_image"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:textColor="?android:textColorSecondary"
+                android:paddingLeft="@dimen/md_keylines"
+                android:paddingStart="@dimen/md_keylines"
+                android:src="@drawable/netflix_logo"
+                android:layout_marginBottom="@dimen/md_keylines" />
+
+            <TextView
                 android:id="@+id/plot_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

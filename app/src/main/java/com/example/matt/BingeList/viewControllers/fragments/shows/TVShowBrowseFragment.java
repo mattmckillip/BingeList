@@ -17,6 +17,7 @@
 package com.example.matt.bingeList.viewControllers.fragments.shows;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.matt.bingeList.MyApplication;
+import com.example.matt.bingeList.models.Person;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
 import com.example.matt.bingeList.models.shows.TVShowResult;
@@ -151,21 +153,23 @@ public class TVShowBrowseFragment extends Fragment {
             call.enqueue(new Callback<TVShowQueryReturn>() {
                 @Override
                 public void onResponse(Call<TVShowQueryReturn> call, Response<TVShowQueryReturn> response) {
-                    Log.d(TAG, "TVShowQueryReturn - Success");
-
-                    List<TVShowResult> tvShowResults = response.body().getResults();
-                    data = new RealmList<>();
-                    for (TVShowResult show : tvShowResults) {
-                        TVShow thisShow = new TVShow();
-                        thisShow.setName(show.getName());
-                        thisShow.setId(show.getId());
-                        thisShow.setOverview(show.getOverview());
-                        thisShow.setBackdropPath(getContext().getString(R.string.image_base_url) + getContext().getString(R.string.image_size_w500) + show.getBackdropPath());
-                        data.add(thisShow);
+                    if (response.isSuccessful()) {
+                        List<TVShowResult> tvShowResults = response.body().getResults();
+                        data = new RealmList<>();
+                        for (TVShowResult show : tvShowResults) {
+                            TVShow thisShow = new TVShow();
+                            thisShow.setName(show.getName());
+                            thisShow.setId(show.getId());
+                            thisShow.setOverview(show.getOverview());
+                            thisShow.setBackdropPath(getContext().getString(R.string.image_base_url) + getContext().getString(R.string.image_size_w500) + show.getBackdropPath());
+                            data.add(thisShow);
+                        }
+                        Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
+                        mBrowseTVShowAdapter = new BrowseTVShowsAdapter(data, getContext(), uiRealm);
+                        recyclerView.setAdapter(mBrowseTVShowAdapter);
+                    } else {
+                        Snackbar.make(recyclerView, "Unable to access API", Snackbar.LENGTH_LONG).show();
                     }
-                    Realm uiRealm = ((MyApplication) getActivity().getApplication()).getUiRealm();
-                    mBrowseTVShowAdapter = new BrowseTVShowsAdapter(data, getContext(), uiRealm);
-                    recyclerView.setAdapter(mBrowseTVShowAdapter);
                 }
 
                 @Override

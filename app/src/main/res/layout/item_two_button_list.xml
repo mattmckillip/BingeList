@@ -33,6 +33,11 @@
             android:layout_height="@dimen/compact_card_height"
             android:scaleType="centerCrop"/>
 
+        <ImageView
+            android:id="@+id/netflix_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/card_title"
             android:layout_width="match_parent"

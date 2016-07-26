@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,11 +20,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
+import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.uitls.BadgeDrawable;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.uitls.Enums.ShowSort;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
@@ -40,6 +45,11 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Matt on 6/12/2016.
@@ -129,6 +139,35 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
             if (mShow.getNetworks() != null && !mShow.getNetworks().isEmpty()) {
                 holder.mChannelBadge.setImageDrawable(new BadgeDrawable(mContext, mShow.getNetworks().first().getName(), Color.WHITE));
             }
+            holder.mNetflixBadge.setVisibility(View.GONE);
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://netflixroulette.net/api/v2/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            NetflixAPI service = retrofit.create(NetflixAPI.class);
+
+            Call<NetflixRouletteResponse> netflixRouletteResponseCall = service.checkNetflix(mShow.getExternalIds().getImdbId());
+
+            netflixRouletteResponseCall.enqueue(new Callback<NetflixRouletteResponse>() {
+                @Override
+                public void onResponse(Call<NetflixRouletteResponse> call, Response<NetflixRouletteResponse> response) {
+                    if (response.isSuccessful()) {
+
+                        if (response.body().getNetflixId() != null && !response.body().getNetflixId().equals("null")) {
+                            Log.d(TAG, mShow.getName());
+                            Log.d(TAG, response.raw().toString());
+                            holder.mNetflixBadge.setVisibility(View.VISIBLE);
+                            holder.mNetflixBadge.setImageDrawable(new BadgeDrawable(mContext, "Netflix", ContextCompat.getColor(mContext, R.color.lightColorPrimary)));
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<NetflixRouletteResponse> call, Throwable t) {
+                }
+            });
         }
 
         holder.mShowDecsiption.setText(mShowList.get(position).getOverview());
@@ -304,6 +343,9 @@ public class YourShowsAdapter extends RecyclerView.Adapter<YourShowsAdapter.Your
 
         @BindView(R.id.channel_badge)
         ImageView mChannelBadge;
+
+        @BindView(R.id.netflix_badge)
+        ImageView mNetflixBadge;
 
         @BindView(R.id.card_text)
         TextView mShowDecsiption;

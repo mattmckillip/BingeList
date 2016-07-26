@@ -34,15 +34,18 @@ import android.widget.TextView;
 
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
+import com.example.matt.bingeList.models.Country;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
 import com.example.matt.bingeList.models.Genre;
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
@@ -88,6 +91,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     private RealmList<Movie> mSimilarMovieList = new RealmList<>();
     private BrowseMoviesAdapter similarMovieAdapter;
     private int mVibrantColor;
+    private int mNetflixId;
 
     private Realm mUiRealm;
 
@@ -123,6 +127,15 @@ public class WatchlistDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.runtime)
     TextView runtime;
+
+    @BindView(R.id.mpaa_rating)
+    TextView mpaaRating;
+
+    @BindView(R.id.streaming_header)
+    TextView mStreamingHeader;
+
+    @BindView(R.id.netflix_image)
+    ImageView mNetflixImage;
 
     @BindView(R.id.plot_title)
     TextView plotTitle;
@@ -222,6 +235,13 @@ public class WatchlistDetailActivity extends AppCompatActivity {
         Intent intent = new Intent(getBaseContext(), SimilarMoviesActivity.class);
         intent.putExtra(mContext.getString(R.string.movieId), movieID);
         intent.putExtra("vibrantColor", mVibrantColor);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.netflix_image)
+    public void openNetflix(View view) {
+        Uri uri = Uri.parse(mContext.getString(R.string.netflix_base_url) + mNetflixId);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
 
@@ -389,7 +409,7 @@ public class WatchlistDetailActivity extends AppCompatActivity {
                     List<MovieResult> tempSimilarMovies = response.body().getMovieResults();
 
                     mSimilarMovieList = new RealmList<>();
-                    for (int i = 0; i < tempSimilarMovies.size() || i < NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY; i++) {
+                    for (int i = 0; i < tempSimilarMovies.size() && i < NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY; i++) {
                         Movie movie = new Movie();
                         movie.setTitle(tempSimilarMovies.get(i).getTitle());
                         movie.setId(tempSimilarMovies.get(i).getId());
@@ -412,10 +432,6 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     }
 
     private void loadCredits() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "loadCredits()");
-        }
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -430,11 +446,6 @@ public class WatchlistDetailActivity extends AppCompatActivity {
                 mCredits = response.body();
                 mCast = mCredits.getCast();
                 mCrew = mCredits.getCrew();
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Credits - " + mCredits.toString());
-                    Log.d(TAG, "PersonCast - " + mCast.toString());
-                    Log.d(TAG, "PersonCrew - " + mCrew.toString());
-                }
 
                 Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCast.size());
                 Integer crewSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCrew.size());
@@ -457,8 +468,6 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     }
 
     private void setViewsVisible() {
-        Log.d(TAG, "setViewsVisible()");
-
         appbar.setVisibility(View.VISIBLE);
         collapsingToolbar.setVisibility(View.VISIBLE);
         scroll_view.setVisibility(View.VISIBLE);
@@ -467,8 +476,6 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     }
 
     private void setColors(int vibrantColor, int mutedColor) {
-        Log.d(TAG, "setColors()");
-
         plotTitle.setTextColor(vibrantColor);
         castTitle.setTextColor(vibrantColor);
         crewTitle.setTextColor(vibrantColor);
@@ -491,7 +498,44 @@ public class WatchlistDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        Log.d(TAG, "setData()");
+        mNetflixImage.setVisibility(View.GONE);
+        mStreamingHeader.setVisibility(View.GONE);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://netflixroulette.net/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NetflixAPI service = retrofit.create(NetflixAPI.class);
+
+        Call<NetflixRouletteResponse> call = service.checkNetflix(movie.getImdbId());
+
+        call.enqueue(new Callback<NetflixRouletteResponse>() {
+            @Override
+            public void onResponse(Call<NetflixRouletteResponse> call, Response<NetflixRouletteResponse> response) {
+                Log.d(TAG, response.raw().toString());
+                if (response.isSuccessful()) {
+                    if (response.body().getNetflixId() != null && !response.body().getNetflixId().equals("null")) {
+                        mNetflixId = response.body().getNetflixId();
+                        mNetflixImage.setVisibility(View.VISIBLE);
+                        mStreamingHeader.setVisibility(View.VISIBLE);
+                    } else {
+                        Log.d("NETFLIX RESPONSE", "NOT ON NETFLIX");
+
+                    }
+                } else {
+
+                    Log.d(TAG, "Failed netflix call");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetflixRouletteResponse> call, Throwable t) {
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "Netflix - Callback Failure");
+                }
+            }
+        });
 
         collapsingToolbar.setTitle(movie.getTitle());
         plot.setText(movie.getOverview());
@@ -503,6 +547,12 @@ public class WatchlistDetailActivity extends AppCompatActivity {
             genreString = genreString + genre.getName() + ", ";
         }
         genres.setText(genreString);
+
+        for (Country country : movie.getReleases().getCountries()){
+            if (country.getIso31661().equals("US")){
+                mpaaRating.setText(country.getCertification());
+            }
+        }
 
         RealmResults<Movie> watchListMovies = mUiRealm.where(Movie.class).equalTo("onWatchList", true).equalTo("id", movieID).findAll();
         if (watchListMovies.size() == 1){

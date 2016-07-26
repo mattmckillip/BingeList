@@ -19,11 +19,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Credits;
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
+import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.BadgeDrawable;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.BrowseMovieDetailActivity;
@@ -154,7 +161,7 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     @Override
-    public void onBindViewHolder(BrowseMoviesViewHolder holder, int position) {
+    public void onBindViewHolder(final BrowseMoviesViewHolder holder, final int position) {
         holder.mWatchedLayout.setVisibility(View.GONE);
         holder.mWatchListLayout.setVisibility(View.GONE);
         holder.mMovieTitle.setVisibility(View.GONE);
@@ -171,13 +178,69 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             holder.mMovieTitle.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "Number of lines in " + titleString + ": " + Integer.toString(title.getLineCount()));
                     if (title.getLineCount() > 1) {
                         description.setSingleLine();
                     }
                     // Perform any actions you want based on the line count here.
                 }
             });
+        } else {
+            holder.mNetflixBadge.setVisibility(View.GONE);
+
+            if (mMovieList.get(position).getNetflixStreaming() == NetflixStreaming.STREAMING) {
+                holder.mNetflixBadge.setVisibility(View.VISIBLE);
+            } else {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(mContext.getString(R.string.movie_base_url))
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                MovieAPI service = retrofit.create(MovieAPI.class);
+                final Movie movie = mMovieList.get(position);
+                movie.setNetflixStreaming(NetflixStreaming.NOT_STREAMING);
+
+                Call<Movie> call = service.getMovie(Integer.toString(movie.getId()));
+                call.enqueue(new Callback<Movie>() {
+                    @Override
+                    public void onResponse(Call<Movie> call, Response<Movie> response) {
+                        if (response.isSuccessful()) {
+                            final String imdbID = response.body().getImdbId();
+
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("https://netflixroulette.net/api/v2/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+
+                            NetflixAPI service = retrofit.create(NetflixAPI.class);
+
+                            Call<NetflixRouletteResponse> netflixRouletteResponseCall = service.checkNetflix(imdbID);
+
+                            netflixRouletteResponseCall.enqueue(new Callback<NetflixRouletteResponse>() {
+                                @Override
+                                public void onResponse(Call<NetflixRouletteResponse> call, Response<NetflixRouletteResponse> response) {
+                                    if (response.isSuccessful()) {
+                                        if (response.body().getNetflixId() != null && !response.body().getNetflixId().equals("null")) {
+                                            Log.d(TAG, movie.getTitle());
+                                            Log.d(TAG, response.raw().toString());
+                                            movie.setNetflixStreaming(NetflixStreaming.STREAMING);
+                                            holder.mNetflixBadge.setVisibility(View.VISIBLE);
+                                            holder.mNetflixBadge.setImageDrawable(new BadgeDrawable(mContext, "Netflix", ContextCompat.getColor(mContext, R.color.lightColorPrimary)));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<NetflixRouletteResponse> call, Throwable t) {
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Movie> call, Throwable t) {
+                    }
+                });
+            }
         }
 
         holder.mMovieDescription.setText(mMovieList.get(position).getOverview());
@@ -236,6 +299,9 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         @BindView(R.id.watchlist_icon)
         ImageView mWatchlistIcon;
 
+        @BindView(R.id.netflix_badge)
+        ImageView mNetflixBadge;
+
 
         public BrowseMoviesViewHolder(View v, Context context, final Realm uiRealm, final List<Movie> movieList) {
             super(v);
@@ -247,7 +313,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "itemViewClick()");
                     Context context = v.getContext();
                     Integer movieId = mMovieList.get(getAdapterPosition()).getId();
                     Intent intent = new Intent(context, BrowseMovieDetailActivity.class);
@@ -271,7 +336,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
         holder.mMoreOptionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Log.d(TAG, "moreOptionsButtonClick()");
                 if (isOnWatchList(position)) { // Movie is on the users watchlist
                     PopupMenu popup = new PopupMenu(mContext, v);
                     popup.getMenuInflater().inflate(R.menu.menu_watchlist, popup.getMenu());
@@ -517,8 +581,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     private void moveFromWatchListToBrowse(int movieId) {
-        Log.d(TAG, "moveFromWatchListToBrowse()");
-
         mUiRealm.beginTransaction();
         // Find and remove the movie
         Movie movie = mUiRealm.where(Movie.class).equalTo("id", movieId).findFirst();
@@ -538,8 +600,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     private void unArchiveMovie(Movie movie, int position) {
-        Log.d(TAG, "unArchiveMovie()");
-
         mUiRealm.beginTransaction();
         ArchivedMovies archivedMovies = mUiRealm.where(ArchivedMovies.class).equalTo("movieId", movie.getId()).findFirst();
         archivedMovies.deleteFromRealm();
@@ -550,8 +610,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     private void archiveMovie(Integer id, int position) {
-        Log.d(TAG, "archiveMovie()");
-
         mUiRealm.beginTransaction();
         ArchivedMovies archivedMovies = new ArchivedMovies();
         archivedMovies.setMovieId(id);
@@ -563,8 +621,6 @@ public class BrowseMoviesAdapter extends RecyclerView.Adapter<BrowseMoviesAdapte
     }
 
     private void setActionButton(BrowseMoviesViewHolder holder, int position) {
-        Log.d(TAG, "setActionButton()");
-
         if (isOnWatchList(position)) {
             setWatchlistOverlay(holder);
             holder.mActionButton.setText(mContext.getString(R.string.watch_button));

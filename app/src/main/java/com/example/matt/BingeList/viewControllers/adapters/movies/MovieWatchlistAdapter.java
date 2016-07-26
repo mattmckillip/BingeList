@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +17,14 @@ import android.widget.TextView;
 import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.Credits;
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
+import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
+import com.example.matt.bingeList.uitls.BadgeDrawable;
 import com.example.matt.bingeList.uitls.Enums.MovieSort;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.viewControllers.activities.movies.WatchlistDetailActivity;
@@ -36,6 +42,11 @@ import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAdapter.WatchlistViewHolder> {
@@ -43,6 +54,7 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
     private static final String TAG = MovieWatchlistAdapter.class.getSimpleName();
     private Context mContext;
     private Realm mUiRealm;
+    private Movie mMovie;
     private int viewMode;
 
     public MovieWatchlistAdapter(RealmList movieList, Context context, Realm uiRealm) {
@@ -82,11 +94,7 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
     }
 
     @Override
-    public void onBindViewHolder(WatchlistViewHolder holder, final int position) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "onBindViewHolder()");
-        }
-
+    public void onBindViewHolder(final WatchlistViewHolder holder, final int position) {
         if (mMovieList.get(position).getBackdropBitmap() != null) {
             Bitmap bmp;
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -127,6 +135,13 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
                     // Perform any actions you want based on the line count here.
                 }
             });
+        } else {
+            holder.mNetflixBadge.setVisibility(View.GONE);
+
+            if (mMovieList.get(position).getNetflixStreaming() == NetflixStreaming.STREAMING) {
+                holder.mNetflixBadge.setVisibility(View.VISIBLE);
+                holder.mNetflixBadge.setImageDrawable(new BadgeDrawable(mContext, "Netflix", ContextCompat.getColor(mContext, R.color.lightColorPrimary)));
+            }
         }
 
         holder.mRemoveButton.setOnClickListener(new View.OnClickListener() {
@@ -205,6 +220,9 @@ public class MovieWatchlistAdapter extends RecyclerView.Adapter<MovieWatchlistAd
 
         @BindView(R.id.watch_button)
         IconicsButton mWatchButton;
+
+        @BindView(R.id.netflix_badge)
+        ImageView mNetflixBadge;
 
         public WatchlistViewHolder(View v, Context context, final List<Movie> movieList) {
             super(v);

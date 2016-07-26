@@ -15,7 +15,7 @@ import retrofit2.http.Query;
  * Created by Matt on 6/13/2016.
  */
 public interface TVShowAPI {
-    @GET("{showID}?api_key=788bf2d4d9f5db03979efed58cbf6713")
+    @GET("{showID}?api_key=788bf2d4d9f5db03979efed58cbf6713&append_to_response=external_ids")
     Call<TVShow> getTVShow(@Path("showID") String showID);
 
     @GET("{showID}/credits?api_key=788bf2d4d9f5db03979efed58cbf6713")

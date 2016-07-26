@@ -38,8 +38,6 @@ public class MyApplication extends Application {
 
         Realm uiRealm = Realm.getInstance(config); // Automatically run migration if needed
         setUiRealm(uiRealm);
-
-
     }
 
 }

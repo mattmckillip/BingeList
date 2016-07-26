@@ -1,5 +1,7 @@
 package com.example.matt.bingeList.models.movies;
 
+import android.support.annotation.Nullable;
+
 import com.example.matt.bingeList.models.Genre;
 import com.example.matt.bingeList.models.SpokenLanguage;
 import com.google.gson.annotations.Expose;
@@ -125,6 +127,8 @@ public class Movie extends RealmObject{
     private byte[] backdropBitmap;
 
     private String watchedDate;
+
+    private int netflixStreaming;
 
     /**
      * @return The adult
@@ -518,5 +522,13 @@ public class Movie extends RealmObject{
 
     public void setWatchedDate(String watchedDate) {
         this.watchedDate = watchedDate;
+    }
+
+    public int getNetflixStreaming() {
+        return netflixStreaming;
+    }
+
+    public void setNetflixStreaming(int netflixStreaming) {
+        this.netflixStreaming = netflixStreaming;
     }
 }

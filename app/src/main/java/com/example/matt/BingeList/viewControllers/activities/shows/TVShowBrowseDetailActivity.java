@@ -1,10 +1,12 @@
 package com.example.matt.bingeList.viewControllers.activities.shows;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -57,6 +59,7 @@ import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmList;
 import retrofit2.Call;
@@ -78,6 +81,8 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
     private String mShowName;
     private Context mContext;
     private int mViewPagerPosition;
+    private int mNetflixId;
+
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -169,9 +174,7 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                     mAdapterViewPager = new Adapter(getSupportFragmentManager());
 
                                     Bundle overviewBundle = new Bundle();
-                                    Log.d(TAG, Integer.toString(mShowId));
                                     overviewBundle.putInt(getApplicationContext().getString(R.string.showId), mShowId);
-                                    Log.d("LOOOOK", Integer.toString(mShowId));
                                     overviewBundle.putInt("vibrantColor", mVibrantColor);
                                     overviewBundle.putInt("mutedColor", mMutedColor);
                                     TVShowOverviewFragment overviewFragment = new TVShowOverviewFragment();
@@ -200,15 +203,11 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
                                 }
                             });
                 }
-                else {
-                    Log.d(TAG, "Error on show response");
-                }
+                else {}
             }
 
             @Override
-            public void onFailure(Call<TVShow> call, Throwable t) {
-                Log.d("getMovie()", "Callback Failure");
-            }
+            public void onFailure(Call<TVShow> call, Throwable t) {}
         });
 
         // Attach the Slidr Mechanism to this activity
@@ -275,9 +274,6 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
     private void getIntentExtras() {
         mShowId = getIntent().getIntExtra(mContext.getString(R.string.showId), 0);
         mShowName = getIntent().getStringExtra(mContext.getString(R.string.showTitle));
-
-        Log.d(TAG, "show Id: " + mShowId);
-        Log.d(TAG, "show name: " + mShowName);
     }
 
     private void hideViews() {
@@ -336,34 +332,30 @@ public class TVShowBrowseDetailActivity extends AppCompatActivity {
 
     public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons) {
         //add to realm
-        Log.d("realm transaction","attempting to add");
 
         for (TVShowSeasonResult season: seasons) {
-            Season curSeason = new Season();
-            curSeason.setAirDate(season.getAirDate());
-            curSeason.setEpisodeCount(season.getEpisodes().size());
-            curSeason.setId(season.getId());
-            curSeason.setPosterPath(season.getPosterPath());
-            curSeason.setShow_id(mShowId);
-            curSeason.setSeasonNumber(season.getSeasonNumber());
+            if (season != null) {
+                Season curSeason = new Season();
 
-            mUiRealm.beginTransaction();
-            mUiRealm.copyToRealmOrUpdate(curSeason);
-            mUiRealm.commitTransaction();
+                curSeason.setAirDate(season.getAirDate());
+                curSeason.setEpisodeCount(season.getEpisodes().size());
+                curSeason.setId(season.getId());
+                curSeason.setPosterPath(season.getPosterPath());
+                curSeason.setShow_id(mShowId);
+                curSeason.setSeasonNumber(season.getSeasonNumber());
 
-            RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
-            for (Episode episode: jsonEpisodeRealmList) {
                 mUiRealm.beginTransaction();
-                episode.setShow_id(mShowId);
-                episode.setIsWatched(false);
-                Log.d(TAG, "Current season number: " + curSeason.getSeasonNumber());
-                episode.setSeasonNumber(curSeason.getSeasonNumber());
-                mUiRealm.copyToRealmOrUpdate(episode);
+                mUiRealm.copyToRealmOrUpdate(curSeason);
+
+                RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
+                for (Episode episode : jsonEpisodeRealmList) {
+                    episode.setShow_id(mShowId);
+                    episode.setIsWatched(false);
+                    episode.setSeasonNumber(curSeason.getSeasonNumber());
+                    mUiRealm.copyToRealmOrUpdate(episode);
+                }
                 mUiRealm.commitTransaction();
             }
-
-            Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).count());
-            Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", mShowId).equalTo("seasonNumber", 1).findAll().size());
         }
     }
 

@@ -125,6 +125,13 @@ public class TVShow extends RealmObject{
 
     private Date date;
 
+    @SerializedName("external_ids")
+    @Expose
+    private ExternalIds externalIds;
+
+    private int netflixStreaming;
+
+
     /**
      * @return The backdropPath
      */
@@ -511,5 +518,31 @@ public class TVShow extends RealmObject{
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    /**
+     *
+     * @return
+     * The externalIds
+     */
+    public ExternalIds getExternalIds() {
+        return externalIds;
+    }
+
+    /**
+     *
+     * @param externalIds
+     * The external_ids
+     */
+    public void setExternalIds(ExternalIds externalIds) {
+        this.externalIds = externalIds;
+    }
+
+    public int getNetflixStreaming() {
+        return netflixStreaming;
+    }
+
+    public void setNetflixStreaming(int netflixStreaming) {
+        this.netflixStreaming = netflixStreaming;
     }
 }

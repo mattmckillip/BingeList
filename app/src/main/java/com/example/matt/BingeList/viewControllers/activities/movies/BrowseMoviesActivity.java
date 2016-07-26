@@ -160,8 +160,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "onCreateOptionsMenu()");
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
@@ -192,16 +190,9 @@ public class BrowseMoviesActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "settings");
-                }
-
                 return true;
 
             case R.id.card_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "card_view");
-                }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
                 PreferencesHelper.printValues(getApplicationContext());
                 viewPager.setAdapter(mAdapterViewPager);
@@ -213,9 +204,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.compact_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "compact_view");
-                }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
                 PreferencesHelper.printValues(getApplicationContext());
                 viewPager.setAdapter(mAdapterViewPager);
@@ -227,9 +215,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.list_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "list_view");
-                }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
                 mAdapterViewPager.notifyDataSetChanged();
                 viewPager.setAdapter(mAdapterViewPager);
@@ -241,9 +226,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.light_theme:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "light_theme");
-                }
                 PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
@@ -252,9 +234,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 return true;
 
             case R.id.dark_theme:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "dark_theme");
-                }
                 PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
@@ -263,11 +242,6 @@ public class BrowseMoviesActivity extends AppCompatActivity {
                 return true;
 
             case android.R.id.home:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "Sort");
-                }
                 mNavigationDrawer.openDrawer();
 
                 return true;

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -26,12 +28,15 @@ import com.example.matt.bingeList.BuildConfig;
 import com.example.matt.bingeList.models.Cast;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.models.shows.TVShowQueryReturn;
 import com.example.matt.bingeList.models.shows.TVShowResult;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.viewControllers.activities.CastActivity;
 import com.example.matt.bingeList.viewControllers.activities.shows.SimilarShowsActivity;
 import com.example.matt.bingeList.viewControllers.adapters.shows.BrowseTVShowsAdapter;
@@ -67,12 +72,11 @@ public class TVShowOverviewFragment extends Fragment {
     private TVShow mShow;
     private Context mContext;
     private Credits mCredits;
-    private RealmList<Crew> mCrew = new RealmList<>();
     private RealmList<Cast> mCast = new RealmList<>();
     private CastAdapter castAdapter;
-    private CrewAdapter crewAdapter;
     private RealmList<TVShow> mSimilarShowList = new RealmList<>();
     private BrowseTVShowsAdapter similarMovieAdapter;
+    private int mNetflixId;
 
     @BindView(R.id.scroll_view)
     NestedScrollView scroll_view;
@@ -97,6 +101,12 @@ public class TVShowOverviewFragment extends Fragment {
 
     @BindView(R.id.user_rating)
     TextView userRating;
+
+    @BindView(R.id.streaming_header)
+    TextView mStreamingHeader;
+
+    @BindView(R.id.netflix_image)
+    ImageView mNetflixImage;
 
     @BindView(R.id.more_info)
     LinearLayout layout;
@@ -132,6 +142,13 @@ public class TVShowOverviewFragment extends Fragment {
         intent.putExtra(mContext.getString(R.string.showId), mShowId);
         intent.putExtra("vibrantColor", vibrantColor);
 
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.netflix_image)
+    public void openNetflix(View view) {
+        Uri uri = Uri.parse(mContext.getString(R.string.netflix_base_url) + mNetflixId);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
 
@@ -254,6 +271,35 @@ public class TVShowOverviewFragment extends Fragment {
     }
 
     private void setData() {
+        mNetflixImage.setVisibility(View.GONE);
+        mStreamingHeader.setVisibility(View.GONE);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://netflixroulette.net/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NetflixAPI service = retrofit.create(NetflixAPI.class);
+
+        Call<NetflixRouletteResponse> call = service.checkNetflix(mShow.getExternalIds().getImdbId());
+
+        call.enqueue(new Callback<NetflixRouletteResponse>() {
+            @Override
+            public void onResponse(Call<NetflixRouletteResponse> call, Response<NetflixRouletteResponse> response) {
+                Log.d(TAG, response.raw().toString());
+                if (response.isSuccessful()) {
+                    if (response.body().getNetflixId() != null && !response.body().getNetflixId().equals("null")) {
+                        mNetflixId = response.body().getNetflixId();
+                        mNetflixImage.setVisibility(View.VISIBLE);
+                        mStreamingHeader.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetflixRouletteResponse> call, Throwable t) {}
+        });
+
         // Add data
         plot.setText(mShow.getOverview());
         stars.setRating(mShow.getVoteAverage().floatValue());
@@ -262,10 +308,6 @@ public class TVShowOverviewFragment extends Fragment {
     }
 
     private void loadSimilarShows() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "loadSimilarShows()");
-        }
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.tv_show_base_url))
                 .addConverterFactory(GsonConverterFactory.create())

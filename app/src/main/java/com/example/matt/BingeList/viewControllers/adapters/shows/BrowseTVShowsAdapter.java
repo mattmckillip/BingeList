@@ -21,13 +21,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.shows.Episode;
 import com.example.matt.bingeList.models.shows.Season;
 import com.example.matt.bingeList.models.shows.TVShow;
 import com.example.matt.bingeList.models.shows.TVShowSeasonResult;
 import com.example.matt.bingeList.R;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
 import com.example.matt.bingeList.uitls.API.TVShowAPI;
 import com.example.matt.bingeList.uitls.BadgeDrawable;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.uitls.Enums.ViewType;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
 import com.example.matt.bingeList.uitls.TVShowRealmStaticHelper;
@@ -171,7 +174,7 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
                 }
             });
         } else {
-            Log.d(TAG, "else");
+            holder.mNetflixBadge.setVisibility(View.GONE);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://api.themoviedb.org/3/tv/")
@@ -184,21 +187,46 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
             call.enqueue(new Callback<TVShow>() {
                 @Override
                 public void onResponse(Call<TVShow> call, Response<TVShow> response) {
-                    Log.d(TAG, "onResponse");
-
-
                     if (response.isSuccessful()) {
-                        Log.d(TAG, "isSuccessful");
-
                         mShow.setNetworks(response.body().getNetworks());
                         if (mShow.getNetworks() != null && !mShow.getNetworks().isEmpty()) {
                             holder.mChannelBadge.setImageDrawable(new BadgeDrawable(mContext, mShow.getNetworks().first().getName(), Color.WHITE));
                         }
+
+                        final String imdbID = response.body().getExternalIds().getImdbId();
+
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://netflixroulette.net/api/v2/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+
+                        NetflixAPI service = retrofit.create(NetflixAPI.class);
+
+                        Call<NetflixRouletteResponse> netflixRouletteResponseCall = service.checkNetflix(imdbID);
+
+                        netflixRouletteResponseCall.enqueue(new Callback<NetflixRouletteResponse>() {
+                            @Override
+                            public void onResponse(Call<NetflixRouletteResponse> call, Response<NetflixRouletteResponse> response) {
+                                if (response.isSuccessful()) {
+
+                                    if (response.body().getNetflixId() != null && !response.body().getNetflixId().equals("null")) {
+                                        Log.d(TAG, mShow.getName());
+                                        Log.d(TAG, response.raw().toString());
+                                        mShow.setNetflixStreaming(NetflixStreaming.STREAMING);
+                                        holder.mNetflixBadge.setVisibility(View.VISIBLE);
+                                        holder.mNetflixBadge.setImageDrawable(new BadgeDrawable(mContext, "Netflix", ContextCompat.getColor(mContext, R.color.lightColorPrimary)));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<NetflixRouletteResponse> call, Throwable t) {
+                            }
+                        });
                     }
                 }
                 @Override
                 public void onFailure(Call<TVShow> call, Throwable t) {
-                    Log.d(TAG, "onFailure");
                 }
             });
         }
@@ -222,6 +250,9 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
         @BindView(R.id.channel_badge)
         ImageView mChannelBadge;
+
+        @BindView(R.id.netflix_badge)
+        ImageView mNetflixBadge;
 
         @BindView(R.id.card_text)
         TextView mShowDescription;
@@ -436,7 +467,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
     }
 
     private void setActionButton(BrowseTVShowsViewHolder holder, int position) {
-        Log.d(TAG, "setActionButton()");
         if (isOnWatchList(position)) {
             Episode nextEpisode = TVShowRealmStaticHelper.getNextUnwatchedEpisode(mShow.getId(), mUiRealm);
 
@@ -468,7 +498,6 @@ public class BrowseTVShowsAdapter extends RecyclerView.Adapter<BrowseTVShowsAdap
 
     public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons) {
         //add to realm
-        Log.d("realm transaction","attempting to add");
 
         for (TVShowSeasonResult season: seasons) {
             if (season != null) {

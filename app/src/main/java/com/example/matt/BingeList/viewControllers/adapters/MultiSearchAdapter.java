@@ -560,35 +560,33 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
 
     public void UpdateRealmSeasons(ArrayList<TVShowSeasonResult> seasons, int showId) {
         //add to realm
-        Log.d("realm transaction","attempting to add");
 
         for (TVShowSeasonResult season: seasons) {
-            Season curSeason = new Season();
-            curSeason.setAirDate(season.getAirDate());
-            curSeason.setEpisodeCount(season.getEpisodes().size());
-            curSeason.setId(season.getId());
-            curSeason.setPosterPath(season.getPosterPath());
-            curSeason.setShow_id(showId);
-            curSeason.setSeasonNumber(season.getSeasonNumber());
+            if (season != null) {
+                Season curSeason = new Season();
 
-            mUiRealm.beginTransaction();
-            mUiRealm.copyToRealmOrUpdate(curSeason);
-            mUiRealm.commitTransaction();
+                curSeason.setAirDate(season.getAirDate());
+                curSeason.setEpisodeCount(season.getEpisodes().size());
+                curSeason.setId(season.getId());
+                curSeason.setPosterPath(season.getPosterPath());
+                curSeason.setShow_id(showId);
+                curSeason.setSeasonNumber(season.getSeasonNumber());
 
-            RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
-            for (Episode episode: jsonEpisodeRealmList) {
                 mUiRealm.beginTransaction();
-                episode.setShow_id(showId);
-                episode.setIsWatched(false);
-                Log.d(TAG, "Current season number: " + curSeason.getSeasonNumber());
-                episode.setSeasonNumber(curSeason.getSeasonNumber());
-                mUiRealm.copyToRealmOrUpdate(episode);
+                mUiRealm.copyToRealmOrUpdate(curSeason);
+
+                RealmList<Episode> jsonEpisodeRealmList = season.getEpisodes();
+                for (Episode episode : jsonEpisodeRealmList) {
+                    episode.setShow_id(showId);
+                    episode.setIsWatched(false);
+                    episode.setSeasonNumber(curSeason.getSeasonNumber());
+                    mUiRealm.copyToRealmOrUpdate(episode);
+                }
                 mUiRealm.commitTransaction();
             }
-
-            Log.d(TAG, "Number of episodes in show: " + mUiRealm.where(Episode.class).equalTo("show_id", showId).count());
-            Log.d(TAG, "Number of episodes in Season 1: " + mUiRealm.where(Episode.class).equalTo("show_id", showId).equalTo("seasonNumber", 1).findAll().size());
         }
+        //setActionButton(mHolder, mPosition);
+        notifyDataSetChanged();
     }
 
     private class FetchSeasonsTask extends AsyncTask<Integer, Integer, ArrayList<TVShowSeasonResult>> {

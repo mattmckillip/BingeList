@@ -18,6 +18,7 @@ package com.example.matt.bingeList.viewControllers.fragments.movies;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -26,14 +27,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.matt.bingeList.MyApplication;
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.movies.ArchivedMovies;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
+import com.example.matt.bingeList.uitls.BadgeDrawable;
 import com.example.matt.bingeList.uitls.Enums.BrowseMovieType;
 import com.example.matt.bingeList.uitls.EndlessRecyclerOnScrollListener;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.viewControllers.adapters.movies.BrowseMoviesAdapter;
 
 import java.util.List;
@@ -109,6 +114,7 @@ public class MovieBrowseFragment extends Fragment {
                                     movie.setId(movieResult.getId());
                                     movie.setOverview(movieResult.getOverview());
                                     movie.setBackdropPath(getContext().getString(R.string.image_base_url) + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                                    movie.setNetflixStreaming(NetflixStreaming.UNKOWN);
                                     data.add(movie);
                                 }
                                 mBrowseMoviesAdapter.addMoreMovies(data);
@@ -164,6 +170,7 @@ public class MovieBrowseFragment extends Fragment {
                             movie.setId(movieResult.getId());
                             movie.setOverview(movieResult.getOverview());
                             movie.setBackdropPath(getContext().getString(R.string.image_base_url) + getContext().getString(R.string.image_size_w500) + movieResult.getBackdropPath());
+                            movie.setNetflixStreaming(NetflixStreaming.UNKOWN);
                             data.add(movie);
                         }
                     }

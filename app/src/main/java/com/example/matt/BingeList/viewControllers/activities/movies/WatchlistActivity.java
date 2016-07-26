@@ -161,10 +161,6 @@ public class WatchlistActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "onPageSelected()");
-                    Log.d(TAG, "position " + Integer.toString(position));
-                }
                 mViewPagerPosition = position;
                 MovieWatchListFragment movieWatchListFragment = (MovieWatchListFragment) mAdapterViewPager.getItem(position);
                 movieWatchListFragment.notifyAdapter();
@@ -178,8 +174,6 @@ public class WatchlistActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(TAG, "onCreateOptionsMenu()");
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_movie_sort, menu);
 
@@ -228,17 +222,9 @@ public class WatchlistActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "settings");
-                }
-
                 return true;
 
             case R.id.card_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "card_view");
-                }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.CARD, getApplicationContext());
                 viewPager.setAdapter(mAdapterViewPager);
                 viewPager.setCurrentItem(mViewPagerPosition);
@@ -249,9 +235,6 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case R.id.compact_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "compact_view");
-                }
                 PreferencesHelper.setRecyclerviewViewType(ViewType.COMPACT_CARD, getApplicationContext());
                 viewPager.setAdapter(mAdapterViewPager);
                 viewPager.setCurrentItem(mViewPagerPosition);
@@ -262,10 +245,6 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case R.id.list_view:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "list_view");
-                }
-
                 PreferencesHelper.setRecyclerviewViewType(ViewType.LIST, getApplicationContext());
                 mAdapterViewPager.notifyDataSetChanged();
                 viewPager.setAdapter(mAdapterViewPager);
@@ -277,18 +256,9 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_sort:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "Sort");
-                }
-
                 return true;
 
             case R.id.light_theme:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "light_theme");
-                }
                 PreferencesHelper.setTheme(ThemeEnum.DAY_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
@@ -297,9 +267,6 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case R.id.dark_theme:
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "dark_theme");
-                }
                 PreferencesHelper.setTheme(ThemeEnum.NIGHT_THEME, getApplicationContext());
                 item.setChecked(true);
                 finish();
@@ -308,11 +275,6 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case android.R.id.home:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                if (BuildConfig.DEBUG) {
-                    Log.d("onOptionsItemSelected()", "Sort");
-                }
                 mNavigationDrawer.openDrawer();
 
                 return true;
@@ -341,7 +303,6 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case R.id.rating_sort:
-                Log.d(TAG, "top_rated_sort: " + Integer.toString(movieWatchListFragments.size()));
                 PreferencesHelper.setMovieSort(MovieSort.RATING, getApplicationContext());
 
                 for (MovieWatchListFragment fragment : movieWatchListFragments) {
@@ -354,7 +315,6 @@ public class WatchlistActivity extends AppCompatActivity {
                 return true;
 
             case R.id.runtime_sort:
-                Log.d(TAG, "runtime_sort: " + Integer.toString(movieWatchListFragments.size()));
                 PreferencesHelper.setMovieSort(MovieSort.RUNTIME, getApplicationContext());
 
                 for (MovieWatchListFragment fragment : movieWatchListFragments) {

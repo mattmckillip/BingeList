@@ -38,12 +38,15 @@ import com.example.matt.bingeList.models.Country;
 import com.example.matt.bingeList.models.Credits;
 import com.example.matt.bingeList.models.Crew;
 import com.example.matt.bingeList.models.Genre;
+import com.example.matt.bingeList.models.NetflixRouletteResponse;
 import com.example.matt.bingeList.models.movies.Movie;
 import com.example.matt.bingeList.models.movies.MovieQueryReturn;
 import com.example.matt.bingeList.models.movies.MovieResult;
 import com.example.matt.bingeList.MyApplication;
 import com.example.matt.bingeList.R;
 import com.example.matt.bingeList.uitls.API.MovieAPI;
+import com.example.matt.bingeList.uitls.API.NetflixAPI;
+import com.example.matt.bingeList.uitls.Enums.NetflixStreaming;
 import com.example.matt.bingeList.uitls.Enums.ThemeEnum;
 import com.example.matt.bingeList.uitls.PaletteTransformation;
 import com.example.matt.bingeList.uitls.PreferencesHelper;
@@ -79,7 +82,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class BrowseMovieDetailActivity extends AppCompatActivity {
     private static final String TAG = BrowseMovieDetailActivity.class.getSimpleName();
     private static final int NUMBER_OF_CREW_TO_DISPLAY = 3;
-    private static final int NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY = 10;
+    private static final int NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY = 5;
 
     private static final int DEFAULT_COLOR = 0x000000;
     private Integer movieID;
@@ -94,6 +97,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     private Realm mUiRealm;
     private Context mContext;
     private int mVibrantColor;
+    private int mNetflixId;
 
     @BindView(R.id.appbar)
     AppBarLayout appbar;
@@ -137,6 +141,12 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.mpaa_rating)
     TextView mpaaRating;
 
+    @BindView(R.id.streaming_header)
+    TextView mStreamingHeader;
+
+    @BindView(R.id.netflix_image)
+    ImageView mNetflixImage;
+
     @BindView(R.id.more_info)
     LinearLayout layout;
 
@@ -178,7 +188,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         RealmResults<Movie> watchListMovies = mUiRealm.where(Movie.class).equalTo("onWatchList", true).equalTo("id", movieID).findAll();
         RealmResults<Movie> watchedMovie = mUiRealm.where(Movie.class).equalTo("isWatched", true).equalTo("id", movieID).findAll();
 
-        if (watchListMovies.size() == 1){
+        if (watchListMovies.size() == 1){ // on watchlist, so the fab will remove this movie
             Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
             uiRealm.beginTransaction();
             watchListMovies.get(0).deleteFromRealm();
@@ -197,7 +207,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
             Snackbar.make(view, movie.getTitle() + " removed from to watchlist!",
                     Snackbar.LENGTH_LONG).show();
-        } else if (watchedMovie.size() == 1){
+        } else if (watchedMovie.size() == 1){ // watched, so fab will unwatch movie
             Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
             uiRealm.beginTransaction();
             movie.setOnWatchList(true);
@@ -209,7 +219,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
             Snackbar.make(view, movie.getTitle() + " moved to watchlist!",
                     Snackbar.LENGTH_LONG).show();
-        } else{
+        } else{ // browse to watchlist
             Realm uiRealm = ((MyApplication) getApplication()).getUiRealm();
             uiRealm.beginTransaction();
             movie.setOnWatchList(true);
@@ -257,6 +267,13 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @OnClick(R.id.netflix_image)
+    public void openNetflix(View view) {
+        Uri uri = Uri.parse(mContext.getString(R.string.netflix_base_url) + mNetflixId);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Iconics.init(getApplicationContext());
@@ -295,9 +312,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "updateUI()");
-        }
         // Set title of Detail page
         loadMovieBackgroundImage();
 
@@ -318,10 +332,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
 
     //HELPER METHODS
     private void loadSimilarMovies() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "loadSimilarMovies()");
-        }
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -338,7 +348,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
                     List<MovieResult> tempSimilarMovies = response.body().getMovieResults();
 
                     similarMovieList = new RealmList<>();
-                    for (int i = 0; i < tempSimilarMovies.size() || i < NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY; i++) {
+                    for (int i = 0; i < tempSimilarMovies.size() && i < NUMBER_OF_SIMILAR_MOVIES_TO_DISPLAY; i++) {
                         Movie movie = new Movie();
                         movie.setTitle(tempSimilarMovies.get(i).getTitle());
                         movie.setId(tempSimilarMovies.get(i).getId());
@@ -361,10 +371,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void loadCredits() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "loadCredits()");
-        }
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -379,11 +385,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
                 mCredits = response.body();
                 mCast = mCredits.getCast();
                 mCrew = mCredits.getCrew();
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, "Credits - " + mCredits.toString());
-                    Log.d(TAG, "PersonCast - " + mCast.toString());
-                    Log.d(TAG, "PersonCrew - " + mCrew.toString());
-                }
 
                 Integer castSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCast.size());
                 Integer crewSize = Math.min(NUMBER_OF_CREW_TO_DISPLAY, mCrew.size());
@@ -406,9 +407,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void loadMovieBackgroundImage() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "loadMovieBackgroundImage()");
-        }
 
         Picasso.with(this)
                 .load(movie.getBackdropPath())
@@ -465,9 +463,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void getMovie() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "getMovie()");
-        }
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mContext.getString(R.string.movie_base_url))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -480,17 +475,15 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
-                movie = response.body();
-                if (movie == null) {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "Null movie: " + response.raw().toString());
+                if (response.isSuccessful()) {
+                    movie = response.body();
+                    if (movie != null) {
+                        movie.setBackdropPath(mContext.getString(R.string.image_base_url) + mContext.getString(R.string.image_size_w500) + movie.getBackdropPath());
+                        updateUI();
                     }
+                } else {
+                    Snackbar.make(scrollView, "Error accessing API, please try again", Snackbar.LENGTH_LONG).show();
                 }
-                movie.setBackdropPath(mContext.getString(R.string.image_base_url) +  mContext.getString(R.string.image_size_w500)  + movie.getBackdropPath());
-                if (BuildConfig.DEBUG) {
-                    Log.d(TAG, movie.getGenres().toString());
-                }
-                updateUI();
             }
 
             @Override
@@ -538,9 +531,36 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void setData() {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setData()");
-        }
+        mNetflixImage.setVisibility(View.GONE);
+        mStreamingHeader.setVisibility(View.GONE);
+        movie.setNetflixStreaming(NetflixStreaming.NOT_STREAMING);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://netflixroulette.net/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NetflixAPI service = retrofit.create(NetflixAPI.class);
+
+        Call<NetflixRouletteResponse> call = service.checkNetflix(movie.getImdbId());
+
+        call.enqueue(new Callback<NetflixRouletteResponse>() {
+            @Override
+            public void onResponse(Call<NetflixRouletteResponse> call, Response<NetflixRouletteResponse> response) {
+                Log.d(TAG, response.raw().toString());
+                if (response.isSuccessful()) {
+                    if (response.body().getNetflixId() != null && !response.body().getNetflixId().equals("null")) {
+                        mNetflixId = response.body().getNetflixId();
+                        mNetflixImage.setVisibility(View.VISIBLE);
+                        mStreamingHeader.setVisibility(View.VISIBLE);
+                        movie.setNetflixStreaming(NetflixStreaming.STREAMING);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetflixRouletteResponse> call, Throwable t) {}
+        });
 
         collapsingToolbar.setTitle(movie.getTitle());
         plot.setText(movie.getOverview());
@@ -577,12 +597,7 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
         return String.format("%dh %02dmin", hours, minutes);
     }
 
-
     private void setColors(int vibrantColor, int mutedColor) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setColors()");
-        }
-
         plotTitle.setTextColor(vibrantColor);
         castTitle.setTextColor(vibrantColor);
         crewTitle.setTextColor(vibrantColor);
@@ -604,10 +619,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void setViewsVisible(){
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setViewsVisible()");
-        }
-
         appbar.setVisibility(View.VISIBLE);
         collapsingToolbar.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.VISIBLE);
@@ -617,10 +628,6 @@ public class BrowseMovieDetailActivity extends AppCompatActivity {
     }
 
     private void setViewsInvisible(){
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, "setViewsInvisible()");
-        }
-
         appbar.setVisibility(View.INVISIBLE);
         toolbar.setVisibility(View.INVISIBLE);
         collapsingToolbar.setVisibility(View.INVISIBLE);
