@@ -38,6 +38,8 @@
     <string name="movie_base_url">http://api.themoviedb.org/3/movie/</string>
     <string name="tv_show_base_url">http://api.themoviedb.org/3/tv/</string>
     <string name="imdb_person_base_url">http://www.imdb.com/title/</string>
+    <string name="netflix_base_url">https://www.netflix.com/watch/</string>
+
 
     <!-- UI Strings -->
     <string name="overview_title">Overview</string>
@@ -48,6 +50,7 @@
     <string name="runtime_header">Runtime</string>
     <string name="genre_header">Genres</string>
     <string name="name_header">Name</string>
+    <string name="streaming_header">Streaming</string>
     <string name="biography_header">Biography</string>
     <string name="born_header">Born</string>
     <string name="mpaa_header">Rating</string>

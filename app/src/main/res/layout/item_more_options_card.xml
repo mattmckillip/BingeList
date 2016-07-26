@@ -46,6 +46,15 @@
             android:layout_alignParentStart="true"
             android:layout_margin="@dimen/md_keylines" />
 
+        <ImageView
+            android:id="@+id/netflix_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/md_keylines" />
+
 
         <!-- Bottom Scrim -->
         <View
